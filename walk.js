@@ -1,4 +1,4 @@
-/* The Grand Hall: real 360 virtual tour (custom canvas viewer), in our theme */
+/* The Grand Hall: 360 tour, real exhibit photos hung as framed paintings */
 (function(){
 'use strict';
 const stage=document.querySelector('.walk-stage');
@@ -9,8 +9,10 @@ const VW=960,VH=600;
 
 /* ---------- data ---------- */
 const EX00=window.EXHIBITS00||{},EX20=window.EXHIBITS20||{};
+const MED00=window.MEDIA00||{},MED20=window.MEDIA20||{};
 const GAMES=window.GAMESALL||{};
 function exData(id){return EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
+function mediaFor(id){return EX20[id]?(MED20[id]||null):(MED00[id]||null);}
 const EMOJI00={y2k:'\u{1f4bb}',sms:'\u{1f4ac}',friendster:'\u{1f465}',ofw:'\u2708\uFE0F',bpo:'\u{1f3a7}',meteor:'\u{1f4fa}',boxing:'\u{1f94a}',mall:'\u{1f6cd}\uFE0F',cafe:'\u{1f5a5}\uFE0F',load:'\u{1f4b8}',camera:'\u{1f4f7}',cameraphone:'\u{1f933}',socialgames:'\u{1f69c}',smartphone:'\u{1f4f1}'};
 function em(id){const{d,dec}=exData(id);return dec==='2020s'?d.emoji:(EMOJI00[id]||'\u{1f5bf}');}
 function thenNowHTML(d){
@@ -35,11 +37,27 @@ const HALL00=['y2k','friendster','sms','load','camera','cameraphone','smartphone
 const HALL20=['tiktok','streaming','vlog','onlineclass','meme','ppop','ai','gcash','shopee','mlbb','axie','livesell','delivery','pantry'];
 const PANOS={
  facade:'https://n.uguu.se/lkZJyTdZ.jpg',
- hall00:'https://h.uguu.se/gooDsbyl.jpg',
- gallery:'https://n.uguu.se/iimWavfC.jpg',
- hall20:'https://n.uguu.se/dzeUKFlm.jpg'
+ hall00:'https://n.uguu.se/vbbnpBZi.jpg',
+ gallery:'https://h.uguu.se/aaQbeFtM.jpg',
+ hall20:'https://h.uguu.se/UXahxVFr.jpg'
 };
 const TITLES={facade:'Museum Facade',hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall'};
+
+/* ---------- photo cache ---------- */
+const PHOTOS={};
+function photoFor(id){
+ if(PHOTOS[id]!==undefined)return PHOTOS[id];
+ const m=mediaFor(id);
+ if(!m||!m.src){PHOTOS[id]=null;return null;}
+ const im=new Image();
+ im.onload=()=>{PHOTOS[id]=im;};
+ im.onerror=()=>{PHOTOS[id]=null;};
+ im.src=m.src;
+ PHOTOS[id]=undefined; // loading
+ return undefined;
+}
+[...HALL00,...HALL20].forEach(id=>photoFor(id));
+COMPARE.forEach(c=>{photoFor(c.a);photoFor(c.b);});
 
 /* ---------- stamps ---------- */
 function stampKey(id){return EX20[id]?'museum-stamps-2020s-v1':'museum-stamps-v1';}
@@ -55,7 +73,7 @@ function updateWalkBadge(){
  const b=document.getElementById('stamp-count');if(b)b.textContent=n+'/28';
 }
 
-/* ---------- modal (plaque) ---------- */
+/* ---------- modal (plaque + mini-game) ---------- */
 const modal=document.getElementById('walk-modal'),mbox=document.getElementById('walk-mbox');
 let modalOpen=false;
 function closeModal(){const st=mbox.querySelector('#walk-stage');if(st&&st._cleanup)st._cleanup();modalOpen=false;modal.hidden=true;mbox.innerHTML='';}
@@ -97,84 +115,127 @@ function openModal(it){
  mbox.querySelector('.walk-x').addEventListener('click',closeModal);
 }
 
-/* ---------- scenes & hotspots ---------- */
-function spread(ids,pitch,cls){
- return ids.map((id,i)=>({yaw:i*(360/ids.length),pitch:pitch,cls:cls||'info',id:id,label:exData(id).d.title}));
+/* ---------- scenes ---------- */
+function spread(ids,pitch){
+ return ids.map((id,i)=>({yaw:i*(360/ids.length),pitch:pitch,kind:'frame',id:id}));
 }
 const SCENES={
- facade:{img:null,hotspots:[{yaw:0,pitch:-4,cls:'nav',to:'hall00',label:'Enter the 2000s wing'}]},
- hall00:{img:null,hotspots:[...spread(HALL00,6,'info'),{yaw:180,pitch:-4,cls:'nav',to:'facade',label:'Back to facade'},{yaw:0,pitch:-4,cls:'nav',to:'gallery',label:'Then vs Now gallery'}]},
- gallery:{img:null,hotspots:[...COMPARE.map((c,i)=>({yaw:i*60+30,pitch:6,cls:'cmp',cmp:c,label:c.t})),{yaw:180,pitch:-4,cls:'nav',to:'hall00',label:'2000s Hall'},{yaw:0,pitch:-4,cls:'nav',to:'hall20',label:'2020s Hall'}]},
- hall20:{img:null,hotspots:[...spread(HALL20,6,'info'),{yaw:180,pitch:-4,cls:'nav',to:'gallery',label:'Then vs Now gallery'}]}
+ facade:{img:null,panorama:PANOS.facade,frames:[],nav:[{yaw:0,pitch:-14,to:'hall00',label:'Enter the 2000s wing'}]},
+ hall00:{img:null,panorama:PANOS.hall00,frames:spread(HALL00,7),nav:[{yaw:180,pitch:-16,to:'facade',label:'Back to facade'},{yaw:0,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]},
+ gallery:{img:null,panorama:PANOS.gallery,frames:COMPARE.map((c,i)=>({yaw:i*60+30,pitch:7,kind:'cmpframe',cmp:c})),nav:[{yaw:180,pitch:-16,to:'hall00',label:'2000s Hall'},{yaw:0,pitch:-16,to:'hall20',label:'2020s Hall'}]},
+ hall20:{img:null,panorama:PANOS.hall20,frames:spread(HALL20,7),nav:[{yaw:180,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]}
 };
-Object.keys(PANOS).forEach(k=>{
+Object.keys(SCENES).forEach(k=>{
  const im=new Image();
  im.onload=()=>{SCENES[k].img=im;};
- im.src=PANOS[k];
+ im.src=SCENES[k].panorama;
 });
 
-/* ---------- 360 viewer state ---------- */
+/* ---------- viewer state ---------- */
 let cur='facade',yaw=0,pitch=0,tYaw=0,tPitch=0,fov=90,auto=false;
-let fade=0,fadeDir=0,pending=null,hotRects=[];
+let fade=0,fadeDir=0,pending=null,hotRects=[],hoverKey=null;
 const wrapDeg=d=>((d%360)+540)%360-180;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 function gotoScene(id){
  if(id===cur||fadeDir!==0||!SCENES[id])return;
  pending=id;fadeDir=1;
 }
+function drawCover(img,dx,dy,dw,dh){
+ const ir=img.naturalWidth/img.naturalHeight,dr=dw/dh;
+ let sw,sh,sx,sy;
+ if(ir>dr){sh=img.naturalHeight;sw=sh*dr;sx=(img.naturalWidth-sw)/2;sy=0;}
+ else{sw=img.naturalWidth;sh=sw/dr;sx=0;sy=(img.naturalHeight-sh)/2;}
+ g.drawImage(img,sx,sy,sw,sh,dx,dy,dw,dh);
+}
+function rr(x,px,py,w,h,r){x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath();}
+function fitText(x,text,cx,y,maxW,base,color){
+ let s=base||13;x.font='700 '+s+'px system-ui';
+ while(s>9&&x.measureText(text).width>maxW){s--;x.font='700 '+s+'px system-ui';}
+ let t=text;
+ while(x.measureText(t).width>maxW&&t.length>4){t=t.slice(0,-2);}
+ if(t!==text)t=t.trim()+'\u2026';
+ x.fillStyle=color||'#fff';x.textAlign='center';x.fillText(t,cx,y);
+}
+
+function drawFrame(h,px,py,hover){
+ const W=216,H=148;
+ const x0=px-W/2,y0=py-H/2;
+ // shadow
+ g.fillStyle='rgba(0,0,0,.45)';rr(g,x0+5,y0+7,W,H,4);g.fill();
+ // frame
+ g.fillStyle=hover?'#f4c65b':'#8a6d3b';rr(g,x0-10,y0-10,W+20,H+20,6);g.fill();
+ g.fillStyle='#0d1322';rr(g,x0-4,y0-4,W+8,H+8,4);g.fill();
+ if(h.kind==='cmpframe'){
+  const c=h.cmp,ia=photoFor(c.a),ib=photoFor(c.b);
+  if(ia&&ib){drawCover(ia,x0,y0,W/2,H);drawCover(ib,x0+W/2,y0,W/2,H);}
+  else if(ia){drawCover(ia,x0,y0,W,H);}
+  else if(ib){drawCover(ib,x0,y0,W,H);}
+  else{g.fillStyle='#141c2e';g.fillRect(x0,y0,W,H);
+   g.font='54px serif';g.textAlign='center';g.fillText(em(c.a),x0+W/4,y0+92);g.fillText(em(c.b),x0+3*W/4,y0+92);}
+  g.fillStyle='#f4c65b';g.beginPath();g.arc(px,py,17,0,7);g.fill();
+  g.fillStyle='#0d1322';g.font='800 20px system-ui';g.textAlign='center';g.fillText('\u2194',px,py+7);
+ }else{
+  const img=photoFor(h.id);
+  if(img){drawCover(img,x0,y0,W,H);}
+  else{g.fillStyle='#0e1a2e';g.fillRect(x0,y0,W,H);
+   g.font='64px serif';g.textAlign='center';g.fillText(em(h.id),px,y0+96);}
+ }
+ // caption plate: year + topic
+ const pw=236,ph=60,pxx=px-pw/2,pyy=y0+H+20;
+ g.fillStyle='rgba(10,14,24,.92)';rr(g,pxx,pyy,pw,ph,8);g.fill();
+ g.strokeStyle=hover?'#f4c65b':'#8a6d3b';g.lineWidth=2;rr(g,pxx,pyy,pw,ph,8);g.stroke();
+ const d=exData(h.kind==='cmpframe'?h.cmp.a:h.id).d;
+ const yr=h.kind==='cmpframe'?'2000s \u2194 2020s':d.year;
+ const topic=h.kind==='cmpframe'?h.cmp.t:d.title;
+ g.fillStyle='#f4c65b';g.font='800 12px system-ui';g.textAlign='center';
+ g.fillText(yr,px,pyy+19);
+ fitText(g,topic,px,pyy+42,pw-20,13,'#fff');
+ return {x:x0-10,y:y0-10,w:W+20,h:H+20+20+ph};
+}
+
 function project(h){
  const dx=wrapDeg(h.yaw-yaw);
- if(Math.abs(dx)>62)return null;
+ if(Math.abs(dx)>70)return null;
  const ppd=VW/fov;
- const sx=VW/2+dx*ppd;
- const sy=VH/2-(h.pitch-pitch)*ppd;
- return {x:sx,y:sy,dx};
+ return {x:VW/2+dx*ppd, y:VH/2-(h.pitch-pitch)*ppd};
 }
+
 function draw(){
  const sc=SCENES[cur];
  g.fillStyle='#0d1322';g.fillRect(0,0,VW,VH);
- yaw+=(tYaw-yaw)*.15;pitch+=(tPitch-pitch)*.15;
+ yaw+=(tYaw-yaw)*.16;pitch+=(tPitch-pitch)*.16;
  yaw=wrapDeg(yaw);
- if(auto&&fadeDir===0){tYaw=wrapDeg(tYaw+.35);}
+ if(auto&&fadeDir===0)tYaw=wrapDeg(tYaw+.3);
  const img=sc.img;
  if(img&&img.complete&&img.naturalWidth){
-  const scale=VH/img.naturalHeight*1.25;
+  const scale=VH/img.naturalHeight*1.3;
   const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
-  const ppd=dw/360;
   let xoff=-(yaw/360)*dw;
-  xoff=((xoff%dw)+dw)%dw;xoff-=dw;
-  const yoff=VH/2-dh/2-(pitch/180)*dh*.9;
+  xoff=((xoff%dw)+dw)%dw-dw;
+  const yoff=VH/2-dh/2-(pitch/180)*dh*.85;
   for(let k=0;k<3;k++)g.drawImage(img,xoff+k*dw,yoff,dw,dh);
-  // vignette edges top/bottom
-  g.fillStyle='rgba(8,12,20,.55)';g.fillRect(0,0,VW,40);g.fillRect(0,VH-40,VW,40);
  }else{
-  g.fillStyle='rgba(255,255,255,.5)';g.font='700 16px system-ui';g.textAlign='center';
+  g.fillStyle='rgba(255,255,255,.55)';g.font='700 16px system-ui';g.textAlign='center';
   g.fillText('Loading panorama\u2026',VW/2,VH/2);
  }
  hotRects=[];
- sc.hotspots.forEach(h=>{
+ // frames
+ sc.frames.forEach(h=>{
   const p=project(h);if(!p)return;
-  const r=h.cls==='nav'?26:19;
-  if(h.cls==='nav'){
-   g.fillStyle='#8e2f32';g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill();
-   g.strokeStyle='#fff';g.lineWidth=3;g.beginPath();g.arc(p.x,p.y,r,0,7);g.stroke();
-   g.fillStyle='#fff';g.font='800 26px system-ui';g.textAlign='center';g.fillText('\u203a',p.x,p.y+9);
-  }else{
-   g.fillStyle=h.cls==='cmp'?'#8e2f32':'#2b9fe3';
-   g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill();
-   g.strokeStyle='#fff';g.lineWidth=3;g.beginPath();g.arc(p.x,p.y,r,0,7);g.stroke();
-   g.fillStyle='#fff';g.font='800 19px system-ui';g.textAlign='center';
-   g.fillText(h.cls==='cmp'?'\u2194':'i',p.x,p.y+7);
-  }
-  // label
-  g.font='700 12px system-ui';
-  const tw=Math.min(200,g.measureText(h.label).width+18);
-  g.fillStyle='rgba(10,14,24,.85)';
-  g.beginPath();
-  if(g.roundRect)g.roundRect(p.x-tw/2,p.y+r+8,tw,24,12);else g.rect(p.x-tw/2,p.y+r+8,tw,24,12);
-  g.fill();
-  g.fillStyle='#fff';g.fillText(h.label,p.x,p.y+r+25);
-  hotRects.push({x:p.x-r-6,y:p.y-r-6,w:2*r+12,h:2*r+12+34,hot:h});
+  const key=(h.id||h.cmp.t);
+  const r=drawFrame(h,p.x,p.y,hoverKey===key);
+  hotRects.push({x:r.x,y:r.y,w:r.w,h:r.h,hot:h,key:key});
+ });
+ // nav chevrons (low, like floor markers)
+ sc.nav.forEach(nv=>{
+  const p=project(nv);if(!p)return;
+  const r=24;
+  g.fillStyle='#8e2f32';g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill();
+  g.strokeStyle='#fff';g.lineWidth=3;g.beginPath();g.arc(p.x,p.y,r,0,7);g.stroke();
+  g.fillStyle='#fff';g.font='800 26px system-ui';g.textAlign='center';g.fillText('\u203a',p.x,p.y+9);
+  fitText(g,nv.label,p.x,p.y+r+22,190,12,'rgba(255,255,255,.9)');
+  hotRects.push({x:p.x-r-8,y:p.y-r-8,w:2*r+16,h:2*r+16+30,hot:{nav:nv},key:'nav'+nv.to});
  });
  if(fadeDir!==0){
   fade+=fadeDir*.09;
@@ -189,32 +250,43 @@ let pdown=false,sx0=0,sy0=0,sy0v=0,sp0=0,moved=0;
 cv.style.touchAction='none';
 cv.addEventListener('pointerdown',e=>{pdown=true;sx0=e.clientX;sy0=e.clientY;sy0v=tYaw;sp0=tPitch;moved=0;if(cv.setPointerCapture){try{cv.setPointerCapture(e.pointerId);}catch(_){}}});
 cv.addEventListener('pointermove',e=>{
- if(!pdown)return;
- const dx=e.clientX-sx0,dy=e.clientY-sy0;
- moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));
- const ppd=VW/fov;
- tYaw=wrapDeg(sy0v-dx/ppd);
- tPitch=Math.max(-35,Math.min(35,sp0+dy/ppd));
+ if(pdown){
+  const dx=e.clientX-sx0,dy=e.clientY-sy0;
+  moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));
+  const ppd=VW/fov;
+  tYaw=wrapDeg(sy0v-dx/ppd);
+  tPitch=clamp(sp0+dy/ppd,-32,32);
+ }else{
+  // hover highlight (desktop)
+  const r=cv.getBoundingClientRect();
+  const px=(e.clientX-r.left)*(VW/r.width),py=(e.clientY-r.top)*(VH/r.height);
+  let found=null;
+  for(const hr of hotRects){if(px>=hr.x&&px<=hr.x+hr.w&&py>=hr.y&&py<=hr.y+hr.h){found=hr.key;break;}}
+  if(found!==hoverKey){hoverKey=found;cv.style.cursor=found?'pointer':'grab';}
+ }
 });
-cv.addEventListener('pointerup',e=>{
- pdown=false;
+function endPointer(e){
+ if(!pdown)return;pdown=false;
  if(moved<10){
   const r=cv.getBoundingClientRect();
   const px=(e.clientX-r.left)*(VW/r.width),py=(e.clientY-r.top)*(VH/r.height);
   for(const hr of hotRects){
    if(px>=hr.x&&px<=hr.x+hr.w&&py>=hr.y&&py<=hr.y+hr.h){
     const h=hr.hot;
-    if(h.cls==='nav')gotoScene(h.to);
+    if(h.nav)gotoScene(h.nav.to);
     else if(h.cmp)openModal({cmp:h.cmp});
     else openModal({id:h.id});
     break;
    }
   }
  }
-});
+}
+cv.addEventListener('pointerup',endPointer);
+cv.addEventListener('pointercancel',()=>{pdown=false;});
 cv.addEventListener('wheel',e=>{
+ if(!e.ctrlKey)return; // let normal scroll pass through to the page
  e.preventDefault();
- fov=Math.max(55,Math.min(120,fov+e.deltaY*.05));
+ fov=clamp(fov+e.deltaY*.05,55,120);
 },{passive:false});
 
 /* ---------- chrome ---------- */
@@ -226,7 +298,7 @@ function syncChrome(){
 function buildChrome(){
  const touch=document.querySelector('.walk-touch');if(touch)touch.style.display='none';
  const hint=document.querySelector('.walk-hint');
- if(hint)hint.textContent='Drag to look around \u00b7 Scroll to zoom \u00b7 Tap a blue badge for a plaque \u00b7 Tap a chevron to walk on';
+ if(hint)hint.textContent='Drag to look around \u00b7 Tap a painting for its story + mini-game \u00b7 Tap a chevron to walk on';
  const title=document.createElement('div');title.id='tour-title';title.className='tour-title';
  stage.appendChild(title);
  const thumbs=document.createElement('div');thumbs.id='tour-thumbs';thumbs.className='tour-thumbs';
@@ -240,12 +312,14 @@ function buildChrome(){
  });
  stage.appendChild(thumbs);
  const ctl=document.createElement('div');ctl.className='tour-ctl';
- ctl.innerHTML='<button id="tour-auto" class="tour-btn" title="Auto-look" aria-label="Auto-look">\u27f3</button>'
+ ctl.innerHTML='<button id="tour-zout" class="tour-btn" title="Zoom out" aria-label="Zoom out">\u2212</button>'
+  +'<button id="tour-zin" class="tour-btn" title="Zoom in" aria-label="Zoom in">+</button>'
+  +'<button id="tour-auto" class="tour-btn" title="Auto-look" aria-label="Auto-look">\u27f3</button>'
   +'<button id="tour-full" class="tour-btn" title="Fullscreen" aria-label="Fullscreen">\u26f6</button>';
  stage.appendChild(ctl);
- document.getElementById('tour-auto').addEventListener('click',function(){
-  auto=!auto;this.classList.toggle('on',auto);
- });
+ document.getElementById('tour-zin').addEventListener('click',()=>{fov=clamp(fov-12,55,120);});
+ document.getElementById('tour-zout').addEventListener('click',()=>{fov=clamp(fov+12,55,120);});
+ document.getElementById('tour-auto').addEventListener('click',function(){auto=!auto;this.classList.toggle('on',auto);});
  document.getElementById('tour-full').addEventListener('click',()=>{
   if(document.fullscreenElement)document.exitFullscreen();
   else if(stage.requestFullscreen)stage.requestFullscreen();
@@ -253,7 +327,7 @@ function buildChrome(){
  const sp=document.createElement('div');sp.id='tour-splash';sp.className='tour-splash';
  sp.innerHTML='<div class="tour-splash-card"><p class="kicker">The 2000s Called</p>'
   +'<h2>THE GRAND HALL</h2>'
-  +'<p class="tour-legend"><span>\u{1f441}\uFE0f Drag to look around, scroll to zoom</span><span>\u2139\uFE0f Tap blue badges for plaques</span><span>\u203a Tap chevrons to walk between rooms</span></p>'
+  +'<p class="tour-legend"><span>\u{1f441}\uFE0f Drag to look around</span><span>\u{1f5bc}\uFE0f Tap a painting for its story + mini-game</span><span>\u203a Tap chevrons to walk between rooms</span></p>'
   +'<button class="mini-again tour-enter" id="tour-enter">Enter the hall</button></div>';
  stage.appendChild(sp);
  document.getElementById('tour-enter').addEventListener('click',()=>{sp.classList.add('off');setTimeout(()=>sp.remove(),450);});
