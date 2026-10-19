@@ -37,10 +37,10 @@ const COMPARE=[
 const HALL00=['y2k','friendster','sms','load','camera','cameraphone','smartphone','ofw','bpo','mall','cafe','boxing','meteor','socialgames'];
 const HALL20=['tiktok','streaming','vlog','onlineclass','meme','ppop','ai','gcash','shopee','mlbb','axie','livesell','delivery','pantry'];
 const PANOS={
- facade:'https://d.uguu.se/HBwHJiiY.jpg',
- hall00:'https://n.uguu.se/vbbnpBZi.jpg',
- gallery:'https://h.uguu.se/aaQbeFtM.jpg',
- hall20:'https://h.uguu.se/UXahxVFr.jpg'
+ facade:'https://i.imgur.com/BWkIoEn.jpg',
+ hall00:'https://i.imgur.com/Jdsf0vP.jpg',
+ gallery:'https://i.imgur.com/McqlRaC.jpg',
+ hall20:'https://i.imgur.com/yyk6To4.jpg'
 };
 const TITLES={facade:'Museum Facade',hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall'};
 
