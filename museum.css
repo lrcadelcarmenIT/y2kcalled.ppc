@@ -373,7 +373,7 @@ body.d2020s .cover-stamp{color:#f4c65b}
 .tour-thumbwrap .tour-thumb{border-radius:6px;display:block}
 .tour-thumbwrap span{font-size:.58rem;letter-spacing:.04em;color:#b9c8ca;white-space:nowrap;max-width:86px;overflow:hidden;text-overflow:ellipsis}
 .tour-thumbwrap:hover{border-color:#8fa0a3}
-.tour-thumbwrap:has(.tour-thumb.on){border-color:#f4c65b}
+.tour-thumbwrap.on{border-color:#f4c65b}
 .tour-ctl{position:absolute;right:22px;bottom:22px;display:flex;gap:10px}
 .tour-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.94);border:none;color:#141c2e;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .tour-btn.on{background:#f4c65b}
@@ -389,3 +389,8 @@ body.d2020s .cover-stamp{color:#f4c65b}
  .tour-btn{width:44px;height:44px;font-size:1.2rem}
  .tour-title{font-size:.8rem;top:20px}
 }
+
+
+/* ---------- 360 tour canvas ---------- */
+#tour-pano{display:block;width:100%;height:auto;border-radius:10px;background:#0d1322;touch-action:none;cursor:grab}
+#tour-pano:active{cursor:grabbing}
