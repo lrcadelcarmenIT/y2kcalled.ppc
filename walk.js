@@ -10,7 +10,7 @@ const VW=960,VH=600;
 /* ---------- data ---------- */
 const EX00=window.EXHIBITS00||{},EX20=window.EXHIBITS20||{};
 const MED00=window.MEDIA00||{},MED20=window.MEDIA20||{};
-const GAMES=window.GAMESALL||{};
+function GAMES(){return window.GAMESALL||{};}
 function exData(id){return EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
 function mediaFor(id){return EX20[id]?(MED20[id]||null):(MED00[id]||null);}
 const EMOJI00={y2k:'\u{1f4bb}',sms:'\u{1f4ac}',friendster:'\u{1f465}',ofw:'\u2708\uFE0F',bpo:'\u{1f3a7}',meteor:'\u{1f4fa}',boxing:'\u{1f94a}',mall:'\u{1f6cd}\uFE0F',cafe:'\u{1f5a5}\uFE0F',load:'\u{1f4b8}',camera:'\u{1f4f7}',cameraphone:'\u{1f933}',socialgames:'\u{1f69c}',smartphone:'\u{1f4f1}'};
@@ -97,15 +97,21 @@ function openModal(it){
   +(stamped?'\u2713 Stamped \u2014 play again':'\u25b6 Play the mini-game')+'</button></div><div id="walk-stage"></div>';
   mbox.querySelector('#walk-play').addEventListener('click',()=>{
    const st=mbox.querySelector('#walk-stage');
-   const spec=GAMES[d.game]();
+   const _G=GAMES(),_gf=_G[d.game];
+   if(typeof _gf!=='function'){mbox.querySelector('#walk-stage').innerHTML='<p style="color:#f4c65b">Game unavailable for this exhibit.</p>';return;}
+   const spec=_gf();
    st.innerHTML='<h4 style="margin:14px 0 4px">'+spec.title+'</h4><p style="color:#b9c8ca">'+spec.intro+'</p><div class="mini-stage" id="walk-mini"></div><p id="walk-res" style="min-height:24px;font-weight:700"></p>';
    const res=st.querySelector('#walk-res');
    let currentCleanup=null;const setCleanup=fn=>{currentCleanup=fn};
    const cleanup=()=>{if(typeof currentCleanup==='function'){try{currentCleanup();}catch(_){}currentCleanup=null;}};
+   try{
    spec.render(st.querySelector('#walk-mini'),{
     win:m=>{cleanup();res.textContent=m;const fresh=awardStamp(id);if(fresh)res.textContent+=' \u2014 stamp earned!';mbox.querySelector('#walk-play').textContent='\u2713 Stamped \u2014 play again';},
     lose:m=>{cleanup();res.textContent=m;}
    },setCleanup);
+   }catch(err){
+    st.querySelector('#walk-mini').innerHTML='<p style="color:#f4c65b">Game failed to start: '+(err&&err.message||err)+'</p>';
+   }
    st._cleanup=cleanup;
    if(st.scrollIntoView)st.scrollIntoView({block:'nearest',behavior:'smooth'});
   });
