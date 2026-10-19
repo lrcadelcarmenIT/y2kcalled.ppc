@@ -27,15 +27,13 @@ function sourceHTML(d){
  return '';
 }
 const COMPARE=[
- {a:'load',b:'gcash',t:'Passing value, hand to hand',n:'2003: pasaload moved pesos through text. 2020s: e-wallets move millions through QR codes. Same trust, new rails.'},
- {a:'friendster',b:'tiktok',t:'The profile becomes the feed',n:'2004: your Top 8 friends defined you. 2020s: the For You Page defines what you see. From profiles to streams.'},
- {a:'mall',b:'shopee',t:'The mall fits in your pocket',n:'2000s: the aircon mall was the weekend. 2020s: the 11:11 sale is the weekend, and the mall delivers to your gate.'},
- {a:'cafe',b:'onlineclass',t:'The rented hour',n:'2000s: you rented a computer by the hour. 2020s: the computer moved into your room, and class followed.'},
- {a:'boxing',b:'mlbb',t:'Fight night becomes game night',n:'2000s: the whole barangay watched Pacquiao. 2020s: millions watch MLBB world championships. Same pride, new arena.'},
- {a:'camera',b:'vlog',t:'From camera to creator',n:'2000s: the digicam captured the trip. 2020s: the camera is the job. Everyone films, everyone posts.'}
+ {a:'friendster',b:'tiktok',t:'The profile becomes the feed',n:'2007: your Top 8 friends defined you. 2020: the For You Page defines what you see. From profiles to streams.'},
+ {a:'cameraphone',b:'vlog',t:'From camera to creator',n:'2004: the camera moved into the phone. 2019: the camera became the job. Everyone films, everyone posts.'},
+ {a:'smartphone',b:'ai',t:'The phone gets a brain',n:'2010: the keypad disappeared. 2023: the phone started thinking. From touchscreens to AI classmates.'},
+ {a:'boxing',b:'ppop',t:'Filipino pride takes the stage',n:'2008: the whole barangay watched Pacquiao. 2021: millions stream P-pop comebacks. Same pride, new arena.'}
 ];
-const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','camera','friendster','bpo','boxing','mall','socialgames','smartphone'];
-const HALL20=['vlog','tiktok','streaming','onlineclass','gcash','shopee','delivery','meme','ppop','mlbb','axie','livesell','pantry','ai'];
+const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','friendster','boxing','socialgames','smartphone'];
+const HALL20=['vlog','tiktok','ppop','ai'];
 const PANOS={
  facade:'https://i.imgur.com/BWkIoEn.jpg',
  hall00:'https://i.imgur.com/Jdsf0vP.jpg',
