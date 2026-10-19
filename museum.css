@@ -400,7 +400,3 @@ body.d2020s .cover-stamp{color:#f4c65b}
 #walk-stage{background:#141c2e;border-radius:10px;padding:12px 14px;margin-top:12px}
 #walk-stage h4{color:#f4c65b}
 #walk-res{color:#fff}
-
-/* ---------- Living museum map background (walk.html) ---------- */
-#hall-map{position:fixed;inset:0;z-index:0;pointer-events:auto}
-.walk-wrap,.site-head,.site-foot{position:relative;z-index:1}
