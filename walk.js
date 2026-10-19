@@ -35,12 +35,11 @@ const COMPARE=[
 const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','friendster','boxing','socialgames','smartphone'];
 const HALL20=['tiktok','ppop','ai','bini','multo','lolla'];
 const PANOS={
- facade:'https://i.imgur.com/BWkIoEn.jpg',
  hall00:'https://i.imgur.com/Jdsf0vP.jpg',
  gallery:'https://i.imgur.com/McqlRaC.jpg',
  hall20:'https://i.imgur.com/yyk6To4.jpg'
 };
-const TITLES={facade:'Museum Facade',hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall'};
+const TITLES={hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall'};
 
 /* ---------- photo cache ---------- */
 const PHOTOS={};
@@ -119,9 +118,8 @@ function spread(ids,pitch){
  return ids.map((id,i)=>({yaw:i*(360/ids.length),pitch:pitch,kind:'frame',id:id}));
 }
 const SCENES={
- facade:{img:null,panorama:PANOS.facade,frames:[],nav:[{yaw:0,pitch:-14,to:'__time',label:'Enter the museum'}]},
- hall00:{img:null,panorama:PANOS.hall00,frames:spread(HALL00,7),nav:[{yaw:180,pitch:-16,to:'facade',label:'Back to facade'},{yaw:0,pitch:-16,to:'hall20',label:'Enter the 2020s wing'}]},
- gallery:{img:null,panorama:PANOS.gallery,frames:COMPARE.map((c,i)=>({yaw:i*60+30,pitch:7,kind:'cmpframe',cmp:c})),nav:[{yaw:180,pitch:-16,to:'hall20',label:'Back to 2020s hall'},{yaw:0,pitch:-16,to:'facade',label:'Back to facade'}]},
+ hall00:{img:null,panorama:PANOS.hall00,frames:spread(HALL00,7),nav:[{yaw:0,pitch:-16,to:'hall20',label:'Enter the 2020s wing'}]},
+ gallery:{img:null,panorama:PANOS.gallery,frames:COMPARE.map((c,i)=>({yaw:i*60+30,pitch:7,kind:'cmpframe',cmp:c})),nav:[{yaw:180,pitch:-16,to:'hall20',label:'Back to 2020s hall'}]},
  hall20:{img:null,panorama:PANOS.hall20,frames:spread(HALL20,7),nav:[{yaw:180,pitch:-16,to:'hall00',label:'Back to 2000s hall'},{yaw:0,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]}
 };
 Object.keys(SCENES).forEach(k=>{
@@ -133,7 +131,7 @@ Object.keys(SCENES).forEach(k=>{
 });
 
 /* ---------- viewer state ---------- */
-let cur='facade',yaw=0,pitch=0,tYaw=0,tPitch=0,fov=90,auto=false;
+let cur='hall00',yaw=0,pitch=0,tYaw=0,tPitch=0,fov=90,auto=false;
 let fade=0,fadeDir=0,pending=null,hotRects=[],hoverKey=null,tick=0;
 const wrapDeg=d=>((d%360)+540)%360-180;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
