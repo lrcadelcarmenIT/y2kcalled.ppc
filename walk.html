@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Grand Hall · The 2000s Called</title>
 <meta name="description" content="Walk through the museum: the 2000s wing, the 2020s wing, and the Then vs Now gallery. Two decades, one building.">
-<link rel="stylesheet" href="museum.css">
+<link rel="stylesheet" href="museum.css?v=tmconsole">
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
@@ -65,7 +65,6 @@
     <button type="button" class="tm-gallery" data-go="gallery">Or browse the Then vs Now gallery &rarr;</button>
   </div>
 </div>
-</div>
 <div class="timetravel" id="timetravel" hidden>
   <div class="tt-clock" aria-hidden="true">🕰️</div>
   <p class="tt-label" id="tt-label">TRAVELING...</p>
@@ -91,9 +90,9 @@
 </footer>
 
 <script>window.MUSEUM_WALK=true;</script>
-<script src="wing2020s.js"></script>
-<script src="museum.js"></script>
-<script src="walk.js"></script>
+<script src="wing2020s.js?v=tmconsole"></script>
+<script src="museum.js?v=tmconsole"></script>
+<script src="walk.js?v=tmconsole"></script>
 <script>
 document.getElementById('marquee-in').textContent='THE GRAND HALL \u00b7 WALK THE MUSEUM \u00b7 TWO DECADES, ONE BUILDING \u00b7 '.repeat(6);
 </script>
