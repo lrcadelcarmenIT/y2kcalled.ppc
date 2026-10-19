@@ -34,9 +34,9 @@ window.T20={
 /* ---------------- Quiz: which 2020s icon are you? ---------------- */
 window.ARCH20={
  tiktok:{n:['The Scroller','Ang Scroller'],ex:'tiktok'},
- ppop:{n:['The P-pop Stan','Ang P-pop Stan'],ex:'ppop'},
+ hidilyn:{n:['The Gold Lifter','Ang Nagbuhat ng Ginto'],ex:'hidilyn'},
  bini:{n:['The Bloomer','Ang Bloomer'],ex:'bini'},
- multo:{n:['The Hugot Ghost','Ang Multo'],ex:'multo'},
+ halalan:{n:['The Voter','Ang Botante'],ex:'halalan'},
  gta6:{n:['The Waiter','Ang Naghihintay'],ex:'gta6'},
  ai:{n:['The Prompt Whisperer','Ang Prompt Whisperer'],ex:'ai'}
 };
@@ -44,13 +44,13 @@ window.PQQ20=[
  {q:['It\u2019s Friday night in 2026. Where are you?','Biyernes ng gabi, 2026. Nasaan ka?'],o:[
   ['Deep in the FYP, phone an inch from my face','Lubog sa FYP, isang dangkal ang phone sa mukha','tiktok'],
   ['Front row of a BINI concert, lightstick up','Front row ng BINI concert, taas ang lightstick','bini'],
-  ['Crying to \u201cMulto\u201d on repeat','Umiiyak sa \u201cMulto\u201d nang paulit-ulit','multo'],
+  ['Watching the 2025 election results roll in','Pinapanood ang resulta ng halalan 2025','halalan'],
   ['Waiting for GTA 6 since the first trailer','Naghihintay sa GTA 6 mula pa noong unang trailer','gta6']]},
  {q:['Pick a concert:','Pumili ng concert:'],o:[
   ['BINI live \u2014 Pantropiko summer','BINI live \u2014 Pantropiko summer','bini'],
   ['GTA 6 delayed to November 2026','Na-delay ang GTA 6 sa November 2026','gta6'],
-  ['Cup of Joe \u2014 hugot night','Cup of Joe \u2014 hugot night','multo'],
-  ['P-pop fan meet, all groups','P-pop fan meet, lahat ng grupo','ppop']]},
+  ['Debating the Senate race with family','Nakikipagdebate sa pamilya tungkol sa Senado','halalan'],
+  ['Hidilyn gold medal replay','Replay ng gintong medalya ni Hidilyn','hidilyn']]},
  {q:['Your group chat is blowing up. It\u2019s...','Sabog ang group chat. Ito ay...'],o:[
   ['A TikTok dance challenge, everyone tagged','TikTok dance challenge, lahat tagged','tiktok'],
   ['BINI comeback announcement','Anunsyo ng BINI comeback','bini'],
@@ -58,8 +58,8 @@ window.PQQ20=[
   ['Someone\u2019s AI-generated meme','AI-generated meme ng kung sino','ai']]},
  {q:['Choose a 2020s superpower:','Pumili ng 2020s superpower:'],o:[
   ['Going viral overnight','Mag-viral overnight','tiktok'],
-  ['Front-row seats forever','Front-row seats habambuhay','ppop'],
-  ['A voice that haunts like \u201cMulto\u201d','Boses na nananatili tulad ng \u201cMulto\u201d','multo'],
+  ['Watching Hidilyn lift 127kg for gold','Pinapanood si Hidilyn na magbuhat ng 127kg','hidilyn'],
+  ['A ballot that actually counted','Isang balotang talagang nabilang','halalan'],
   ['An AI that does all my homework','AI na gagawa ng lahat ng homework ko','ai']]}
 ];
 })();
@@ -110,26 +110,23 @@ mlbb(){return{title:'Turret Rush',
    if(dmg>=100){done=true;clearInterval(warnT);win('Turret destroyed! Your team pushes to victory.');}});
  }}},
 
-ppop(){return{title:'Lightstick Beat',
- intro:'Watch the pattern, repeat it. 4 rounds, longer and faster each time. One wrong beat dims the arena.',
+hidilyn(){return{title:'The Gold Lift',
+ intro:'Hidilyn needs 127kg! The marker sweeps back and forth. Tap LIFT when it is inside the GOLD zone. Land 3 clean lifts to win.',
  render(el,{win,lose}){
-  const cols=['#e2574c','#2b9fe3','#f4c65b','#3fae6b'];
-  el.innerHTML=`<div style="display:flex;gap:12px;justify-content:center;margin:10px 0" id="pp-pads">${cols.map((c,i)=>`<button data-i="${i}" style="width:64px;height:64px;border-radius:50%;background:${c};border:3px solid #0e1a2e;opacity:.45;cursor:pointer" aria-label="pad ${i+1}"></button>`).join('')}</div>
-   <p style="text-align:center;color:#b9c8ca" id="pp-msg">Watch\u2026</p>`;
-  const pads=[...el.querySelectorAll('#pp-pads button')],msg=el.querySelector('#pp-msg');
-  let round=0,seq=[],pos=0,accept=false,done=false;
-  const flash=i=>{pads[i].style.opacity=1;setTimeout(()=>pads[i].style.opacity=.45,260);};
-  const playSeq=()=>{accept=false;pos=0;msg.textContent=`Round ${round}/4 \u2014 watch\u2026`;let k=0;
-   const gap=Math.max(380,640-round*60);
-   const iv=setInterval(()=>{flash(seq[k]);k++;if(k>=seq.length){clearInterval(iv);accept=true;msg.textContent='Your turn!';}},gap);};
-  const nextRound=()=>{round++;if(round>4){done=true;win('Encore! 4 patterns nailed. The arena glows.');return;}
-   seq=Array.from({length:round+2},()=>Math.floor(Math.random()*4));setTimeout(playSeq,700);};
-  pads.forEach(p=>p.addEventListener('click',()=>{
-   if(done||!accept)return;const i=Number(p.dataset.i);flash(i);
-   if(i===seq[pos]){pos++;if(pos>=seq.length){accept=false;msg.textContent='Nailed it!';setTimeout(nextRound,700);}}
-   else{done=true;accept=false;lose('Wrong beat. The lightsticks dim.');}
-  }));
-  nextRound();
+  let lifts=0,done=false,pos=0,dir=1;
+  el.innerHTML=`<div style="text-align:center;font-size:3rem">\u{1f3cb}\u{fe0f}</div>
+   <div style="position:relative;height:26px;background:#0e1a2e;border-radius:13px;max-width:320px;margin:12px auto;overflow:hidden">
+    <div style="position:absolute;left:40%;width:20%;height:100%;background:#f4c65b;opacity:.85"></div>
+    <div id="hi-mark" style="position:absolute;left:0;width:8px;height:100%;background:#fff;border-radius:4px"></div>
+   </div>
+   <p style="text-align:center;color:#b9c8ca" id="hi-msg">Lifts: 0/3</p>
+   <div style="text-align:center"><button class="mini-again" id="hi-btn" style="font-size:1.2rem;padding:14px 36px">\u{1f3cb}\u{fe0f} LIFT!</button></div>`;
+  const mark=el.querySelector('#hi-mark'),msg=el.querySelector('#hi-msg'),btn=el.querySelector('#hi-btn');
+  const tick=setInterval(()=>{if(done)return;pos+=dir*2.2;if(pos>=100){pos=100;dir=-1;}if(pos<=0){pos=0;dir=1;}mark.style.left=pos+'%';},30);
+  btn.addEventListener('click',()=>{if(done)return;
+   if(pos>=40&&pos<=60){lifts++;msg.textContent='Lifts: '+lifts+'/3 \u2014 clean!';
+    if(lifts>=3){done=true;clearInterval(tick);win('GOLD! 127kg, Olympic record. Lupang Hinirang plays.');}}
+   else{done=true;clearInterval(tick);lose('Missed the zone. The bar crashed down.');}});
  }}},
 
 gcash(){return{title:'Exact Padala',
@@ -386,24 +383,27 @@ bini(){return{title:'Pantropiko Dance Off',
   nextRound();
  }}},
 
-multo(){return{title:'Ghost the Hugot',
- intro:'Ghosts float by. Tap only the HAUNTED ones (\u{1f47b} sad ghost). Tapping a happy ghost (\u{1f60a}) or missing a haunted one costs you. 8 haunted, 3 strikes.',
+halalan(){return{title:'Halalan Quiz',
+ intro:'How well do you know the 2025 midterms? Answer 4 questions. Get at least 3 right to win.',
  render(el,{win,lose}){
-  let caught=0,strikes=0,done=false,tm=null;
-  el.innerHTML=`<div style="font-size:4rem;text-align:center;min-height:110px;cursor:pointer" id="mu-ghost">\u{1f47b}</div>
-   <p style="text-align:center;color:#b9c8ca" id="mu-msg"></p>`;
-  const g=el.querySelector('#mu-ghost'),msg=el.querySelector('#mu-msg');
-  const upd=()=>{msg.textContent=`Haunted caught ${caught}/8 \u00b7 Strikes ${strikes}/3`;};
-  const spawn=()=>{if(done)return;
-   const haunted=Math.random()<.5;g.textContent=haunted?'\u{1f47b}':'\u{1f60a}';g.dataset.h=haunted?1:0;
-   clearTimeout(tm);tm=setTimeout(()=>{if(done)return;
-    if(g.dataset.h==='1'){strikes++;if(strikes>=3){done=true;lose('The multo got away. Too many missed hauntings.');return;}}
-    spawn();},1100);};
-  g.addEventListener('click',()=>{if(done)return;clearTimeout(tm);
-   if(g.dataset.h==='1'){caught++;if(caught>=8){done=true;win('All ghosts hugged out! 8 haunted caught.');return;}}
-   else{strikes++;if(strikes>=3){done=true;lose('You hugged a happy ghost. Awkward.');return;}}
-   upd();spawn();});
-  upd();spawn();
+  const Q=[
+   {q:'Who topped the 2025 Senate race?',opts:['Bong Go','Bam Aquino','Bato dela Rosa','Kiko Pangilinan'],a:0},
+   {q:'Who was the surprise No. 2 in the Senate race?',opts:['Bong Go','Bam Aquino','Imee Marcos','Camille Villar'],a:1},
+   {q:'Who won Davao City mayor while detained in The Hague?',opts:['Baste Duterte','Rodrigo Duterte','Sara Duterte','Paolo Duterte'],a:1},
+   {q:'When were the 2025 midterm elections?',opts:['May 12, 2025','May 9, 2022','June 30, 2025','April 12, 2025'],a:0}
+  ];
+  let qi=0,score=0,done=false;
+  const show=()=>{
+   if(qi>=Q.length){done=true;score>=3?win('Campaign veteran! '+score+'/4 correct.'):lose('Only '+score+'/4. The surveys fooled you too.');return;}
+   const q=Q[qi];
+   el.innerHTML='<p style="color:#f4c65b;font-weight:700">Question '+(qi+1)+'/'+Q.length+'</p><p style="font-size:1.05rem;margin:8px 0 14px">'+q.q+'</p><div style="display:flex;flex-direction:column;gap:8px">'+q.opts.map((o,i)=>'<button class="mini-again" data-i="'+i+'" style="text-align:left">'+o+'</button>').join('')+'</div>';
+   el.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{
+    if(done)return;const i=Number(b.dataset.i);
+    if(i===q.a){score++;b.style.background='#3fae6b';}else{b.style.background='#e2574c';}
+    qi++;setTimeout(show,650);
+   }));
+  };
+  show();
  }}},
 
 gta6(){return{title:'Spot the Launch Date',
@@ -803,21 +803,21 @@ window.EXHIBITS20 = {
     flow:[{label:'Download the app',detail:'Lockdown boredom turned TikTok into the most installed app of 2020.'},{label:'Learn the dance',detail:'Filipino creators turned global trends into local hits overnight.'},{label:'Beat the algorithm',detail:'The For You Page let unknown creators reach millions with zero followers.'}],
     sources:[['Wikipedia: TikTok','https://en.wikipedia.org/wiki/TikTok']],
     game:'tiktok'},
-  ppop:{room:2,year:'2021',title:'The P-Pop Wave',body:'SB19, formed in 2018 under a Korean-style training system, broke through in 2019 when their "Go Up" dance practice video went viral. BINI followed with their 2021 debut, and P-pop grew into a full industry with its own fandoms and sold-out concerts.',then:'Then, skeptics called it a K-pop copy until the fandoms proved them wrong.',now:'Today, P-pop acts headline festivals and chart across Southeast Asia.',question:'Is P-pop the sound of Filipino identity, or just K-pop\u2019s training manual in Tagalog?',
-    flow:[{label:'Train for years',detail:'Groups endured K-pop-style boot camps before debuting.'},{label:'Go viral',detail:'One dance practice video turned SB19 into a phenomenon.'},{label:'Fill the arena',detail:'Fandoms now pack concerts and streaming parties nationwide.'}],
-    sources:[['Wikipedia: P-pop','https://en.wikipedia.org/wiki/P-pop'],['Wikipedia: SB19','https://en.wikipedia.org/wiki/SB19']],
-    game:'ppop'},
+  hidilyn:{room:2,year:'2021',title:'The First Gold',body:'On July 26, 2021, Hidilyn Diaz ended the Philippines\u2019 97-year wait for an Olympic gold medal. The Air Force sergeant from Zamboanga lifted 127kg in the clean and jerk \u2014 an Olympic record \u2014 to win the women\u2019s 55kg weightlifting title at the Tokyo Olympics, beating China\u2019s Liao Qiuyun by a single kilo. The whole country stopped to watch; she cried on the podium as Lupang Hinirang played for the first time.',then:'Then, the Philippines had never won Olympic gold in nearly a century of trying.',now:'Today, Hidilyn\u2019s lift is the benchmark every Filipino athlete chases.',question:'What does one gold medal change for a country that waited 97 years?',
+    flow:[{label:'The wait',detail:'97 years, 14 Olympic appearances, zero gold \u2014 until Tokyo.'},{label:'The lift',detail:'127kg clean and jerk, an Olympic record, won by a single kilo.'},{label:'The anthem',detail:'Lupang Hinirang on the Olympic podium for the first time.'}],
+    sources:[['Wikipedia: Hidilyn Diaz','https://en.wikipedia.org/wiki/Hidilyn_Diaz']],
+    game:'hidilyn'},
   ai:{room:2,year:'2023',title:'The AI Classmate',body:'OpenAI released ChatGPT in November 2022, and by 2023 it was in Filipino classrooms, offices, and group chats. Students used it for essays, workers for emails, and everyone argued about whether it was cheating or just a tool.',then:'Then, teachers swore they could spot an AI essay from the first paragraph.',now:'Today, AI is just another tab open next to the homework.',question:'Is AI a shortcut that makes us dumber, or a tool that makes us faster?',
     flow:[{label:'Ask anything',detail:'Homework, code, and love letters all got the chatbot treatment.'},{label:'Debate the rules',detail:'Schools scrambled to decide what counted as cheating.'},{label:'Keep the tab open',detail:'AI settled into daily work like spellcheck before it.'}],
     sources:[['Wikipedia: ChatGPT','https://en.wikipedia.org/wiki/ChatGPT']],
     game:'ai'},
   bini:{room:2,year:'2024',title:'The Pantropiko Summer',body:'BINI\u2019s \u201cPantropiko,\u201d released in late 2023, exploded across TikTok in early 2024 and became the first song by a P-pop group to top the Billboard Philippines chart that April. By July it had passed 100 million streams, and it took Song of the Year at both the P-pop Music Awards and the Myx Music Awards. Follow-up \u201cSalamin, Salamin\u201d kept the run going, and BINI became Spotify\u2019s most-streamed female OPM artist.',then:'Then, skeptics still asked if a girl group could carry P-pop mainstream.',now:'Today, BINI headlines festivals and charts across Southeast Asia.',question:'Did BINI prove P-pop belongs to everyone, or just raise the bar for who gets in?',flow:[{label:'Release the single',detail:'\u201cPantropiko\u201d dropped in November 2023 as a pre-release from the Talaarawan EP.'},{label:'Go viral',detail:'TikTok dance challenges pushed it up the charts through early 2024.'},{label:'Top the chart',detail:'No. 1 on Billboard Philippines in April 2024 \u2014 a first for a P-pop group.'}],sources:[['Wikipedia: Pantropiko','https://en.wikipedia.org/wiki/Pantropiko'],['Billboard Philippines: BINI\u2019s biggest songs of 2024','https://billboardphilippines.com/market/chart-beat/tj-monterde-maki-and-bini-have-the-biggest-songs-in-the-philippines-this-2024/']],game:'bini'},
-  multo:{room:2,year:'2025',title:'The Multo Year',body:'Cup of Joe\u2019s \u201cMulto,\u201d from their debut album Silakbo, became the defining OPM song of 2025. Its ache about a painful heartbreak took over the airwaves and became the background music for everything from tear-jerking hugot videos to funny memes about life. It proved guitar-driven OPM could still own the national conversation in the streaming era.',then:'Then, the charts were all P-pop and hip-hop.',now:'Today, a Baguio band\u2019s heartbreak anthem sits beside them.',question:'Why does a sad song about ghosts haunt the whole country \u2014 comfort, or just a good hook?',flow:[{label:'Drop the album',detail:'Silakbo arrived with \u201cMulto\u201d as its breakout.'},{label:'Own the feed',detail:'The song scored countless hugot edits and memes.'},{label:'Stay on top',detail:'It held the airwaves through most of 2025.'}],sources:[['GMA News: viral moments of 2025','https://www.gmanetwork.com/news/lifestyle/content/970321/from-what-haffen-vela-to-nepo-babies-here-are-viral-moments-that-caught-our-attention-in-2025/story/']],game:'multo'},
+  halalan:{room:2,year:'2025',title:'The Halalan Shake-up',body:'The May 12, 2025 midterm elections scrambled every prediction. Bong Go topped the Senate race, but the shock was Bam Aquino surging to second place \u2014 the opposition\u2019s comeback nobody saw coming. Kiko Pangilinan also won a Senate seat while Bato dela Rosa held his. And in Davao City, Rodrigo Duterte won the mayoral race in a landslide while detained in The Hague on ICC charges. It was the loudest, most meme-filled election the feeds had ever seen.',then:'Then, surveys said the administration slate would sweep.',now:'Today, the Senate holds both Duterte allies and a revived opposition.',question:'When the underdog wins, was it the ground game \u2014 or the group chat?',flow:[{label:'The campaign',detail:'Duterte vs. Marcos proxies turned every rally into a meme war.'},{label:'Election day',detail:'May 12, 2025 \u2014 record turnout, endless live coverage.'},{label:'The upset',detail:'Bam Aquino at No. 2; Duterte wins Davao from detention.'}],sources:[['INQUIRER.net: stories that defined 2025','https://www.thefreelibrary.com/INQUIRER.net%27s+most-engaging+stories+that+defined+2025.-a0868475953']],game:'halalan'},
   gta6:{room:2,year:'2026',title:'The Wait for GTA 6',body:'Thirteen years after GTA V (2013), Rockstar\u2019s Grand Theft Auto VI is the most anticipated game on the planet. Announced December 2023, its first trailer passed 270 million views. Originally slated for Fall 2025, it was delayed to May 26, 2026, then again to November 19, 2026 \u2014 eight years in development, Rockstar\u2019s longest project. Set in Leonida (Florida) with a return to Vice City, it stars Lucia Caminos, the series\u2019 first female protagonist, alongside Jason Duval. Analysts project $3 billion in first-year revenue.',then:'Then, Filipino gamers waited years between GTA releases.',now:'Today, the whole country counts down to November 19, 2026.',question:'After 13 years, can any game live up to the wait?',flow:[{label:'The announcement',detail:'December 2023 \u2014 first trailer, 270M+ views.'},{label:'The delays',detail:'Fall 2025 \u2192 May 2026 \u2192 November 19, 2026.'},{label:'The launch',detail:'PS5 and Xbox Series X|S. $3B projected year one.'}],sources:[['USA Today: GTA 6 release date','https://www.usatoday.com/story/shopping/trending/2026/10/15/grand-theft-auto-6-preorder-release-date/92266003007/'],['GameSpot: GTA 6 on track for November','https://www.gamespot.com/articles/gta-6-still-on-track-for-november-release/1100-6537831/']],game:'gta6'},
 };
 window.ROOMS20 = [
   {title:'Screens & Streams',short:'Screens',ids:['tiktok','bini']},
-  {title:'Culture & Code',short:'Culture',ids:['ppop','multo','gta6','ai']}
+  {title:'Culture & Code',short:'Culture',ids:['hidilyn','halalan','gta6','ai']}
 ];
 window.LENSES20 = {
   cost:{name:'Cost',ids:['tiktok','bini'],
@@ -832,7 +832,7 @@ window.LENSES20 = {
     question:'Did the 2020s give Filipinos more time, or just fill it faster?',
     quiz:{prompt:'What sped up most in the 2020s?',
       options:[['Entertainment','Full shows became 60-second clips'],['Homework','AI collapsed hours into seconds'],['Fame','A 15-second video could make a star overnight']]}},
-  place:{name:'Place',ids:['ppop','multo','gta6'],
+  place:{name:'Place',ids:['hidilyn','halalan','gta6'],
     recap:'In the 2020s, Filipino music found its places: the concert arena, the hugot playlist, and finally the world stage.',
     points:['P-pop fandoms turned concerts into home turf.','\u201cMulto\u201d made every playlist a shared emotional place.','Lollapalooza put Filipino music on the world map.'],
     question:'When our music plays in Chicago, where is home?',
@@ -843,7 +843,6 @@ window.MEDIA20={
  tiktok:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/TikTok%20app.jpg?width=600',alt:'TikTok app icon on a phone screen',caption:'TikTok app \u00b7 via Wikimedia Commons'},
  mlbb:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Mobile%20Legends%20Bang%20Bang%20character%20Philippines%20full%20shot.jpg?width=480',alt:'Mobile Legends: Bang Bang character artwork',caption:'Mobile Legends: Bang Bang \u00b7 via Wikimedia Commons'},
  bini:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',alt:'BINI performing at a concert in 2025',caption:'BINI, Binified concert 2025 \u00b7 via Wikimedia Commons'},
- ppop:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',alt:'BINI performing at a concert in 2025',caption:'BINI, Binified concert 2025 \u00b7 via Wikimedia Commons'},
  gcash:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/GCash_logo.svg?width=480',alt:'GCash logo',caption:'GCash logo \u00b7 via Wikimedia Commons'},
  shopee:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Shopee.svg?width=480',alt:'Shopee logo',caption:'Shopee logo \u00b7 via Wikimedia Commons'},
  streaming:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Netflix%20logo.svg?width=480',alt:'Netflix logo',caption:'Netflix logo \u00b7 via Wikimedia Commons'},
