@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arcade & Playground · The 2020s Calling</title>
+<meta name="description" content="A Philippine pop culture virtual museum, 2020–2026. Fourteen exhibits, seventeen games, the present.">
+<link rel="stylesheet" href="museum.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+<a class="skip" href="#top">Skip to content</a>
+<div class="marquee" aria-hidden="true"><div class="marquee-inner">
+<span>★ ADMIT ONE ★ THE 2020s CALLING ★ SCROLLS, STREAMS &amp; SIDE HUSTLES ★ 14 EXHIBITS · 17 GAMES ★ COLLECT ALL 14 STAMPS ★</span>
+<span>★ ADMIT ONE ★ THE 2020s CALLING ★ SCROLLS, STREAMS &amp; SIDE HUSTLES ★ 14 EXHIBITS · 17 GAMES ★ COLLECT ALL 14 STAMPS ★</span>
+</div>
+</div>
+<header class="mast"><div class="shell mast-row">
+  <a class="mark" href="index.html">THE 2000s <b>CALLED.</b></a>
+  <nav aria-label="Main navigation">
+    <a href="index.html" id="nav-home">Lobby</a>
+    <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
+    <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
+    <a href="guestbook.html" id="nav-gb">Guestbook</a>
+    <span class="decade-toggle" role="group" aria-label="Choose decade">
+      <a href="play.html" class="dec-opt">2000s</a>
+      <a href="play20.html" class="dec-opt on" aria-current="page">2020s</a>
+    </span>
+    <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
+    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/14</b></span>
+  </nav>
+</div></header>
+
+<main id="top">
+<section class="arcade" id="arcade" aria-labelledby="arc-title">
+    <div class="section-heading"><h2 id="arc-title">The Arcade</h2><p id="arc-sub">Three bonus games from the phone in your pocket. Play any time, no stamp needed.</p><span class="arc-count">3 games</span></div>
+    <div class="arc-grid">
+      <article class="arc-card"><div class="mini-head"><h3><span class="arc-num">01</span>🛒 Budol Cart</h3><span class="mini-tag">Catch · vouchers falling</span></div><div class="arc-body">
+        <p>It's 11:11. Vouchers rain from the top of the screen. Move the cart, catch the real ones, dodge the "sold out" fakes. Thirty seconds, no checkout ghosts.</p>
+        <canvas id="bdl" class="lcd" width="320" height="240" tabindex="0" aria-label="Budol Cart game screen"></canvas>
+        <div class="arc-row"><div><button class="mini-start" id="bdl-go" type="button">▶ Start</button><div class="arc-hud mini-hud"><span>Score <b id="bdl-score">0</b></span><span>Best <b id="bdl-best">0</b></span></div></div></div>
+        <p id="bdl-msg" style="margin:14px 0 0" aria-live="polite">Press Start, then use ← → or tap the sides.</p>
+      </div></article>
+      <article class="arc-card"><div class="mini-head"><h3><span class="arc-num">02</span>⚔️ Last Hit</h3><span class="mini-tag">Timing · one tap</span></div><div class="arc-body">
+        <p>Minions march down the lane with shrinking HP bars. Tap a minion only when its bar sits inside the gold kill zone. Ten waves, three misses and the turret falls.</p>
+        <div class="lcd lhit-screen" id="lhit-screen" aria-live="polite"></div>
+        <div class="t9-ctl"><button type="button" id="lhit-go">▶ Start</button></div>
+        <div class="arc-hud mini-hud"><span>Gold <b id="lhit-score">0</b></span><span>Misses <b id="lhit-miss">0</b>/3</span><span>Best <b id="lhit-best">–</b></span></div>
+        <p id="lhit-msg" style="margin:14px 0 0" aria-live="polite"></p>
+      </div></article>
+      <article class="arc-card"><div class="mini-head"><h3><span class="arc-num">03</span>📲 FYP Rush</h3><span class="mini-tag">Swipe · 30 seconds</span></div><div class="arc-body">
+        <p>Your For You Page is live. Swipe or tap: ♥ the dance trends and budol finds, skip the ads and the "brought to you by" plugs. Thirty seconds on the clock.</p>
+        <div class="lcd fyp-screen" id="fyp-screen" aria-live="polite"><small id="fyp-info">Tap ♥ or ✕</small><div id="fyp-card"></div></div>
+        <div class="t9-ctl"><button type="button" id="fyp-like">♥ Like</button><button type="button" id="fyp-skip">✕ Skip</button><button type="button" id="fyp-go">▶ Start</button></div>
+        <div class="arc-hud mini-hud"><span>Score <b id="fyp-score">0</b></span><span>Time <b id="fyp-time">30</b>s</span><span>Best <b id="fyp-best">–</b></span></div>
+        <p id="fyp-msg" style="margin:14px 0 0" aria-live="polite"></p>
+      </div></article>
+
+      <article class="arc-card pass-card" id="pass-card"><strong id="pass-n">0/14</strong><p id="pass-msg"></p><button class="action" id="pass-copy" type="button" hidden>Copy my result</button></article>
+    </div>
+  </section>
+<section class="quizsec" id="quiz" aria-labelledby="quiz-title">
+    <div class="section-heading">
+      <h2 id="quiz-title">Which 2020s icon are you?</h2>
+      <p id="quiz-sub">Answer 5 quick questions. We will match you to the exhibit that raised you, then generate a shareable ID card.</p>
+    </div>
+    <div class="quizbox" id="pquiz">
+      <h3 id="pq-q"></h3>
+      <div class="pq-opts" id="pq-opts"></div>
+      <p class="pq-progress" id="pq-progress"></p>
+    </div>
+    <div class="pq-result" id="pq-result" hidden>
+      <canvas id="pq-card" width="600" height="340" aria-label="Your 2020s ID card"></canvas>
+      <div class="pq-actions">
+        <button type="button" class="action" id="pq-dl">Download my ID card</button>
+        <button type="button" class="action secondary" id="pq-retry">Retake</button>
+      </div>
+    </div>
+  </section>
+<section class="playground" id="playground" aria-labelledby="pg-title">
+    <div class="section-heading">
+      <h2 id="pg-title">Time-machine playground</h2>
+      <p id="pg-sub">Remix yourself into the 2020s, then press play on its sounds.</p>
+    </div>
+    <div class="pg-grid">
+      <article class="pg-card">
+        <h3 id="pb-title">2020s photo booth</h3>
+        <p id="pb-sub">Upload a photo and get it back the 2024 way: vertical, captioned, story-ready.</p>
+        <canvas id="pb-canvas" width="480" height="360" aria-label="Photo booth preview"></canvas>
+        <div class="pg-row">
+          <label class="pg-file"><span id="pb-choose">Choose photo</span><input type="file" id="pb-file" accept="image/*" hidden></label>
+        </div>
+        <div class="pg-row" role="group" aria-label="Filters">
+          <button type="button" class="chip on" data-f="fyp">FYP look</button>
+          <button type="button" class="chip" data-f="igstory">IG story</button>
+          <button type="button" class="chip" data-f="zoom">Zoom class</button>
+        </div>
+        <button type="button" class="action" id="pb-dl">Download photo</button>
+      </article>
+      <article class="pg-card">
+        <h3 id="sb-title">Soundboard</h3>
+        <p id="sb-sub">Every sound synthesized live in your browser. No audio files, just WebAudio.</p>
+        <div class="pg-row">
+          <button type="button" class="action secondary" id="sb20-gcash">GCash chime</button>
+          <button type="button" class="action secondary" id="sb20-tiktok">TikTok notif</button>
+          <button type="button" class="action secondary" id="sb20-shopee">Shopee notif</button>
+          <button type="button" class="action secondary" id="sb20-ml">ML victory</button>
+          <button type="button" class="action secondary" id="sb20-msg">Messenger pop</button>
+          <button type="button" class="action secondary" id="sb20-tritone">iPhone tri-tone</button>
+          <button type="button" class="action secondary" id="sb20-grab">Grab alert</button>
+          <button type="button" class="action secondary" id="sb20-zoom">Zoom join</button>
+          <button type="button" class="action secondary" id="sb20-discord">Discord blip</button>
+          <button type="button" class="action secondary" id="sb20-cashin">Cash-in confirmed</button>
+        </div>
+        <p class="pg-note" id="sb-note" aria-live="polite"></p>
+      </article>
+    </div>
+  </section>
+</main>
+<footer class="foot" id="about"><div class="foot-grid">
+  <div>
+    <strong>The 2020s: Scrolls, Streams &amp; Side Hustles</strong>
+    <p>A student virtual museum by Group 9. The sourced examples reflect particular experiences from 2020 to 2026 and do not represent every Filipino's life.</p>
+    <p>Then/now notes, mini-games, and diagrams are interpretations for comparison.</p>
+  </div>
+  <div>
+    <strong>Image credits</strong>
+    <p>2020s exhibit images via Wikimedia Commons; full credits appear under each exhibit.</p>
+  </div>
+</div></footer>
+<button type="button" id="to-top" aria-label="Back to top" title="Back to top">↑</button>
+<div class="celebrate" id="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrate-title" hidden>
+  <div class="celebrate-card">
+    <div class="celebrate-stamp" aria-hidden="true">★</div>
+    <h2 id="celebrate-title">Certified 2020s kid!</h2>
+    <p>You collected all <strong>14 museum stamps</strong>.<br>Scrolls, streams &amp; side hustles, fully explored.</p>
+    <button type="button" class="action" id="celebrate-close">Keep exploring</button>
+  </div>
+</div>
+<script>window.MUSEUM_DECADE='2020s';</script>
+<script src="wing2020s.js"></script>
+<script src="museum.js"></script>
+</body>
+</html>
