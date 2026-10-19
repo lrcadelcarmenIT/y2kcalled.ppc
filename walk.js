@@ -76,6 +76,8 @@ function renderExhibit(){
  const bgEl=document.getElementById('ex-bg');
  if(bgUrl){bgEl.style.backgroundImage='url("'+bgUrl+'")';bgEl.style.backgroundColor='';}
  else{bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#141c2e';}
+ // restart the 10s ken-burns for the new exhibit
+ bgEl.style.animation='none';void bgEl.offsetWidth;bgEl.style.animation='';
  const frame=document.getElementById('ex-frame');
  if(photoUrl){
   frame.innerHTML='<img src="'+photoUrl+'" alt="">';
