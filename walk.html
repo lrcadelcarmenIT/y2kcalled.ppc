@@ -26,16 +26,11 @@
   <section class="walk-intro">
     <p class="kicker">You are here</p>
     <h1>THE GRAND HALL</h1>
-    <p class="lede">Two wings, one building. Walk the 2000s on the west side, the 2020s on the east, and the Then vs Now gallery up north. Approach any pedestal to read its plaque, and play its mini-game to earn the stamp.</p>
+    <p class="lede">Two wings, one building. Browse the 2000s hall, the 2020s hall, and the Then vs Now gallery. Tap any painting to read its plaque.</p>
   </section>
 
   <div class="walk-stage">
-    <canvas id="tour-pano" width="960" height="600" aria-label="360 degree virtual tour. Drag to look around."></canvas>
-    <div class="walk-touch">
-      <div id="walk-joy" aria-label="Joystick"><div id="walk-knob"></div></div>
-      <button id="walk-act" class="mini-again">📖 READ</button>
-    </div>
-    <p class="walk-hint">Move: WASD / arrows / joystick &nbsp;·&nbsp; Read plaque: E / tap the pedestal / READ &nbsp;·&nbsp; 15 exhibits + 4 comparisons</p>
+    <p class="walk-hint">Tap a painting for its story &nbsp;·&nbsp; Use &#8249; &#8250; to browse exhibits</p>
   </div>
 </main>
 
@@ -90,7 +85,7 @@
 <script>window.MUSEUM_WALK=true;</script>
 <script src="wing2020s.js?v=tmconsole4"></script>
 <script src="museum.js?v=tmconsole4"></script>
-<script src="walk.js?v=mobile1"></script>
+<script src="walk.js?v=exhibit1"></script>
 <script>
 document.getElementById('marquee-in').textContent='THE GRAND HALL \u00b7 WALK THE MUSEUM \u00b7 TWO DECADES, ONE BUILDING \u00b7 '.repeat(6);
 </script>

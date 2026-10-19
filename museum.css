@@ -508,3 +508,25 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
  .tour-title{font-size:.75rem;padding:6px 16px}
  .walk-hint{font-size:.72rem}
 }
+
+/* ---------- Themed exhibit viewer (replaces 360 tour) ---------- */
+.walk-stage{min-height:480px;overflow:hidden}
+.ex-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(28px) brightness(.42) saturate(1.2);transform:scale(1.1);pointer-events:none}
+.ex-view{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:460px;padding:56px 70px 24px}
+.ex-frame{background:#0d1322;border:10px solid #8a6d3b;border-radius:6px;padding:0;cursor:pointer;max-width:min(520px,80vw);box-shadow:0 18px 50px rgba(0,0,0,.55);transition:transform .15s}
+.ex-frame:hover{transform:scale(1.015)}
+.ex-frame img{display:block;width:100%;height:auto;max-height:52vh;object-fit:cover}
+.ex-frame.no-photo{min-width:min(420px,72vw);min-height:280px;display:flex;align-items:center;justify-content:center;background:#0e1a2e}
+.ex-emoji{font-size:5rem}
+.ex-caption{text-align:center;margin-top:18px}
+.ex-year{color:#f4c65b;font-weight:800;font-size:.95rem;letter-spacing:.14em;margin:0 0 6px}
+.ex-topic{color:#fff;font-weight:700;font-size:1.25rem;margin:0 0 6px;max-width:520px;line-height:1.35}
+.ex-count{color:#8fa8c8;font-size:.8rem;margin:0;letter-spacing:.08em}
+@media(max-width:640px){
+ .walk-stage{min-height:400px}
+ .ex-view{min-height:380px;padding:48px 52px 18px}
+ .ex-frame{border-width:7px;max-width:82vw}
+ .ex-frame img{max-height:44vh}
+ .ex-topic{font-size:1.05rem}
+ .ex-year{font-size:.82rem}
+}
