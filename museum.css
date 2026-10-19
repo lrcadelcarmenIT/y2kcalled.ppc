@@ -477,3 +477,34 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
 .tour-tmbtn{position:absolute;top:16px;right:12px;width:44px;height:44px;border-radius:50%;background:rgba(10,14,24,.65);border:1px solid rgba(0,212,255,.5);font-size:22px;cursor:pointer;z-index:6;box-shadow:0 0 14px rgba(0,212,255,.25)}
 .tour-tmbtn:hover{background:rgba(10,14,24,.9)}
 @media(max-width:600px){.tour-tmbtn{width:40px;height:40px;font-size:20px;top:12px;right:8px}}
+
+/* ---------- Grand Hall mobile ---------- */
+@media(max-width:640px){
+ .walk-wrap{padding:16px 10px 40px}
+ .walk-intro h1{font-size:1.6rem}
+ .walk-intro .lede{font-size:.88rem}
+ .walk-stage{padding:8px;border-radius:12px}
+ #tour-pano{border-radius:8px}
+ /* time machine console fits small screens */
+ .tm-console{padding:18px 14px 16px;max-height:94vh}
+ .tm-console h2{font-size:1.3rem;margin-bottom:10px}
+ .tm-orb{width:150px;height:150px}
+ .tm-core{inset:42px}
+ .tm-core span{font-size:1.4rem}
+ .tm-hand.hour{height:24px}
+ .tm-hand.minute{height:34px}
+ .tm-ygrid{gap:6px}
+ .tm-ygrid button{width:48px;font-size:.75rem;padding:7px 0}
+ .tm-engage{font-size:.95rem;padding:12px 18px}
+ .tm-dest{font-size:.62rem}
+ /* plaque modal uses full width */
+ .walk-mbox{padding:20px 16px;max-height:92vh;border-radius:12px}
+ .walk-mbox h3{font-size:1.2rem}
+ /* thumbnails don't crowd the view */
+ .tour-thumbs{max-width:46%;gap:6px}
+ .tour-thumbwrap{min-width:72px}
+ .tour-thumbwrap .tour-thumb{width:72px;height:40px}
+ .tour-thumbwrap span{display:none}
+ .tour-title{font-size:.75rem;padding:6px 16px}
+ .walk-hint{font-size:.72rem}
+}
