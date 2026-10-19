@@ -428,7 +428,7 @@ function tmEngage(){
         setTimeout(()=>{
           document.getElementById('timetravel').hidden=true;
           closeTimeMachine();
-          arriveYaw=yawForYear(yr,hall);
+          try{arriveYaw=yawForYear(yr,hall);}catch(e){arriveYaw=0;}
           gotoScene(hall);
           tmBusy=false;
           engage.disabled=false;
