@@ -37,7 +37,7 @@ window.ARCH20={
  ppop:{n:['The P-pop Stan','Ang P-pop Stan'],ex:'ppop'},
  bini:{n:['The Bloomer','Ang Bloomer'],ex:'bini'},
  multo:{n:['The Hugot Ghost','Ang Multo'],ex:'multo'},
- lolla:{n:['The World Stager','Ang Pang-world Stage'],ex:'lolla'},
+ gta6:{n:['The Waiter','Ang Naghihintay'],ex:'gta6'},
  ai:{n:['The Prompt Whisperer','Ang Prompt Whisperer'],ex:'ai'}
 };
 window.PQQ20=[
@@ -45,16 +45,16 @@ window.PQQ20=[
   ['Deep in the FYP, phone an inch from my face','Lubog sa FYP, isang dangkal ang phone sa mukha','tiktok'],
   ['Front row of a BINI concert, lightstick up','Front row ng BINI concert, taas ang lightstick','bini'],
   ['Crying to \u201cMulto\u201d on repeat','Umiiyak sa \u201cMulto\u201d nang paulit-ulit','multo'],
-  ['Watching SB19\u2019s Lollapalooza set on replay','Pinapanood nang paulit-ulit ang Lollapalooza set ng SB19','lolla']]},
+  ['Waiting for GTA 6 since the first trailer','Naghihintay sa GTA 6 mula pa noong unang trailer','gta6']]},
  {q:['Pick a concert:','Pumili ng concert:'],o:[
   ['BINI live \u2014 Pantropiko summer','BINI live \u2014 Pantropiko summer','bini'],
-  ['SB19 at Lollapalooza Chicago','SB19 sa Lollapalooza Chicago','lolla'],
+  ['GTA 6 delayed to November 2026','Na-delay ang GTA 6 sa November 2026','gta6'],
   ['Cup of Joe \u2014 hugot night','Cup of Joe \u2014 hugot night','multo'],
   ['P-pop fan meet, all groups','P-pop fan meet, lahat ng grupo','ppop']]},
  {q:['Your group chat is blowing up. It\u2019s...','Sabog ang group chat. Ito ay...'],o:[
   ['A TikTok dance challenge, everyone tagged','TikTok dance challenge, lahat tagged','tiktok'],
   ['BINI comeback announcement','Anunsyo ng BINI comeback','bini'],
-  ['SB19 world tour dates','World tour dates ng SB19','lolla'],
+  ['GTA 6 trailer breaking view records','Ang GTA 6 trailer na bumabasag ng view records','gta6'],
   ['Someone\u2019s AI-generated meme','AI-generated meme ng kung sino','ai']]},
  {q:['Choose a 2020s superpower:','Pumili ng 2020s superpower:'],o:[
   ['Going viral overnight','Mag-viral overnight','tiktok'],
@@ -406,21 +406,25 @@ multo(){return{title:'Ghost the Hugot',
   upd();spawn();
  }}},
 
-lolla(){return{title:'Headliner Hype',
- intro:'You are on stage at Lollapalooza! Keep the CROWD HYPE meter above zero for 25 seconds. Tap PERFORM to hype them up, but each tap has a cooldown.',
+gta6(){return{title:'Spot the Launch Date',
+ intro:'Rockstar keeps moving the date! Tap ONLY the real launch date: November 19, 2026. Tap a wrong date 3 times and the hype dies.',
  render(el,{win,lose}){
-  let hype=60,done=false,tm=null,cd=false,left=25;
-  el.innerHTML=`<div style="text-align:center;font-size:3rem">\u{1f3a4}\u{1f525}</div>
-   <div style="height:18px;background:#0e1a2e;border-radius:9px;overflow:hidden;max-width:300px;margin:10px auto"><div id="lo-bar" style="height:100%;width:60%;background:#e2574c;transition:width .3s"></div></div>
-   <p style="text-align:center;color:#b9c8ca"><b id="lo-t">25</b>s left</p>
-   <div style="text-align:center"><button class="mini-again" id="lo-btn" style="font-size:1.3rem;padding:16px 32px">\u{1f3a4} PERFORM!</button></div>`;
-  const bar=el.querySelector('#lo-bar'),t=el.querySelector('#lo-t'),btn=el.querySelector('#lo-btn');
-  const tick=setInterval(()=>{if(done)return;left--;hype=Math.max(0,hype-7);bar.style.width=hype+'%';t.textContent=left;
-   if(hype<=0){done=true;clearInterval(tick);lose('The crowd went quiet. The set fell flat.');}
-   else if(left<=0){done=true;clearInterval(tick);win('Headliner! 25 seconds of pure hype. Chicago will remember this.');}},1000);
-  btn.addEventListener('click',()=>{if(done||cd)return;cd=true;btn.style.opacity=.5;
-   hype=Math.min(100,hype+22);bar.style.width=hype+'%';
-   setTimeout(()=>{cd=false;btn.style.opacity=1;},900);});
+  const real='Nov 19, 2026',fakes=['Fall 2025','May 26, 2026','Dec 2024','Summer 2025'];
+  let strikes=0,found=0,done=false;
+  el.innerHTML='<p style="text-align:center;color:#b9c8ca">Tap the REAL date:</p><div id="gta-dates" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center"></div><p style="text-align:center" id="gta-msg">Strikes: 0/3</p>';
+  const wrap=el.querySelector('#gta-dates'),msg=el.querySelector('#gta-msg');
+  const dates=[real,...fakes].sort(()=>Math.random()-.5);
+  dates.forEach(dt=>{
+   const b=document.createElement('button');b.className='mini-again';b.textContent=dt;b.style.minWidth='120px';
+   b.addEventListener('click',()=>{
+    if(done||b.disabled)return;
+    if(dt===real){b.style.background='#3fae6b';b.style.borderColor='#3fae6b';b.disabled=true;found++;
+     if(found>=1){done=true;win('Correct! November 19, 2026 — Leonida awaits. The 13-year wait ends.');}}
+    else{b.style.background='#e2574c';b.disabled=true;strikes++;msg.textContent='Strikes: '+strikes+'/3';
+     if(strikes>=3){done=true;lose('Too many wrong dates. The hype died waiting.');}}
+   });
+   wrap.appendChild(b);
+  });
  }}},
 
 
@@ -809,11 +813,11 @@ window.EXHIBITS20 = {
     game:'ai'},
   bini:{room:2,year:'2024',title:'The Pantropiko Summer',body:'BINI\u2019s \u201cPantropiko,\u201d released in late 2023, exploded across TikTok in early 2024 and became the first song by a P-pop group to top the Billboard Philippines chart that April. By July it had passed 100 million streams, and it took Song of the Year at both the P-pop Music Awards and the Myx Music Awards. Follow-up \u201cSalamin, Salamin\u201d kept the run going, and BINI became Spotify\u2019s most-streamed female OPM artist.',then:'Then, skeptics still asked if a girl group could carry P-pop mainstream.',now:'Today, BINI headlines festivals and charts across Southeast Asia.',question:'Did BINI prove P-pop belongs to everyone, or just raise the bar for who gets in?',flow:[{label:'Release the single',detail:'\u201cPantropiko\u201d dropped in November 2023 as a pre-release from the Talaarawan EP.'},{label:'Go viral',detail:'TikTok dance challenges pushed it up the charts through early 2024.'},{label:'Top the chart',detail:'No. 1 on Billboard Philippines in April 2024 \u2014 a first for a P-pop group.'}],sources:[['Wikipedia: Pantropiko','https://en.wikipedia.org/wiki/Pantropiko'],['Billboard Philippines: BINI\u2019s biggest songs of 2024','https://billboardphilippines.com/market/chart-beat/tj-monterde-maki-and-bini-have-the-biggest-songs-in-the-philippines-this-2024/']],game:'bini'},
   multo:{room:2,year:'2025',title:'The Multo Year',body:'Cup of Joe\u2019s \u201cMulto,\u201d from their debut album Silakbo, became the defining OPM song of 2025. Its ache about a painful heartbreak took over the airwaves and became the background music for everything from tear-jerking hugot videos to funny memes about life. It proved guitar-driven OPM could still own the national conversation in the streaming era.',then:'Then, the charts were all P-pop and hip-hop.',now:'Today, a Baguio band\u2019s heartbreak anthem sits beside them.',question:'Why does a sad song about ghosts haunt the whole country \u2014 comfort, or just a good hook?',flow:[{label:'Drop the album',detail:'Silakbo arrived with \u201cMulto\u201d as its breakout.'},{label:'Own the feed',detail:'The song scored countless hugot edits and memes.'},{label:'Stay on top',detail:'It held the airwaves through most of 2025.'}],sources:[['GMA News: viral moments of 2025','https://www.gmanetwork.com/news/lifestyle/content/970321/from-what-haffen-vela-to-nepo-babies-here-are-viral-moments-that-caught-our-attention-in-2025/story/']],game:'multo'},
-  lolla:{room:2,year:'2026',title:'Lollapalooza, the Filipino Way',body:'On July 30, 2026, SB19 stepped onto the Allianz Stage at Lollapalooza in Chicago \u2014 the first Filipino artist ever to play one of America\u2019s biggest music festivals. They opened with \u201cDAM\u201d and \u201cGENTO,\u201d debuted \u201cLAWLESS\u201d live, and closed with \u201cCRIMZONE.\u201d Billboard named them one of the 12 best performances of the festival out of more than 170 acts.',then:'Then, P-pop was still proving itself at home.',now:'Today, it plays the world\u2019s biggest stages.',question:'When SB19 plays Chicago, is it still P-pop \u2014 or just pop?',flow:[{label:'Take the stage',detail:'July 30, 2026 \u2014 Allianz Stage, Chicago.'},{label:'Play the hits',detail:'\u201cDAM,\u201d \u201cGENTO,\u201d and a live debut of \u201cLAWLESS.\u201d'},{label:'Make the list',detail:'Billboard\u2019s 12 best performances out of 170+ acts.'}],sources:[['Sen. Kiko Pangilinan: SB19 at Lollapalooza','https://kikopangilinan.com/repping-pinoy-sb19-heralds-modern-opm-renaissance-with-lollapalooza-performance-chart-topping-hits/']],game:'lolla'},
+  gta6:{room:2,year:'2026',title:'The Wait for GTA 6',body:'Thirteen years after GTA V (2013), Rockstar\u2019s Grand Theft Auto VI is the most anticipated game on the planet. Announced December 2023, its first trailer passed 270 million views. Originally slated for Fall 2025, it was delayed to May 26, 2026, then again to November 19, 2026 \u2014 eight years in development, Rockstar\u2019s longest project. Set in Leonida (Florida) with a return to Vice City, it stars Lucia Caminos, the series\u2019 first female protagonist, alongside Jason Duval. Analysts project $3 billion in first-year revenue.',then:'Then, Filipino gamers waited years between GTA releases.',now:'Today, the whole country counts down to November 19, 2026.',question:'After 13 years, can any game live up to the wait?',flow:[{label:'The announcement',detail:'December 2023 \u2014 first trailer, 270M+ views.'},{label:'The delays',detail:'Fall 2025 \u2192 May 2026 \u2192 November 19, 2026.'},{label:'The launch',detail:'PS5 and Xbox Series X|S. $3B projected year one.'}],sources:[['USA Today: GTA 6 release date','https://www.usatoday.com/story/shopping/trending/2026/10/15/grand-theft-auto-6-preorder-release-date/92266003007/'],['GameSpot: GTA 6 on track for November','https://www.gamespot.com/articles/gta-6-still-on-track-for-november-release/1100-6537831/']],game:'gta6'},
 };
 window.ROOMS20 = [
   {title:'Screens & Streams',short:'Screens',ids:['tiktok','bini']},
-  {title:'Culture & Code',short:'Culture',ids:['ppop','multo','lolla','ai']}
+  {title:'Culture & Code',short:'Culture',ids:['ppop','multo','gta6','ai']}
 ];
 window.LENSES20 = {
   cost:{name:'Cost',ids:['tiktok','bini'],
@@ -828,7 +832,7 @@ window.LENSES20 = {
     question:'Did the 2020s give Filipinos more time, or just fill it faster?',
     quiz:{prompt:'What sped up most in the 2020s?',
       options:[['Entertainment','Full shows became 60-second clips'],['Homework','AI collapsed hours into seconds'],['Fame','A 15-second video could make a star overnight']]}},
-  place:{name:'Place',ids:['ppop','multo','lolla'],
+  place:{name:'Place',ids:['ppop','multo','gta6'],
     recap:'In the 2020s, Filipino music found its places: the concert arena, the hugot playlist, and finally the world stage.',
     points:['P-pop fandoms turned concerts into home turf.','\u201cMulto\u201d made every playlist a shared emotional place.','Lollapalooza put Filipino music on the world map.'],
     question:'When our music plays in Chicago, where is home?',
