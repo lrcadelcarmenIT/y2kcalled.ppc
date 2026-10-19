@@ -310,7 +310,9 @@ function buildChrome(){
  const touch=document.querySelector('.walk-touch');if(touch)touch.style.display='none';
  const hint=document.querySelector('.walk-hint');
  if(hint)hint.textContent='Drag to look around \u00b7 Tap a painting for its story + mini-game \u00b7 Tap a chevron to walk on';
- const title=document.createElement('div');title.id='tour-title';title.className='tour-title';
+ const title=document.createElement('button');title.id='tour-title';title.className='tour-title';
+ title.setAttribute('aria-label','Open time machine');
+ title.addEventListener('click',()=>{if(window.openTimeMachine)window.openTimeMachine();});
  stage.appendChild(title);
  const thumbs=document.createElement('div');thumbs.id='tour-thumbs';thumbs.className='tour-thumbs';
  Object.keys(PANOS).forEach(id=>{
@@ -322,21 +324,6 @@ function buildChrome(){
   thumbs.appendChild(w);
  });
  stage.appendChild(thumbs);
- const ctl=document.createElement('div');ctl.className='tour-ctl';
- ctl.innerHTML='<button id="tour-zout" class="tour-btn" title="Zoom out" aria-label="Zoom out">\u2212</button>'
-  +'<button id="tour-zin" class="tour-btn" title="Zoom in" aria-label="Zoom in">+</button>'
-  +'<button id="tour-auto" class="tour-btn" title="Auto-look" aria-label="Auto-look">\u27f3</button>'
-  +'<button id="tour-full" class="tour-btn" title="Fullscreen" aria-label="Fullscreen">\u26f6</button>'
-  +'<button id="tour-time" class="tour-btn" title="Time machine" aria-label="Time machine">\uD83D\uDD70\uFE0F</button>';
- stage.appendChild(ctl);
- document.getElementById('tour-zin').addEventListener('click',()=>{fov=clamp(fov-12,55,120);});
- document.getElementById('tour-zout').addEventListener('click',()=>{fov=clamp(fov+12,55,120);});
- document.getElementById('tour-auto').addEventListener('click',function(){auto=!auto;this.classList.toggle('on',auto);});
- document.getElementById('tour-time').addEventListener('click',openTimeMachine);
-document.getElementById('tour-full').addEventListener('click',()=>{
-  if(document.fullscreenElement)document.exitFullscreen();
-  else if(stage.requestFullscreen)stage.requestFullscreen();
- });
  syncChrome();
 }
 buildChrome();
@@ -396,6 +383,7 @@ function openTimeMachine(){
   tmPaint();
   document.getElementById('timemachine').hidden=false;
 }
+window.openTimeMachine=openTimeMachine;
 // Time machine is the Grand Hall's main menu: open it right away on load
 if(document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded',()=>openTimeMachine());
