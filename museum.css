@@ -451,5 +451,5 @@ body.tm-lab .site-head{background:rgba(5,7,15,.92);border-bottom:1px solid rgba(
 body.tm-lab .brand{color:#dcecff}
 body.tm-lab .brand-sub{color:#5f7ba6}
 body.tm-lab .site-nav a{color:#8fa8c8}
-body.tm-lab .marquee{border-color:rgba(0,212,255,.25);color:#3d5a7a}
+body.tm-lab .marquee{background:#070b18;border-bottom:1px solid rgba(0,212,255,.35);color:#00d4ff;text-shadow:0 0 8px rgba(0,212,255,.5)}
 body.tm-lab .grain{opacity:.5}
