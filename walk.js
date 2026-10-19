@@ -254,7 +254,7 @@ function draw(){
  });
  if(fadeDir!==0){
   fade+=fadeDir*.09;
-  if(fade>=1&&pending){cur=pending;pending=null;tYaw=0;tPitch=0;syncChrome();fadeDir=-1;}
+  if(fade>=1&&pending){cur=pending;pending=null;tYaw=(typeof arriveYaw==='number'?arriveYaw:0);arriveYaw=null;tPitch=0;syncChrome();fadeDir=-1;}
   if(fade<=0){fade=0;fadeDir=0;}
   g.fillStyle='rgba(8,12,20,'+Math.min(1,fade)+')';g.fillRect(0,0,VW,VH);
  }
@@ -358,27 +358,105 @@ updateWalkBadge();
 })();
 })();
 
-/* ---------- Time machine ---------- */
+/* ---------- Time machine console ---------- */
+const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2019,2020,2021,2023];
+let tmIdx=7, tmBusy=false, arriveYaw=null;
+function tmYear(){return TM_YEARS[tmIdx];}
+function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
+function tmPaint(){
+  document.getElementById('tm-year').textContent=tmYear();
+  document.getElementById('tm-slider').value=tmIdx;
+  document.getElementById('tm-dest').textContent='DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
+  document.getElementById('tm-status').textContent='Set your destination year.';
+}
+function tmStep(d){
+  if(tmBusy)return;
+  tmIdx=Math.min(TM_YEARS.length-1,Math.max(0,tmIdx+d));
+  tmPaint();
+}
+function yawForYear(year,hall){
+  const ids=hall==='hall00'?HALL00:HALL20;
+  let best=0,bd=9999;
+  ids.forEach((id,i)=>{
+    const y=parseInt(exData(id).d.year,10);
+    const d=Math.abs(y-year);
+    if(d<bd){bd=d;best=i;}
+  });
+  return best*(360/ids.length);
+}
 function openTimeMachine(){
+  if(tmBusy)return;
+  tmPaint();
   document.getElementById('timemachine').hidden=false;
 }
 function closeTimeMachine(){
   document.getElementById('timemachine').hidden=true;
 }
 function timeTravel(key){
-  const names={hall00:'THE 2000s',hall20:'THE 2020s',gallery:'THE GALLERY'};
-  document.getElementById('tt-label').textContent='TRAVELING TO '+(names[key]||'THE PAST')+'...';
+  // gallery shortcut bypasses the console
+  document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':'THE GALLERY')+'...';
   document.getElementById('timetravel').hidden=false;
   setTimeout(()=>{
     document.getElementById('timetravel').hidden=true;
     closeTimeMachine();
     gotoScene(key);
-  },1400);
+  },1200);
+}
+function tmEngage(){
+  if(tmBusy)return;
+  tmBusy=true;
+  const yr=tmYear(), hall=tmHall();
+  const engage=document.getElementById('tm-engage');
+  const lights=document.getElementById('tm-lights');
+  const status=document.getElementById('tm-status');
+  const yearEl=document.getElementById('tm-year');
+  engage.disabled=true;
+  lights.classList.add('charging');
+  status.textContent='CHARGING TEMPORAL COILS...';
+  // scramble the display like the machine is spinning up
+  let n=0;
+  const scramble=setInterval(()=>{
+    yearEl.textContent=TM_YEARS[Math.floor(Math.random()*TM_YEARS.length)];
+    if(++n>=10){
+      clearInterval(scramble);
+      yearEl.textContent=yr;
+      status.textContent='LOCKED: '+yr+'. INITIATING JUMP...';
+      setTimeout(()=>{
+        lights.classList.remove('charging');
+        document.getElementById('tt-label').textContent='TRAVELING TO '+yr+'...';
+        document.getElementById('timetravel').hidden=false;
+        setTimeout(()=>{
+          document.getElementById('timetravel').hidden=true;
+          closeTimeMachine();
+          arriveYaw=yawForYear(yr,hall);
+          gotoScene(hall);
+          tmBusy=false;
+          engage.disabled=false;
+          tmPaint();
+        },1300);
+      },700);
+    }
+  },90);
 }
 document.getElementById('tm-x').addEventListener('click',closeTimeMachine);
 document.getElementById('timemachine').addEventListener('click',e=>{
   if(e.target.id==='timemachine')closeTimeMachine();
 });
+document.getElementById('tm-minus').addEventListener('click',()=>tmStep(-1));
+document.getElementById('tm-plus').addEventListener('click',()=>tmStep(1));
+document.getElementById('tm-slider').addEventListener('input',e=>{
+  if(tmBusy)return;
+  tmIdx=parseInt(e.target.value,10);
+  tmPaint();
+});
+document.querySelectorAll('#timemachine [data-decade]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(tmBusy)return;
+    tmIdx=b.getAttribute('data-decade')==='2000s'?4:12;
+    tmPaint();
+  });
+});
+document.getElementById('tm-engage').addEventListener('click',tmEngage);
 document.querySelectorAll('#timemachine [data-go]').forEach(b=>{
   b.addEventListener('click',()=>timeTravel(b.getAttribute('data-go')));
 });
