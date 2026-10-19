@@ -3,108 +3,97 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Exhibit Halls · The 2020s Calling</title>
-<meta name="description" content="A Philippine pop culture virtual museum, 2020–2026. Six exhibits, nine games, the present.">
-<link rel="stylesheet" href="museum.css">
+<title>Exhibit Halls · 2020s · The 2000s Called</title>
+<meta name="description" content="Philippine pop culture exhibits, 2000 to 2010.">
+<link rel="stylesheet" href="museum.css?v=simple1">
+<style>
+.ex-list{max-width:760px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:28px}
+.ex-card{background:#fff;border:2px solid #141c2e;border-radius:14px;overflow:hidden}
+.ex-card .ex-photo{width:100%;max-height:320px;object-fit:cover;display:block;background:#0e1a2e}
+.ex-card .ex-body{padding:20px 22px}
+.ex-card .ex-year{font-family:'Space Mono',monospace;font-weight:700;color:#8a6d3b;letter-spacing:.12em;font-size:.8rem;margin:0 0 4px}
+.ex-card h2{margin:0 0 10px;font-size:1.45rem}
+.ex-card .ex-text{color:#2b3547;margin:0 0 12px;line-height:1.6}
+.ex-card .ex-tn{background:#f6f1e5;border-left:4px solid #c9a227;padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 12px;font-size:.92rem}
+.ex-card .ex-src{font-size:.82rem;color:#5a6577;margin:0 0 14px}
+.ex-card .ex-src a{color:#1a56db}
+.ex-play{width:100%;background:#f4c65b;border:none;border-radius:10px;padding:14px;font-weight:800;font-size:1rem;cursor:pointer;color:#141c2e}
+.ex-play:hover{background:#ffd97a}
+.ex-play.done{background:#3fae6b;color:#fff}
+.ex-game{margin-top:14px;background:#0e1a2e;border-radius:10px;padding:16px;color:#eaf3f0}
+.ex-game h4{color:#f4c65b;margin:0 0 8px}
+.ex-game .mini-msg{color:#b9c8ca}
+.ex-stamp{float:right;font-size:1.4rem}
+@media(max-width:640px){.ex-card .ex-body{padding:16px}.ex-card h2{font-size:1.2rem}}
+</style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
 <canvas id="confetti-canvas" aria-hidden="true"></canvas>
-<a class="skip" href="#top">Skip to content</a>
-<div class="marquee" aria-hidden="true"><div class="marquee-inner">
-<span>★ ADMIT ONE ★ THE 2020s CALLING ★ SCROLLS, STREAMS &amp; SIDE HUSTLES ★ 6 EXHIBITS · 9 GAMES ★ COLLECT ALL 6 STAMPS ★</span>
-<span>★ ADMIT ONE ★ THE 2020s CALLING ★ SCROLLS, STREAMS &amp; SIDE HUSTLES ★ 6 EXHIBITS · 9 GAMES ★ COLLECT ALL 6 STAMPS ★</span>
-</div>
-</div>
 <header class="mast"><div class="shell mast-row">
   <a class="mark" href="index.html">THE 2000s <b>CALLED.</b></a>
   <nav aria-label="Main navigation">
-    <a href="index.html" id="nav-home">Lobby</a>
-    <a href="exhibits20.html" id="nav-archive">Exhibit Halls</a>
-    <a href="play20.html" id="nav-play">Arcade &amp; Playground</a>
-    <a href="guestbook.html" id="nav-gb">Guestbook</a>
-    <span class="decade-toggle" role="group" aria-label="Choose decade">
-      <a href="exhibits.html" class="dec-opt">2000s</a>
-      <a href="exhibits20.html" class="dec-opt on" aria-current="page">2020s</a>
-    </span>
-    <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
-    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/14</b></span>
+    <a href="index.html">Lobby</a>
+    <a href="exhibits.html">2000s Halls</a><a href="exhibits20.html" aria-current="page">2020s Halls</a>
+    <a href="play.html">Arcade &amp; Playground</a>
+    <a href="guestbook.html">Guestbook</a>
+    <a href="walk.html">Grand Hall</a>
+    <span class="badge off" id="stamp-badge"><span class="dot"></span>STAMPS <b id="stamp-count">0/6</b></span>
   </nav>
 </div></header>
-
-<main id="top">
-<section class="intro" id="choose" aria-labelledby="page-title"><div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div><div class="shell">
-    <div class="intro-grid">
-      <div class="intro-copy">
-        <p class="eyebrow">A PHILIPPINE POP CULTURE MUSEUM · 2020–2026</p>
-        <h1 id="page-title">SCROLLS, STREAMS &amp;<br><em>SIDE HUSTLES.</em></h1>
-        <p class="lead">Cost, timing, and place shaped scrolling, streaming, and making a living from 2020 to today. Pick a question, follow three sourced stops, and play a mini-game at each exhibit.</p>
-        <div class="hero-ticket"><span>ADMIT ONE</span><strong>6 STOPS · 6 EXHIBITS · 9 GAMES</strong><span>PH · 2020–2026</span></div>
-      </div>
-      <div class="cover-art" aria-label="Period images from the museum">
-        <figure class="cover-photo main-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Smartphone.jpg?width=720" alt="A modern smartphone held in a hand" width="720" height="515"><figcaption>01 / THE POCKET STUDIO <span>2024</span></figcaption></figure>
-        <figure class="cover-photo inset-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/9598Community%20Pantry%20in%20the%20Philippines%2002.jpg?width=1024" alt="A community pantry in the Philippines" width="1024" height="768"><figcaption>02 / MANILA, PH <span>2021</span></figcaption></figure>
-        <div class="cover-stamp" aria-hidden="true">20<span>-</span>26</div>
-      </div>
-    </div>
-    <div class="entry-bar"><fieldset class="lens-set">
-      <legend>Choose a question to explore</legend>
-      <p class="route-note">Follow each route stop by stop. Every exhibit has a source and a mini-game. Switch routes anytime. Use ← / → keys or swipe on the stage.</p>
-      <div class="lens-options">
-        <button type="button" class="lens-button" data-lens="cost" aria-pressed="true">See the cost<small>Who could afford to join?</small></button>
-        <button type="button" class="lens-button" data-lens="time" aria-pressed="false">Trace the time<small>When could you join?</small></button>
-        <button type="button" class="lens-button" data-lens="place" aria-pressed="false">Explore places<small>Where did it happen?</small></button>
-      </div>
-    </fieldset></div>
-  </div></section>
-<section class="experience" id="route" aria-label="Interactive museum route">
-    <article class="stage" id="stage" tabindex="-1">
-      <div class="stage-top"><span class="label" id="lens-label">COST LENS</span><span class="counter" id="step-count">01 / 03</span></div>
-      <div class="progress" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="step-dots" id="step-dots" aria-hidden="true"></div>
-      <div class="stage-content" id="stage-content" aria-live="polite"></div>
-    </article>
-    <aside class="side" aria-label="Your three-room route">
-      <h3>Your stops</h3>
-      <p>Choose any stop to jump to it.</p>
-      <ol class="route-list" id="route-list"></ol>
-      <a class="browse-side" href="#archive">Browse all six exhibits ↓</a>
-      <div class="stamp-bar" id="stamp-bar" aria-label="Collected stamps"></div>
-    </aside>
-  </section>
-<section class="archive" id="archive" aria-labelledby="archive-title">
-    <div class="section-heading">
-      <h2 id="archive-title">Browse all six exhibits</h2>
-      <p id="arch-sub">The full collection in chronological order, 2020 to 2023. Each card links to its source and the exhibit's mini-game.</p>
-    </div>
-    <div id="rooms"></div>
-    <noscript><p>The guided route needs JavaScript, but the evidence is still available in the page source.</p></noscript>
-  </section>
+<main>
+<div class="ex-list" id="ex-list"></div>
 </main>
-<div class="year-ticker" aria-hidden="true"><div class="year-ticker-inner"><span>2020 · lockdown scrolling</span><span>2021 · P-pop rising</span><span>2022 · revenge travel</span><span>2023 · AI arrives</span><span>2024 · e-wallet everything</span><span>2025 · live selling</span><span>2026 · still scrolling</span><span>2020 · lockdown scrolling</span><span>2021 · P-pop rising</span><span>2022 · revenge travel</span><span>2023 · AI arrives</span><span>2024 · e-wallet everything</span><span>2025 · live selling</span><span>2026 · still scrolling</span></div>
-</div>
-<footer class="foot" id="about"><div class="foot-grid">
-  <div>
-    <strong>The 2020s: Scrolls, Streams &amp; Side Hustles</strong>
-    <p>A student virtual museum by Group 9. The sourced examples reflect particular experiences from 2020 to 2026 and do not represent every Filipino's life.</p>
-    <p>Then/now notes, mini-games, and diagrams are interpretations for comparison.</p>
-  </div>
-  <div>
-    <strong>Image credits</strong>
-    <p>2020s exhibit images via Wikimedia Commons; full credits appear under each exhibit.</p>
-  </div>
-</div></footer>
-<button type="button" id="to-top" aria-label="Back to top" title="Back to top">↑</button>
-<div class="celebrate" id="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrate-title" hidden>
-  <div class="celebrate-card">
-    <div class="celebrate-stamp" aria-hidden="true">★</div>
-    <h2 id="celebrate-title">Certified 2020s kid!</h2>
-    <p>You collected all <strong>14 museum stamps</strong>.<br>Scrolls, streams &amp; side hustles, fully explored.</p>
-    <button type="button" class="action" id="celebrate-close">Keep exploring</button>
-  </div>
-</div>
-<script>window.MUSEUM_DECADE='2020s';</script>
-<script src="wing2020s.js"></script>
-<script src="museum.js"></script>
+<footer class="foot"><div class="foot-grid"><div>
+<strong>The 2000s Called</strong>
+<p>A student virtual museum by Group 9.</p>
+</div></div></footer>
+<button type="button" id="to-top" aria-label="Back to top">↑</button>
+<script>window.MUSEUM_DECADE="2020s";</script>
+<script src="museum.js?v=simple1"></script>
+<script src="wing2020s.js?v=simple1"></script>
+<script>
+(function(){
+const list=document.getElementById('ex-list');
+const EX=window.EXHIBITS20||{}, MED=window.MEDIA20||{};
+const ids=Object.keys(EX).sort((a,b)=>parseInt(EX[a].year)-parseInt(EX[b].year));
+ids.forEach(id=>{
+  const d=EX[id], m=MED[id];
+  const card=document.createElement('article');
+  card.className='ex-card';card.id='exhibit-'+id;
+  let html='<span class="ex-stamp" data-stamp="'+id+'">'+(hasStamp(id)?'🎫':'')+'</span>';
+  html+='<p class="ex-year">'+d.year+'</p><h2>'+d.title+'</h2>';
+  if(m&&m.src)html+='<img class="ex-photo" src="'+m.src+'" alt="'+(m.alt||d.title)+'" loading="lazy">';
+  html+='<div class="ex-body">';
+  html+='<p class="ex-text">'+d.body+'</p>';
+  if(d.then||d.now)html+='<div class="ex-tn"><b>Then:</b> '+(d.then||'')+'<br><b>Now:</b> '+(d.now||'')+'</div>';
+  if(d.sources&&d.sources.length)html+='<p class="ex-src">Source: '+d.sources.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+'</a>').join(' · ')+'</p>';
+  html+='<button class="ex-play'+(hasStamp(id)?' done':'')+'" data-game="'+id+'">'+(hasStamp(id)?'✓ Stamped — play again':'▶ Play the mini-game')+'</button>';
+  html+='<div class="ex-game" hidden></div>';
+  html+='</div>';
+  card.innerHTML=html;
+  list.appendChild(card);
+});
+list.addEventListener('click',function(e){
+  const btn=e.target.closest('.ex-play');
+  if(!btn)return;
+  const id=btn.dataset.game, d=EX[id];
+  const box=btn.parentElement.querySelector('.ex-game');
+  const G=window.GAMESALL||{}, gf=G[d.game];
+  if(typeof gf!=='function'){box.hidden=false;box.innerHTML='<p>Game unavailable.</p>';return;}
+  const spec=gf();
+  box.hidden=false;
+  box.innerHTML='<h4>'+spec.title+'</h4><p class="mini-msg">'+spec.intro+'</p><div class="mini-stage"></div><p class="mini-msg" data-res style="font-weight:700;min-height:1.5em"></p>';
+  const stageEl=box.querySelector('.mini-stage'), res=box.querySelector('[data-res]');
+  let cleanup=null;
+  try{
+    spec.render(stageEl,{
+      win:function(m){if(cleanup)cleanup();res.textContent=m;awardStamp(id);btn.classList.add('done');btn.innerHTML='✓ Stamped — play again';const st=document.querySelector('[data-stamp="'+id+'"]');if(st)st.textContent='🎫';updateStampUI();},
+      lose:function(m){if(cleanup)cleanup();res.textContent=m;}
+    },function(fn){cleanup=fn;});
+  }catch(err){box.innerHTML='<p>Game failed to start.</p>';}
+});
+})();
+</script>
 </body>
 </html>

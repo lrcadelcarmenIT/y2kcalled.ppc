@@ -76,8 +76,7 @@ function renderExhibit(){
  const bgEl=document.getElementById('ex-bg');
  if(bgUrl){bgEl.style.backgroundImage='url("'+bgUrl+'")';bgEl.style.backgroundColor='';}
  else{bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#141c2e';}
- // restart the 10s ken-burns for the new exhibit
- bgEl.style.animation='none';void bgEl.offsetWidth;bgEl.style.animation='';
+
  const frame=document.getElementById('ex-frame');
  if(photoUrl){
   frame.innerHTML='<img src="'+photoUrl+'" alt="">';
@@ -149,7 +148,93 @@ function buildChrome(){
  renderExhibit();
  syncChrome();
 }
+/* ---------- swipe to change exhibits ---------- */
+(function(){
+ let sx=0,sy=0,swiping=false;
+ const THRESH=60;
+ stage.addEventListener('touchstart',function(e){
+  const t=e.changedTouches[0];sx=t.clientX;sy=t.clientY;swiping=false;
+ },{passive:true});
+ stage.addEventListener('touchmove',function(e){
+  if(!sx)return;
+  const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+  if(Math.abs(dx)>20&&Math.abs(dx)>Math.abs(dy)*1.5)swiping=true;
+ },{passive:true});
+ stage.addEventListener('touchend',function(e){
+  if(!swiping){sx=0;return;}
+  const t=e.changedTouches[0],dx=t.clientX-sx;
+  if(dx<-THRESH){EXIDX[cur]++;renderExhibit();}
+  else if(dx>THRESH){EXIDX[cur]--;renderExhibit();}
+  sx=0;swiping=false;
+ },{passive:true});
+ // mouse drag for desktop
+ let mdown=false,mx=0;
+ stage.addEventListener('mousedown',function(e){mdown=true;mx=e.clientX;});
+ window.addEventListener('mouseup',function(e){
+  if(!mdown)return;mdown=false;
+  const dx=e.clientX-mx;
+  if(dx<-THRESH){EXIDX[cur]++;renderExhibit();}
+  else if(dx>THRESH){EXIDX[cur]--;renderExhibit();}
+ });
+ // suppress click after a drag-swipe
+ stage.addEventListener('click',function(e){
+  if(swiping){e.stopPropagation();e.preventDefault();}
+ },true);
+})();
+
+/* ---------- tilt parallax on the painting ---------- */
+(function(){
+ const frame=function(){return document.getElementById('ex-frame');};
+ const MAX=7; // max degrees, keep it subtle
+ let raf=null,tx=0,ty=0;
+ function apply(){
+  const f=frame();if(!f)return;
+  f.style.transform='perspective(900px) rotateY('+tx+'deg) rotateX('+ty+'deg)';
+  raf=null;
+ }
+ function tilt(x,y){
+  tx=Math.max(-MAX,Math.min(MAX,x));
+  ty=Math.max(-MAX,Math.min(MAX,y));
+  if(!raf)raf=requestAnimationFrame(apply);
+ }
+ function reset(){tilt(0,0);}
+ // phone tilt
+ window.addEventListener('deviceorientation',function(e){
+  if(e.gamma==null||e.beta==null)return;
+  tilt(e.gamma/6,-(e.beta-45)/6);
+ });
+ // desktop mouse
+ stage.addEventListener('mousemove',function(e){
+  if('ontouchstart' in window)return;
+  const r=stage.getBoundingClientRect();
+  const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
+  tilt(px*MAX*2,-py*MAX*2);
+ });
+ stage.addEventListener('mouseleave',reset);
+ // reset tilt when exhibit changes
+ const _render=renderExhibit;
+ renderExhibit=function(){reset();_render();};
+})();
+
 buildChrome();
+
+/* ---------- stamp progress nudge ---------- */
+(function(){
+ function updateNudge(){
+  const el=document.getElementById('stamp-nudge');
+  if(!el||!window.stamps)return;
+  try{
+   const s=window.stamps()||{};
+   const n=Object.keys(s).length, total=17;
+   if(n>=total){el.innerHTML='🎫 <b>All '+total+' stamps collected!</b> Certified time traveler.';}
+   else if(n>0){el.innerHTML='🎫 <b>'+n+'/'+total+' stamps</b> — play mini-games in the <a href="exhibits.html">Exhibit Halls</a> to collect them all.';}
+   else{el.innerHTML='🎫 <b>0/'+total+' stamps</b> — play mini-games in the <a href="exhibits.html">Exhibit Halls</a> to start your collection.';}
+  }catch(e){}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateNudge);
+ else updateNudge();
+ window.addEventListener('focus',updateNudge);
+})();
 
 window.TOUR_API={
  gotoScene:gotoScene,

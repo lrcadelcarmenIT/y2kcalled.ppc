@@ -4,100 +4,94 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Exhibit Halls · The 2000s Called</title>
-<meta name="description" content="A Philippine pop culture virtual museum, 2000–2010. Eleven exhibits, fourteen games, one decade.">
-<link rel="stylesheet" href="museum.css">
+<meta name="description" content="Philippine pop culture exhibits, 2000 to 2010.">
+<link rel="stylesheet" href="museum.css?v=simple1">
+<style>
+.ex-list{max-width:760px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:28px}
+.ex-card{background:#fff;border:2px solid #141c2e;border-radius:14px;overflow:hidden}
+.ex-card .ex-photo{width:100%;max-height:320px;object-fit:cover;display:block;background:#0e1a2e}
+.ex-card .ex-body{padding:20px 22px}
+.ex-card .ex-year{font-family:'Space Mono',monospace;font-weight:700;color:#8a6d3b;letter-spacing:.12em;font-size:.8rem;margin:0 0 4px}
+.ex-card h2{margin:0 0 10px;font-size:1.45rem}
+.ex-card .ex-text{color:#2b3547;margin:0 0 12px;line-height:1.6}
+.ex-card .ex-tn{background:#f6f1e5;border-left:4px solid #c9a227;padding:10px 14px;border-radius:0 8px 8px 0;margin:0 0 12px;font-size:.92rem}
+.ex-card .ex-src{font-size:.82rem;color:#5a6577;margin:0 0 14px}
+.ex-card .ex-src a{color:#1a56db}
+.ex-play{width:100%;background:#f4c65b;border:none;border-radius:10px;padding:14px;font-weight:800;font-size:1rem;cursor:pointer;color:#141c2e}
+.ex-play:hover{background:#ffd97a}
+.ex-play.done{background:#3fae6b;color:#fff}
+.ex-game{margin-top:14px;background:#0e1a2e;border-radius:10px;padding:16px;color:#eaf3f0}
+.ex-game h4{color:#f4c65b;margin:0 0 8px}
+.ex-game .mini-msg{color:#b9c8ca}
+.ex-stamp{float:right;font-size:1.4rem}
+@media(max-width:640px){.ex-card .ex-body{padding:16px}.ex-card h2{font-size:1.2rem}}
+</style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
 <canvas id="confetti-canvas" aria-hidden="true"></canvas>
-<a class="skip" href="#top">Skip to content</a>
-<div class="marquee" aria-hidden="true"><div class="marquee-inner">
-<span>★ ADMIT ONE ★ THE 2000s CALLED ★ TEXTS, TV &amp; TAMBAYAN ★ 11 EXHIBITS · 14 GAMES ★ COLLECT ALL 11 STAMPS ★</span>
-<span>★ ADMIT ONE ★ THE 2000s CALLED ★ TEXTS, TV &amp; TAMBAYAN ★ 11 EXHIBITS · 14 GAMES ★ COLLECT ALL 11 STAMPS ★</span>
-</div>
-</div>
 <header class="mast"><div class="shell mast-row">
   <a class="mark" href="index.html">THE 2000s <b>CALLED.</b></a>
   <nav aria-label="Main navigation">
-    <a href="index.html" id="nav-home">Lobby</a>
-    <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
-    <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
-    <a href="guestbook.html" id="nav-gb">Guestbook</a>
-    <button type="button" class="badge off" id="lcd-toggle" aria-pressed="false" title="Turn the whole museum into a Nokia screen">NOKIA MODE</button>
-    <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
-    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/9</b></span>
+    <a href="index.html">Lobby</a>
+    <a href="exhibits.html" aria-current="page">Exhibit Halls</a>
+    <a href="play.html">Arcade &amp; Playground</a>
+    <a href="guestbook.html">Guestbook</a>
+    <a href="walk.html">Grand Hall</a>
+    <span class="badge off" id="stamp-badge"><span class="dot"></span>STAMPS <b id="stamp-count">0/11</b></span>
   </nav>
 </div></header>
-
-<main id="top">
-<section class="intro" id="choose" aria-labelledby="page-title"><div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div><div class="shell">
-    <div class="intro-grid">
-      <div class="intro-copy">
-        <p class="eyebrow">A PHILIPPINE POP CULTURE MUSEUM · 2000–2010</p>
-        <h1 id="page-title">TEXTS, TV &amp;<br><em>TAMBAYAN.</em></h1>
-        <p class="lead">Cost, timing, and place shaped texting, TV, and meetups from 2000 to 2010. Pick a question, follow three sourced stops, and play a mini-game at each exhibit.</p>
-        <div class="hero-ticket"><span>ADMIT ONE</span><strong>11 STOPS · 11 EXHIBITS · 14 GAMES</strong><span>PH · 2000–2010</span></div>
-      </div>
-      <div class="cover-art" aria-label="Period images from the museum">
-        <figure class="cover-photo main-photo"><img src="phones-2005.jpg" alt="Three mobile handsets photographed in 2005" width="720" height="515"><figcaption>01 / A HANDSET IN THE 2000s <span>2005</span></figcaption></figure>
-        <figure class="cover-photo inset-photo"><img src="mall-cyberzone-2007.jpg" alt="SM Mall of Asia CyberZone, Pasay, photographed in 2007" width="1024" height="768"><figcaption>02 / PASAY, PH <span>2007</span></figcaption></figure>
-        <div class="cover-stamp" aria-hidden="true">00<span>-</span>10</div>
-      </div>
-    </div>
-    <div class="entry-bar"><fieldset class="lens-set">
-      <legend>Choose a question to explore</legend>
-      <p class="route-note">Follow each route stop by stop. Every exhibit has a source and a mini-game. Switch routes anytime. Use ← / → keys or swipe on the stage.</p>
-      <div class="lens-options">
-        <button type="button" class="lens-button" data-lens="cost" aria-pressed="true">See the cost<small>Who could afford to join?</small></button>
-        <button type="button" class="lens-button" data-lens="time" aria-pressed="false">Trace the time<small>When could you join?</small></button>
-        <button type="button" class="lens-button" data-lens="place" aria-pressed="false">Explore places<small>Where did it happen?</small></button>
-      </div>
-    </fieldset></div>
-  </div></section>
-<section class="experience" id="route" aria-label="Interactive museum route">
-    <article class="stage" id="stage" tabindex="-1">
-      <div class="stage-top"><span class="label" id="lens-label">COST LENS</span><span class="counter" id="step-count">01 / 03</span></div>
-      <div class="progress" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="step-dots" id="step-dots" aria-hidden="true"></div>
-      <div class="stage-content" id="stage-content" aria-live="polite"></div>
-    </article>
-    <aside class="side" aria-label="Your three-room route">
-      <h3>Your stops</h3>
-      <p>Choose any stop to jump to it.</p>
-      <ol class="route-list" id="route-list"></ol>
-      <a class="browse-side" href="#archive">Browse all eleven exhibits ↓</a>
-      <div class="stamp-bar" id="stamp-bar" aria-label="Collected stamps"></div>
-    </aside>
-  </section>
-<section class="archive" id="archive" aria-labelledby="archive-title">
-    <div class="section-heading">
-      <h2 id="archive-title">Browse all eleven exhibits</h2>
-      <p id="arch-sub">The full collection in chronological order, 2000 to 2010. Each card links to its source and the exhibit's mini-game.</p>
-    </div>
-    <div id="rooms"></div>
-    <noscript><p>The guided route needs JavaScript, but the evidence is still available in the page source.</p></noscript>
-  </section>
+<main>
+<div class="ex-list" id="ex-list"></div>
 </main>
-<footer class="foot" id="about"><div class="foot-grid">
-  <div>
-    <strong>The 2000s Called: Text, Time Zones &amp; Tambayan</strong>
-    <p>A student virtual museum by Group 9. The sourced examples reflect particular experiences from 2000 to 2010 and do not represent every Filipino's life.</p>
-    <p>Then/now notes, mini-games, and diagrams are interpretations for comparison.</p>
-  </div>
-  <div>
-    <strong>Image credits</strong>
-    <p><a href="https://commons.wikimedia.org/wiki/File:Cell_phones_2005.jpg">Cell phones 2005</a> © Larry D. Moore, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:SMCyberZone_-_SM_MoA.jpg">SM CyberZone (2007)</a> by Exec8, public domain; <a href="https://commons.wikimedia.org/wiki/File:Ricoh_Caplio_R6.jpg">Ricoh Caplio R6</a> by Amagase, <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>; <a href="https://commons.wikimedia.org/wiki/File:Internet_caf%C3%A9_in_Brgy._San_Jose,_Luzon.jpg">Internet café in Cavite (2010)</a> by Pfc. Nathaniel J. Henry / U.S. Marine Corps, U.S. public domain; <a href="https://commons.wikimedia.org/wiki/File:Student_with_computer.JPG">Student with computer</a> by Courtcourtwest, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Nokia_3310_blue.jpg">Nokia 3310</a> by Michael Brandtner, public domain; <a href="https://commons.wikimedia.org/wiki/File:Callcentre.jpg">Call centre (2006)</a> by Petiatil, public domain; <a href="https://commons.wikimedia.org/wiki/File:1990s_Television_Set.jpg">CRT television</a> by ProtoKiwi, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Manny_Pacman_Pacquiao_1.jpg">Manny Pacquiao</a> by SCRyan, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</p>
-  </div>
-</div></footer>
-<button type="button" id="to-top" aria-label="Back to top" title="Back to top">↑</button>
-<div class="celebrate" id="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrate-title" hidden>
-  <div class="celebrate-card">
-    <div class="celebrate-stamp" aria-hidden="true">★</div>
-    <h2 id="celebrate-title">Certified 2000s kid!</h2>
-    <p>You collected all <strong>9 museum stamps</strong>.<br>Texts, TV &amp; tambayan, fully explored.</p>
-    <button type="button" class="action" id="celebrate-close">Keep exploring</button>
-  </div>
-</div>
-<script src="museum.js"></script>
+<footer class="foot"><div class="foot-grid"><div>
+<strong>The 2000s Called</strong>
+<p>A student virtual museum by Group 9.</p>
+</div></div></footer>
+<button type="button" id="to-top" aria-label="Back to top">↑</button>
+<script src="museum.js?v=simple1"></script>
+<script>
+(function(){
+const list=document.getElementById('ex-list');
+const EX=window.EXHIBITS00||{}, MED=window.MEDIA00||{};
+const ids=Object.keys(EX).sort((a,b)=>parseInt(EX[a].year)-parseInt(EX[b].year));
+ids.forEach(id=>{
+  const d=EX[id], m=MED[id];
+  const card=document.createElement('article');
+  card.className='ex-card';card.id='exhibit-'+id;
+  let html='<span class="ex-stamp" data-stamp="'+id+'">'+(hasStamp(id)?'🎫':'')+'</span>';
+  html+='<p class="ex-year">'+d.year+'</p><h2>'+d.title+'</h2>';
+  if(m&&m.src)html+='<img class="ex-photo" src="'+m.src+'" alt="'+(m.alt||d.title)+'" loading="lazy">';
+  html+='<div class="ex-body">';
+  html+='<p class="ex-text">'+d.body+'</p>';
+  if(d.then||d.now)html+='<div class="ex-tn"><b>Then:</b> '+(d.then||'')+'<br><b>Now:</b> '+(d.now||'')+'</div>';
+  if(d.sources&&d.sources.length)html+='<p class="ex-src">Source: '+d.sources.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+'</a>').join(' · ')+'</p>';
+  html+='<button class="ex-play'+(hasStamp(id)?' done':'')+'" data-game="'+id+'">'+(hasStamp(id)?'✓ Stamped — play again':'▶ Play the mini-game')+'</button>';
+  html+='<div class="ex-game" hidden></div>';
+  html+='</div>';
+  card.innerHTML=html;
+  list.appendChild(card);
+});
+list.addEventListener('click',function(e){
+  const btn=e.target.closest('.ex-play');
+  if(!btn)return;
+  const id=btn.dataset.game, d=EX[id];
+  const box=btn.parentElement.querySelector('.ex-game');
+  const G=window.GAMESALL||{}, gf=G[d.game];
+  if(typeof gf!=='function'){box.hidden=false;box.innerHTML='<p>Game unavailable.</p>';return;}
+  const spec=gf();
+  box.hidden=false;
+  box.innerHTML='<h4>'+spec.title+'</h4><p class="mini-msg">'+spec.intro+'</p><div class="mini-stage"></div><p class="mini-msg" data-res style="font-weight:700;min-height:1.5em"></p>';
+  const stageEl=box.querySelector('.mini-stage'), res=box.querySelector('[data-res]');
+  let cleanup=null;
+  try{
+    spec.render(stageEl,{
+      win:function(m){if(cleanup)cleanup();res.textContent=m;awardStamp(id);btn.classList.add('done');btn.innerHTML='✓ Stamped — play again';const st=document.querySelector('[data-stamp="'+id+'"]');if(st)st.textContent='🎫';updateStampUI();},
+      lose:function(m){if(cleanup)cleanup();res.textContent=m;}
+    },function(fn){cleanup=fn;});
+  }catch(err){box.innerHTML='<p>Game failed to start.</p>';}
+});
+})();
+</script>
 </body>
 </html>
