@@ -842,6 +842,7 @@ window.LENSES20 = {
 window.MEDIA20={
  hidilyn:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Hidilyn%20Diaz%202015.jpg?width=600',alt:'Hidilyn Diaz in 2015',caption:'Hidilyn Diaz (2015) \u00b7 via Wikimedia Commons'},
  halalan:{src:'halalan2025.jpg',alt:'ABS-CBN Halalan 2025 logo',caption:'Halalan 2025 \u00b7 ABS-CBN coverage logo'},
+ gta6:{src:'gta6.jpg',alt:'GTA 6 key artwork: Lucia and Jason in Vice City',caption:'Grand Theft Auto VI key artwork \u00b7 Rockstar Games'},
  tiktok:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/TikTok%20app.jpg?width=600',alt:'TikTok app icon on a phone screen',caption:'TikTok app \u00b7 via Wikimedia Commons'},
  mlbb:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Mobile%20Legends%20Bang%20Bang%20character%20Philippines%20full%20shot.jpg?width=480',alt:'Mobile Legends: Bang Bang character artwork',caption:'Mobile Legends: Bang Bang \u00b7 via Wikimedia Commons'},
  bini:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',alt:'BINI performing at a concert in 2025',caption:'BINI, Binified concert 2025 \u00b7 via Wikimedia Commons'},
