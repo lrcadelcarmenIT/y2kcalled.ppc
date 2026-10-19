@@ -356,6 +356,20 @@ updateWalkBadge();
  requestAnimationFrame(loop);
  if(!modalOpen)draw();
 })();
+// bridge for the time machine console (outside the IIFE)
+window.TOUR_API={
+ gotoScene:function(id){gotoScene(id);},
+ yawForYear:function(year,hall){
+  const ids=hall==='hall00'?HALL00:HALL20;
+  let best=0,bd=9999;
+  ids.forEach(function(id,i){
+   const y=parseInt(exData(id).d.year,10);
+   const d=Math.abs(y-year);
+   if(d<bd){bd=d;best=i;}
+  });
+  return best*(360/ids.length);
+ }
+};
 })();
 
 /* ---------- Time machine console ---------- */
@@ -374,16 +388,7 @@ function tmStep(d){
   tmIdx=Math.min(TM_YEARS.length-1,Math.max(0,tmIdx+d));
   tmPaint();
 }
-function yawForYear(year,hall){
-  const ids=hall==='hall00'?HALL00:HALL20;
-  let best=0,bd=9999;
-  ids.forEach((id,i)=>{
-    const y=parseInt(exData(id).d.year,10);
-    const d=Math.abs(y-year);
-    if(d<bd){bd=d;best=i;}
-  });
-  return best*(360/ids.length);
-}
+function yawForYear(year,hall){return window.TOUR_API.yawForYear(year,hall);}
 function openTimeMachine(){
   if(tmBusy)return;
   tmPaint();
@@ -399,7 +404,7 @@ function timeTravel(key){
   setTimeout(()=>{
     document.getElementById('timetravel').hidden=true;
     closeTimeMachine();
-    gotoScene(key);
+    window.TOUR_API.gotoScene(key);
   },1200);
 }
 function tmEngage(){
@@ -429,7 +434,7 @@ function tmEngage(){
           document.getElementById('timetravel').hidden=true;
           closeTimeMachine();
           try{arriveYaw=yawForYear(yr,hall);}catch(e){arriveYaw=0;}
-          gotoScene(hall);
+          window.TOUR_API.gotoScene(hall);
           tmBusy=false;
           engage.disabled=false;
           tmPaint();
