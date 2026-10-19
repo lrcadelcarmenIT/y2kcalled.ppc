@@ -343,6 +343,10 @@ function buildChrome(){
  next.setAttribute('aria-label','Next exhibit');
  next.addEventListener('click',()=>{EXIDX[cur]=(EXIDX[cur]||0)+1;});
  stage.appendChild(next);
+ const tm=document.createElement('button');tm.id='tour-tm';tm.className='tour-tmbtn';tm.innerHTML='\uD83D\uDD70\uFE0F';
+ tm.setAttribute('aria-label','Open time machine');
+ tm.addEventListener('click',()=>{if(window.openTimeMachine)window.openTimeMachine();});
+ stage.appendChild(tm);
  const thumbs=document.createElement('div');thumbs.id='tour-thumbs';thumbs.className='tour-thumbs';
  Object.keys(PANOS).forEach(id=>{
   const w=document.createElement('button');w.className='tour-thumbwrap';w.dataset.scene=id;

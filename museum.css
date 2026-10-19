@@ -472,3 +472,8 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
 .tm-core.ticking .tm-hand.hour{animation:tmspin 4s linear infinite}
 .tm-core.ticking .tm-hand.minute{animation:tmspin 1s linear infinite}
 @keyframes tmspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ---------- time travel button ---------- */
+.tour-tmbtn{position:absolute;top:16px;right:12px;width:44px;height:44px;border-radius:50%;background:rgba(10,14,24,.65);border:1px solid rgba(0,212,255,.5);font-size:22px;cursor:pointer;z-index:6;box-shadow:0 0 14px rgba(0,212,255,.25)}
+.tour-tmbtn:hover{background:rgba(10,14,24,.9)}
+@media(max-width:600px){.tour-tmbtn{width:40px;height:40px;font-size:20px;top:12px;right:8px}}
