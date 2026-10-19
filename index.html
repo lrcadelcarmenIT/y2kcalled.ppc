@@ -4,16 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lobby · The 2000s Called</title>
-<meta name="description" content="A Philippine pop culture virtual museum, 2000–2010. Fourteen exhibits, eighteen games, one decade.">
+<meta name="description" content="A Philippine pop culture virtual museum, 2000–2026. Twenty-eight exhibits, thirty-four games, two decades.">
 <link rel="stylesheet" href="museum.css">
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
 <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 <a class="skip" href="#top">Skip to content</a>
-<div class="marquee" aria-hidden="true"><div class="marquee-inner">
+<div class="marquee" aria-hidden="true">
+<div class="marquee-inner decade-pane" data-pane="2000s">
 <span>★ ADMIT ONE ★ THE 2000s CALLED ★ TEXTS, TV &amp; TAMBAYAN ★ 14 EXHIBITS · 17 GAMES ★ COLLECT ALL 14 STAMPS ★</span>
 <span>★ ADMIT ONE ★ THE 2000s CALLED ★ TEXTS, TV &amp; TAMBAYAN ★ 14 EXHIBITS · 17 GAMES ★ COLLECT ALL 14 STAMPS ★</span>
+</div>
+<div class="marquee-inner decade-pane" data-pane="2020s" hidden>
+<span>★ ADMIT ONE ★ THE 2020s CALLING ★ SCROLLS, STREAMS &amp; SIDE HUSTLES ★ 14 EXHIBITS · 17 GAMES ★ COLLECT ALL 14 STAMPS ★</span>
+<span>★ ADMIT ONE ★ THE 2020s CALLING ★ SCROLLS, STREAMS &amp; SIDE HUSTLES ★ 14 EXHIBITS · 17 GAMES ★ COLLECT ALL 14 STAMPS ★</span>
 </div>
 </div>
 <header class="mast"><div class="shell mast-row">
@@ -23,19 +28,23 @@
     <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
     <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
     <a href="guestbook.html" id="nav-gb">Guestbook</a>
+    <span class="decade-toggle" role="group" aria-label="Choose decade">
+      <button type="button" class="dec-opt on" data-decade="2000s" aria-pressed="true">2000s</button>
+      <button type="button" class="dec-opt" data-decade="2020s" aria-pressed="false">2020s</button>
+    </span>
     <button type="button" class="badge off" id="lcd-toggle" aria-pressed="false" title="Turn the whole museum into a Nokia screen">NOKIA MODE</button>
     <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
-    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/9</b></span>
+    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/28</b></span>
   </nav>
 </div></header>
 
 <main id="top">
   <section class="intro lobby-hero" id="choose" aria-labelledby="page-title"><div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div><div class="shell">
-    <div class="intro-grid">
+    <div class="intro-grid decade-pane" data-pane="2000s">
       <div class="intro-copy">
         <p class="eyebrow">A PHILIPPINE POP CULTURE MUSEUM · 2000–2010</p>
         <h1 id="page-title">TEXTS, TV &amp;<br><em>TAMBAYAN.</em></h1>
-        <p class="lead">Fourteen exhibits, eighteen games, one decade. Pick a wing on the phone and step back in.</p>
+        <p class="lead">Fourteen exhibits, seventeen games, one decade. Pick a wing on the phone and step back in.</p>
         <div class="hero-ticket"><span>ADMIT ONE</span><strong>03 WINGS · 14 EXHIBITS · 17 GAMES</strong><span>PH · 2000–2010</span></div>
       </div>
       <div class="cover-art" aria-label="Period images from the museum">
@@ -44,14 +53,28 @@
         <div class="cover-stamp" aria-hidden="true">00<span>-</span>10</div>
       </div>
     </div>
+    <div class="intro-grid decade-pane" data-pane="2020s" hidden>
+      <div class="intro-copy">
+        <p class="eyebrow">A PHILIPPINE POP CULTURE MUSEUM · 2020–2026</p>
+        <h1>SCROLLS, STREAMS &amp;<br><em>SIDE HUSTLES.</em></h1>
+        <p class="lead">Fourteen exhibits, seventeen games, one present. Pick a wing on the phone and step into now.</p>
+        <div class="hero-ticket"><span>ADMIT ONE</span><strong>03 WINGS · 14 EXHIBITS · 17 GAMES</strong><span>PH · 2020–2026</span></div>
+      </div>
+      <div class="cover-art" aria-label="Period images from the museum">
+        <figure class="cover-photo main-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Smartphone.jpg?width=720" alt="A modern smartphone held in a hand" width="720" height="515"><figcaption>01 / THE POCKET STUDIO <span>2024</span></figcaption></figure>
+        <figure class="cover-photo inset-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/9598Community%20Pantry%20in%20the%20Philippines%2002.jpg?width=1024" alt="A community pantry in the Philippines" width="1024" height="768"><figcaption>02 / MANILA, PH <span>2021</span></figcaption></figure>
+        <div class="cover-stamp" aria-hidden="true">20<span>-</span>26</div>
+      </div>
+    </div>
   </div></section>
 
   <section class="lobby-menu" aria-labelledby="menu-title">
     <div class="section-heading">
       <h2 id="menu-title">Main menu</h2>
-      <p>One phone, three wings. Tap the D-pad, tap a menu item, or click the screen and use ↑ ↓ + Enter.</p>
+      <p class="decade-pane" data-pane="2000s">One phone, three wings. Tap the D-pad, tap a menu item, or click the screen and use ↑ ↓ + Enter.</p>
+      <p class="decade-pane" data-pane="2020s" hidden>One phone, three wings. Tap an app icon, or swipe the screen for the second page.</p>
     </div>
-    <div class="nokia-wrap">
+    <div class="nokia-wrap decade-pane" data-pane="2000s">
       <div class="nokia-phone">
         <div class="nokia-brand">NOKIA</div>
         <div class="nokia-screen" id="nokia-screen" tabindex="0" role="menu" aria-label="Museum main menu. Up and down to choose, Enter to go.">
@@ -73,20 +96,65 @@
       <div class="wing-cards">
         <a class="wing-card" href="exhibits.html">
           <span class="wnum">WING 01</span>
-          <h3>&#128248; Exhibit Halls</h3>
+          <h3>🏛️ Exhibit Halls</h3>
           <p>Fourteen sourced exhibits across three rooms: technology, global links, shared spaces. Pick a lens (cost, time, place), follow the guided route, and play a mini-game at every stop.</p>
           <span class="go">Enter the halls &rarr;</span>
         </a>
         <a class="wing-card" href="play.html">
           <span class="wnum">WING 02</span>
-          <h3>&#128377; Arcade &amp; Playground</h3>
+          <h3>🎮 Arcade &amp; Playground</h3>
           <p>Three bonus games from the phone in your pocket, the "Which 2000s icon are you?" quiz with a shareable ID card, the 2000s photo booth, and a fully synthesized soundboard.</p>
           <span class="go">Start playing &rarr;</span>
         </a>
         <a class="wing-card" href="guestbook.html">
           <span class="wnum">WING 03</span>
-          <h3>&#128214; Guestbook</h3>
+          <h3>📖 Guestbook</h3>
           <p>Sign the shared guestbook, see who's visiting right now, and pin your own 2000s memory on the community wall.</p>
+          <span class="go">Sign in &rarr;</span>
+        </a>
+      </div>
+    </div>
+    <div class="phone-wrap decade-pane" data-pane="2020s" hidden>
+      <div class="smartphone" aria-label="A modern smartphone">
+        <div class="sp-notch" aria-hidden="true"></div>
+        <div class="sp-screen" id="phone-screen" tabindex="0" role="menu" aria-label="Museum home screen. Tap an app to open it, swipe for the second page.">
+          <div class="sp-status"><span id="sp-clock">--:--</span><span class="sp-sig" aria-hidden="true">📶 🔋</span></div>
+          <div class="sp-pages" id="sp-pages">
+            <div class="sp-page" role="group" aria-label="Home screen page 1">
+              <button type="button" class="sp-app" data-go="exhibits20.html"><span class="sp-icon">🏛️</span><span class="sp-name">Exhibit Halls</span></button>
+              <button type="button" class="sp-app" data-go="play20.html"><span class="sp-icon">🎮</span><span class="sp-name">Arcade</span></button>
+              <button type="button" class="sp-app" data-go="guestbook.html"><span class="sp-icon">📖</span><span class="sp-name">Guestbook</span></button>
+              <button type="button" class="sp-app" data-go="play20.html#quiz"><span class="sp-icon">🪪</span><span class="sp-name">Quiz</span></button>
+            </div>
+            <div class="sp-page" role="group" aria-label="Home screen page 2">
+              <button type="button" class="sp-app" data-go="play20.html#playground"><span class="sp-icon">📸</span><span class="sp-name">Photo booth</span></button>
+              <button type="button" class="sp-app" data-go="exhibits20.html#archive"><span class="sp-icon">🗂️</span><span class="sp-name">Archive</span></button>
+              <button type="button" class="sp-app" data-go="exhibits20.html#route"><span class="sp-icon">🧭</span><span class="sp-name">Guided route</span></button>
+              <button type="button" class="sp-app" data-go="play20.html#arcade"><span class="sp-icon">🕹️</span><span class="sp-name">Bonus games</span></button>
+            </div>
+          </div>
+          <div class="sp-dots" id="sp-dots" aria-hidden="true"></div>
+          <div class="sp-hint">tap an app · swipe for more</div>
+        </div>
+        <div class="sp-homebar" aria-hidden="true"></div>
+      </div>
+      <div class="wing-cards">
+        <a class="wing-card" href="exhibits20.html">
+          <span class="wnum">WING 01</span>
+          <h3>🏛️ Exhibit Halls</h3>
+          <p>Fourteen sourced exhibits across three rooms: screens, money, remixed life. Pick a lens (cost, time, place), follow the guided route, and play a mini-game at every stop.</p>
+          <span class="go">Enter the halls &rarr;</span>
+        </a>
+        <a class="wing-card" href="play20.html">
+          <span class="wnum">WING 02</span>
+          <h3>🎮 Arcade &amp; Playground</h3>
+          <p>Three bonus games from the phone in your pocket, the "Which 2020s icon are you?" quiz with a shareable ID card, the 2020s photo booth, and a fully synthesized soundboard.</p>
+          <span class="go">Start playing &rarr;</span>
+        </a>
+        <a class="wing-card" href="guestbook.html">
+          <span class="wnum">WING 03</span>
+          <h3>📖 Guestbook</h3>
+          <p>Sign the shared guestbook, see who's visiting right now, and pin your own 2020s memory on the community wall.</p>
           <span class="go">Sign in &rarr;</span>
         </a>
       </div>
@@ -94,13 +162,15 @@
   </section>
 
   <div class="stats-strip"><div class="shell stats-row" aria-label="Museum at a glance">
-    <div><b>14</b><span>exhibits</span></div>
-    <div><b>18</b><span>games</span></div>
-    <div><b>14</b><span>stamps</span></div>
-    <div><b>03</b><span>guided routes</span></div>
+    <div><b>28</b><span>exhibits</span></div>
+    <div><b>34</b><span>games</span></div>
+    <div><b>28</b><span>stamps</span></div>
+    <div><b>06</b><span>guided routes</span></div>
   </div></div>
 </main>
-<div class="year-ticker" aria-hidden="true"><div class="year-ticker-inner"><span>2000 · Y2K survived</span><span>2001 · texting capital</span><span>2002 · OFW videophones</span><span>2003 · Meteor Garden</span><span>2004 · camera phones</span><span>2005 · prepaid load</span><span>2006 · piso net boom</span><span>2007 · Friendster era</span><span>2008 · Pacquiao nights</span><span>2009 · social games</span><span>2010 · smartphones arrive</span><span>2000 · Y2K survived</span><span>2001 · texting capital</span><span>2002 · OFW videophones</span><span>2003 · Meteor Garden</span><span>2004 · camera phones</span><span>2005 · prepaid load</span><span>2006 · piso net boom</span><span>2007 · Friendster era</span><span>2008 · Pacquiao nights</span><span>2009 · social games</span><span>2010 · smartphones arrive</span></div>
+<div class="year-ticker" aria-hidden="true">
+<div class="year-ticker-inner decade-pane" data-pane="2000s"><span>2000 · Y2K survived</span><span>2001 · texting capital</span><span>2002 · OFW videophones</span><span>2003 · Meteor Garden</span><span>2004 · camera phones</span><span>2005 · prepaid load</span><span>2006 · piso net boom</span><span>2007 · Friendster era</span><span>2008 · Pacquiao nights</span><span>2009 · social games</span><span>2010 · smartphones arrive</span><span>2000 · Y2K survived</span><span>2001 · texting capital</span><span>2002 · OFW videophones</span><span>2003 · Meteor Garden</span><span>2004 · camera phones</span><span>2005 · prepaid load</span><span>2006 · piso net boom</span><span>2007 · Friendster era</span><span>2008 · Pacquiao nights</span><span>2009 · social games</span><span>2010 · smartphones arrive</span></div>
+<div class="year-ticker-inner decade-pane" data-pane="2020s" hidden><span>2020 · lockdown scrolling</span><span>2021 · P-pop rising</span><span>2022 · revenge travel</span><span>2023 · AI arrives</span><span>2024 · e-wallet everything</span><span>2025 · live selling</span><span>2026 · still scrolling</span><span>2020 · lockdown scrolling</span><span>2021 · P-pop rising</span><span>2022 · revenge travel</span><span>2023 · AI arrives</span><span>2024 · e-wallet everything</span><span>2025 · live selling</span><span>2026 · still scrolling</span></div>
 </div>
 <footer class="foot" id="about"><div class="foot-grid">
   <div>
@@ -109,8 +179,8 @@
     <p>Then/now notes, mini-games, and diagrams are interpretations for comparison.</p>
   </div>
   <div>
-    <strong>Image credits</strong>
-    <p><a href="https://commons.wikimedia.org/wiki/File:Cell_phones_2005.jpg">Cell phones 2005</a> © Larry D. Moore, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:SMCyberZone_-_SM_MoA.jpg">SM CyberZone (2007)</a> by Exec8, public domain; <a href="https://commons.wikimedia.org/wiki/File:Ricoh_Caplio_R6.jpg">Ricoh Caplio R6</a> by Amagase, <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a>; <a href="https://commons.wikimedia.org/wiki/File:Internet_caf%C3%A9_in_Brgy._San_Jose,_Luzon.jpg">Internet café in Cavite (2010)</a> by Pfc. Nathaniel J. Henry / U.S. Marine Corps, U.S. public domain; <a href="https://commons.wikimedia.org/wiki/File:Student_with_computer.JPG">Student with computer</a> by Courtcourtwest, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Nokia_3310_blue.jpg">Nokia 3310</a> by Michael Brandtner, public domain; <a href="https://commons.wikimedia.org/wiki/File:Callcentre.jpg">Call centre (2006)</a> by Petiatil, public domain; <a href="https://commons.wikimedia.org/wiki/File:1990s_Television_Set.jpg">CRT television</a> by ProtoKiwi, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; <a href="https://commons.wikimedia.org/wiki/File:Manny_Pacman_Pacquiao_1.jpg">Manny Pacquiao</a> by SCRyan, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>.</p>
+    <strong>The 2020s: Scrolls, Streams &amp; Side Hustles</strong>
+    <p>The present wing covers 2020 to 2026 with the same rules: sourced exhibits, a mini-game at every stop, and stamps for the collection.</p>
   </div>
 </div></footer>
 <button type="button" id="to-top" aria-label="Back to top" title="Back to top">↑</button>
@@ -118,10 +188,11 @@
   <div class="celebrate-card">
     <div class="celebrate-stamp" aria-hidden="true">★</div>
     <h2 id="celebrate-title">Certified 2000s kid!</h2>
-    <p>You collected all <strong>9 museum stamps</strong>.<br>Texts, TV &amp; tambayan, fully explored.</p>
+    <p>You collected all <strong>14 museum stamps</strong>.<br>Texts, TV &amp; tambayan, fully explored.</p>
     <button type="button" class="action" id="celebrate-close">Keep exploring</button>
   </div>
 </div>
+<script src="wing2020s.js"></script>
 <script src="museum.js"></script>
 </body>
 </html>

@@ -280,3 +280,57 @@ body.no-scroll{overflow:hidden}
 #pq-card.deal{animation:carddeal .75s cubic-bezier(.2,1.35,.4,1);transform-origin:center}
 @keyframes carddeal{0%{transform:scale(.55) rotate(-7deg);opacity:0}55%{transform:scale(1.05) rotate(1.6deg);opacity:1}75%{transform:scale(.98) rotate(-.6deg)}100%{transform:scale(1) rotate(0)}}
 @media(prefers-reduced-motion:reduce){#pq-card.deal{animation:none}}
+
+/* ================= 2020s wing ================= */
+.decade-pane[hidden]{display:none!important}
+.decade-toggle{display:inline-flex;border:1.5px solid #2c4a6e;border-radius:20px;overflow:hidden;background:#1a2f4a}
+.dec-opt{background:#1a2f4a;color:#8fa4b5;border:0;padding:6px 13px;font-family:'Space Mono',monospace;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-decoration:none;cursor:pointer}
+.dec-opt.on{background:#f4c65b;color:#0e1a2e}
+a.dec-opt:hover{color:#fff;text-decoration:none}
+a.dec-opt.on:hover{color:#0e1a2e}
+
+/* Smartphone (2020s lobby menu device) */
+.phone-wrap{display:grid;grid-template-columns:340px 1fr;gap:34px;align-items:start;margin-top:8px}
+.smartphone{background:#101418;border:3px solid #0e1a2e;border-radius:44px;padding:14px;box-shadow:7px 7px 0 #0e1a2e;max-width:340px;width:100%;position:relative}
+.sp-notch{position:absolute;top:24px;left:50%;transform:translateX(-50%);width:104px;height:24px;background:#101418;border-radius:13px;z-index:3}
+.sp-screen{background:#20303f;border-radius:30px;min-height:540px;display:flex;flex-direction:column;overflow:hidden;position:relative;color:#f2f6fa;font-family:'Space Mono',monospace;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.sp-screen:focus{outline:3px solid #2b9fe3;outline-offset:3px}
+.sp-status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;font-size:.78rem;font-weight:700}
+.sp-sig{letter-spacing:2px}
+.sp-pages{display:flex;flex:1;transition:transform .28s ease}
+.sp-page{min-width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px;padding:26px 16px;align-content:start}
+.sp-app{background:none;border:0;color:#f2f6fa;display:flex;flex-direction:column;align-items:center;gap:7px;padding:6px 2px;border-radius:12px}
+.sp-app:active{transform:scale(.93)}
+.sp-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;background:#2b9fe3;border:2px solid rgba(255,255,255,.25)}
+.sp-app:nth-child(2) .sp-icon{background:#3fae6b}
+.sp-app:nth-child(3) .sp-icon{background:#f4c65b}
+.sp-app:nth-child(4) .sp-icon{background:#b06ab3}
+.sp-page:nth-child(2) .sp-app:nth-child(1) .sp-icon{background:#e2574c}
+.sp-page:nth-child(2) .sp-app:nth-child(2) .sp-icon{background:#7cc7ee}
+.sp-page:nth-child(2) .sp-app:nth-child(3) .sp-icon{background:#f4c65b}
+.sp-page:nth-child(2) .sp-app:nth-child(4) .sp-icon{background:#2b9fe3}
+.sp-name{font-size:.6rem;font-weight:700;line-height:1.2;text-align:center}
+.sp-dots{display:flex;gap:7px;justify-content:center;padding:6px 0}
+.sp-dots i{width:7px;height:7px;border-radius:50%;background:#5b7085}
+.sp-dots i.on{background:#fff}
+.sp-hint{text-align:center;font-size:.62rem;color:#8fa4b5;padding:0 0 12px}
+.sp-homebar{width:120px;height:5px;border-radius:3px;background:#3a4a5c;margin:10px auto 4px}
+
+/* 2020s accent theme */
+body.d2020s .mast{border-bottom-color:#f4c65b}
+body.d2020s .mark b{color:#f4c65b}
+body.d2020s .lens-button[aria-pressed="true"]{background:#f4c65b}
+body.d2020s .cover-stamp{color:#f4c65b}
+
+/* 2020s arcade games */
+.lhit-screen{min-height:190px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.lhit-row{display:flex;align-items:center;gap:10px}
+.lhit-minion{font-size:1.7rem;width:44px;text-align:center;cursor:pointer;border-radius:8px}
+.lhit-minion:active{transform:scale(1.2)}
+.lhit-hp{flex:1;height:16px;background:#0e1a2e;border-radius:8px;position:relative;overflow:hidden}
+.lhit-fill{position:absolute;left:0;top:0;bottom:0;background:#e2574c}
+.lhit-zone{position:absolute;top:0;bottom:0;background:rgba(244,198,91,.55);border-left:2px solid #f4c65b;border-right:2px solid #f4c65b}
+.fyp-screen{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.fyp-card{font-size:2.6rem}
+.fyp-cap{font-size:.8rem;font-weight:700;max-width:230px}
+@media(max-width:900px){.phone-wrap{grid-template-columns:1fr}.smartphone{margin:0 auto}}
