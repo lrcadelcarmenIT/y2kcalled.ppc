@@ -1,4 +1,4 @@
-const exhibits = {
+const exhibits00 = {
   sms:{room:0,year:'2001',title:'Prepaid texting and the cost of keeping in touch',body:'By 2001, texting had developed its own language and etiquette in the Philippines. Prepaid service helped make short messages an everyday way to keep in touch.',then:'A phone and enough load could make a short message possible; the cost of each send still mattered.',now:'Messaging apps can send photos, voice, and video, but they still require a working device and connection.',question:'Who could afford to keep a conversation going?',flow:[{label:'Prepaid load',detail:'Buying load at a sari-sari store or via a scratch card was the everyday way to top up.'},{label:'Short message',detail:'A 160-character limit pushed users to invent shorthand: "tx" for text, "u" for you.'}],sources:[['Philstar, 15 May 2001','https://www.philstar.com/lifestyle/business-life/2001/05/15/85823/philippine-text-messaging-phenomenon/amp/'],['ITU, 2002','https://www.itu.int/net/wsis/tunis/newsroom/stats/mobile_internet_2002.pdf']],game:'sms'},
   camera:{room:0,year:'2007',title:'Sharing a camera photo took several steps',body:'Sony announced new compact digital cameras in the Philippines in 2007. That same year, Friendster promoted easier photo sharing. Together these show the separate steps between taking a picture and sharing it online.',then:'A camera, a way to transfer the image, and internet access could all be part of sharing a photo.',now:'One connected phone can take a photo and post it in the same session.',question:'How many steps stood between a moment and an online album?',flow:[{label:'Take photo',detail:'A separate compact digital camera, not the phone, was the tool of choice.'},{label:'Transfer',detail:'Images moved via USB cable, memory card, or a CD-R to reach a computer.'},{label:'Share online',detail:'Uploading required a PC and an internet connection, often at an internet café.'}],sources:[['Sony Philippines, 8 Mar 2007','https://www.sony.com.ph/pressrelease?prName=thursday-march-8-2007-business-world-sony-posts-double-digit-sales-growth'],['Philstar, 10 Apr 2007','https://www.philstar.com/business/technology/2007/04/10/393746/friendster-frenzy-lives-on']],game:'camera'},
   friendster:{room:0,year:'2007',title:'Friendster profiles needed internet access',body:'Profiles, testimonials, and photo albums gave users ways to present themselves and keep up with friends. A 2007 report described the platform’s new photo-sharing features in the Philippines.',then:'Keeping a profile meant finding a device and internet connection, at home or elsewhere.',now:'Social profiles travel in a pocket, although connectivity and device costs still shape who participates.',question:'Where would you go to check a friend’s update?',flow:[{label:'Go online',detail:'Home dial-up, a workplace PC, or a rented hour at an internet café.'},{label:'Open profile',detail:'Friendster pages loaded slowly; testimonials and comments were the draw.'},{label:'Share with friends',detail:'Photo albums replaced the earlier "friendster layout" copy-paste culture.'}],sources:[['Philstar, 10 Apr 2007','https://www.philstar.com/business/technology/2007/04/10/393746/friendster-frenzy-lives-on']],game:'friendster'},
@@ -14,19 +14,25 @@ const exhibits = {
   socialgames:{room:2,year:'2009',title:'Everyone\u2019s tito was farming on Facebook',body:'Zynga\u2019s FarmVille launched on Facebook on 19 June 2009. Players planted, harvested, and visited neighbors\u2019 farms, and the game spread through friend lists and notifications until it counted tens of millions of players a day. The social feed became a farm report.',then:'A game lived inside your social network: your neighbors were your actual friends.',now:'Mobile games took over, but the "invite your friends" loop never left.',question:'Was it a game, or just another way to talk to people?',flow:[{label:'Plant',detail:'Plow, plant, and wait. Crops grew in real time.'},{label:'Harvest',detail:'Come back before crops withered; timing mattered.'},{label:'Neighbors',detail:'Friends as neighbors: visit farms, help out, send gifts.'}],sources:[['Wikipedia: FarmVille','https://en.wikipedia.org/wiki/FarmVille']],game:'socialgames'},
   smartphone:{room:0,year:'2010',title:'The keypad started disappearing',body:'The first iPhone was announced in January 2007 and released that June with a multi-touch screen and almost no buttons; Android phones like the HTC Dream followed in 2008. By 2010, touchscreens, app stores, and mobile internet were converging. The phone was becoming a pocket computer, and the decade\u2019s gadgets were starting to look like the next decade\u2019s.',then:'Typing on glass felt strange. Where were the buttons?',now:'The keypad never came back.',question:'What did we lose when the buttons disappeared?',flow:[{label:'iPhone (2007)',detail:'A multi-touch phone with almost no buttons. Type on glass.'},{label:'Android (2008)',detail:'The HTC Dream brought a competing touchscreen platform.'},{label:'2010 convergence',detail:'Touchscreens, apps, and mobile data met in one device.'}],sources:[['Wikipedia: iPhone (1st generation)','https://en.wikipedia.org/wiki/IPhone_(1st_generation)']],game:'smartphone'}
 };
-const rooms=[
+const rooms00=[
   {title:'Technology & Connection',short:'Technology',ids:['sms','camera','friendster','y2k','cameraphone','smartphone']},
   {title:'Global Links',short:'Global links',ids:['ofw','bpo','meteor']},
   {title:'Shared Spaces',short:'Shared spaces',ids:['boxing','mall','cafe','load','socialgames']}
 ];
-const lenses={
+const lenses00={
   cost:{name:'Cost',ids:['sms','ofw','cafe','load','cameraphone'],recap:'Texts, calls home, rented computer time, shared load, and sharper cameras each came with a price. Those costs decided who got to join in.',points:['A prepaid text cost load. Every character had a price.','Calling family abroad meant pricey calls or shared videophone centers.','An hour online meant renting a PC by the hour.','Pasaload let friends pass connection hand to hand: a few pesos of load kept a conversation alive.','Each sharper camera was a reason to buy the next, pricier phone.'],question:'Which costs moved or disappeared with today\u2019s connected phone, and which costs remain?',quiz:{prompt:'Which cost feels most removed from your own everyday life today?',options:[['Prepaid load per text','Sending a single text no longer costs load on most apps.'],['Long-distance calls and videophone centers','Most people now call abroad over Wi-Fi or data.'],['Renting computer time by the hour','Personal phones handle most tasks that once required a rented PC.'],['Passing load to a friend via pasaload','E-wallets moved load around, but sharing connection is still normal.'],['Paying extra for a sharper phone camera','Good cameras are now standard even on cheaper phones.']]}},
   time:{name:'Time',ids:['camera','bpo','boxing','y2k','smartphone'],recap:'A photo took days to share, call centers ran on US hours, a fight aired once, the world raced a midnight deadline, and then the keypad vanished. Time set the terms.',points:['A photo passed through camera, cable, and PC before anyone saw it.','US customer hours moved the workday into the Philippine night.','A free public screening happened once, at a fixed time and place.','The whole world worked against one deadline: midnight, 31 December 1999.','By 2010 the keypad was disappearing. The decade\u2019s gadgets started looking like the next decade\u2019s.'],question:'Which part of your day would you have had to rearrange?',quiz:{prompt:'Which timing constraint would be hardest to accept today?',options:[['Waiting to get photos onto a PC before sharing','Instant posting replaced the multi-step flow.'],['Working a night shift for a US-facing job','Some workers still do this; not fully a thing of the past.'],['Being home when a TV episode airs','Streaming removed most of this constraint for those with access.'],['Racing the Y2K midnight deadline','The worldwide fix mostly held. Midnight came and went quietly.'],['Waiting years for touchscreens to replace keypads','Typing on glass is now the default.']]}},
   place:{name:'Place',ids:['friendster','meteor','mall','socialgames'],recap:'A profile needed internet somewhere, a drama reached the living-room TV, friends met at the mall, and then the farm moved onto Facebook.',points:['Checking a profile meant finding internet access first.','A dubbed drama reached Filipino homes through local television.','The mall was a social meeting place as much as a retail space.','By 2009 the tambayan had a virtual address: everyone\u2019s tito was farming on Facebook.'],question:'Which experiences now happen anywhere, and which still need a shared place?',quiz:{prompt:'Which of these still needs a shared physical place today?',options:[['Checking a friend\u2019s profile','Now doable anywhere with a phone and a signal.'],['Watching a TV episode','Streaming freed this, though access varies.'],['Meeting friends in person','Still needs a shared place and time.'],['Visiting a neighbor\u2019s Facebook farm','The farm games faded, but the feed stayed.']]}}
 };
+const DECADE=(window.MUSEUM_DECADE==='2020s')?'2020s':'2000s';
 const STATE_KEY='museum-state-v1';
 const VOTE_KEY='museum-votes-v1';
-const STAMP_KEY='museum-stamps-v1';
+const STAMP_KEY=DECADE==='2020s'?'museum-stamps-2020s-v1':'museum-stamps-v1';
+/* Decade selection: 2020s pages load wing2020s.js first, which sets
+   window.MUSEUM_DECADE and provides EXHIBITS20/ROOMS20/LENSES20/MEDIA20. */
+const exhibits=DECADE==='2020s'?(window.EXHIBITS20||{}):exhibits00;
+const rooms=DECADE==='2020s'?(window.ROOMS20||[]):rooms00;
+const lenses=DECADE==='2020s'?(window.LENSES20||{}):lenses00;
 const GB_KEY='museum-guestbook-v1';
 // To share guestbook entries across ALL visitors, deploy the backend in
 // guestbook-server/ (see DEPLOY.md) and paste its URL here, e.g.
@@ -48,7 +54,7 @@ let currentGameCleanup=null;
 
 const sourceHTML=s=>s.map(([t,u])=>`<a class="source-link" target="_blank" rel="noopener noreferrer" href="${u}">${t}</a>`).join(' &nbsp;·&nbsp; ');
 const flowHTML=(items,id)=>`<div class="flow">${items.map((p,i)=>`${i?'<span class="arrow" aria-hidden="true">→</span>':''}<button type="button" class="flow-item" data-flow="${id}-${i}" aria-expanded="false">${p.label}</button>`).join('')}</div>`;
-const media={
+const media00={
   sms:{src:'phones-2005.jpg',alt:'Three mobile phones photographed in 2005',caption:'Cell phones, 2005 · Larry D. Moore / CC BY 4.0'},
   camera:{src:'camera-2007.jpg',alt:'Red Ricoh Caplio R6 camera, 2007',caption:'Ricoh Caplio R6, 2007 · Amagase / CC BY-SA 2.5',style:'camera'},
   mall:{src:'mall-cyberzone-2007.jpg',alt:'SM Mall of Asia CyberZone, 2007',caption:'SM Mall of Asia CyberZone, 2007 · Exec8 / public domain'},
@@ -64,6 +70,7 @@ const media={
   socialgames:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Campus%20Party%20Brasil,%2011%20a%2017%20de%20fevereiro%20de%202008%20em%20S.P.%20-%20panoramio.jpg?width=600',alt:'Crowd of people using desktop computers at a tech event in 2008',caption:'LAN event, 2008 \u00b7 Claudio Oliveira Lima / CC BY-SA 3.0'},
   smartphone:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Apple-iPhone-002.jpg?width=480',alt:'First-generation iPhone showing its touchscreen',caption:'First iPhone, 2007 \u00b7 Eliya / CC BY'}
 };
+const media=DECADE==='2020s'?(window.MEDIA20||{}):media00;
 const visualHTML=(id,kind)=>{const m=media[id];return m?`<figure class="${kind} ${m.style||''}"><img src="${m.src}" alt="${m.alt}" loading="lazy"><figcaption>${m.caption}</figcaption></figure>`:`<div class="${kind} type"><span>${exhibits[id].year}</span></div>`};
 
 function stamps(){return lsGet(STAMP_KEY,{})}
@@ -76,7 +83,9 @@ function awardStamp(id){
 }
 function updateStampUI(){
   const s=stamps();const ids=Object.keys(exhibits);const got=ids.filter(id=>s[id]).length;
-  stampCount.textContent=`${got}/${ids.length}`;passUI(got,ids.length);
+  let bg=got,bt=ids.length;
+  if(window.COMBINED_STAMPS&&window.EXHIBITS20){const s2=lsGet('museum-stamps-2020s-v1',{});const ids2=Object.keys(window.EXHIBITS20);bg+=ids2.filter(id=>s2[id]).length;bt+=ids2.length;}
+  stampCount.textContent=`${bg}/${bt}`;passUI(got,ids.length);
   stampBadge.classList.toggle('off',got<ids.length);
   if(stampBar)stampBar.innerHTML=ids.map(id=>`<span class="s ${s[id]?'got':''}" title="${s[id]?'Collected':'Not yet'}">${s[id]?'★':'·'}</span>`).join('');
   document.querySelectorAll('#archive .card').forEach(cd=>{const cid=cd.id.replace(/^exhibit-/,'');const dot=cd.querySelector('.card-stamp');if(dot)dot.classList.toggle('got',!!s[cid]);});
@@ -444,6 +453,8 @@ const games={
 
 };
 
+if(window.GAMES20)Object.assign(games,window.GAMES20);
+
 /* ---------- Game renderer ---------- */
 function renderGamePanel(exhibitId){
   const gameFactory=games[exhibits[exhibitId].game];
@@ -607,7 +618,7 @@ document.querySelectorAll('#rooms [data-play]').forEach(b=>b.addEventListener('c
 
 /* ---------- Arcade ---------- */
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function passUI(got,total){const c=$('#pass-card');if(!c)return;const left=total-got;$('#pass-n').textContent=`${got}/${total}`;c.classList.toggle('done',!left);$('#pass-msg').textContent=left?`Museum pass: ${left} more stamp${left>1?'s':''} to collect. Win each exhibit's mini-game to earn one.`:'Certified 2000s kid. All fourteen exhibits stamped.';$('#pass-copy').hidden=!!left}
+function passUI(got,total){const c=$('#pass-card');if(!c)return;const left=total-got;$('#pass-n').textContent=`${got}/${total}`;c.classList.toggle('done',!left);$('#pass-msg').textContent=left?`Museum pass: ${left} more stamp${left>1?'s':''} to collect. Win each exhibit's mini-game to earn one.`:'Certified '+(DECADE==='2020s'?'2020s':'2000s')+' kid. All fourteen exhibits stamped.';$('#pass-copy').hidden=!!left}
 const passCopy=$('#pass-copy');
 if(passCopy)passCopy.addEventListener('click',e=>{const b=e.currentTarget;const t='I collected all 14 stamps at The 2000s Called, a Philippine pop culture museum.';try{navigator.clipboard.writeText(t).then(()=>b.textContent='Copied!')}catch(x){b.textContent='Copy failed'}});
 
@@ -702,7 +713,7 @@ reset();
 })();
 
 (()=>{/* Nokia mode */
-const t=$('#lcd-toggle'),set=on=>{document.documentElement.classList.toggle('nokia',on);t.setAttribute('aria-pressed',String(on));lsSet('museum-nokia',on)};
+const t=$('#lcd-toggle');if(!t)return;const set=on=>{document.documentElement.classList.toggle('nokia',on);t.setAttribute('aria-pressed',String(on));lsSet('museum-nokia',on)};
 t.addEventListener('click',()=>set(t.getAttribute('aria-pressed')!=='true'));if(lsGet('museum-nokia',false))set(true);
 })();
 
@@ -866,6 +877,7 @@ const T={
  'mem-sub':['Pin your own 2000s memory for every visitor to read.','I-pin ang sarili mong alaala noong 2000s para mabasa ng lahat.'],
  'mem-submit':['Pin my memory \u2192','I-pin ang alaala ko \u2192']
 };
+if(window.T20)Object.assign(T,window.T20);
 const TPH={
  'gb-name':['Your name or handle','Pangalan o handle'],
  'gb-where':['Where are you visiting from? (optional)','Taga-saan ka? (opsyonal)'],
@@ -885,7 +897,7 @@ function applyLang(){
 document.getElementById('lang-toggle').addEventListener('click',()=>{LANG=LANG==='tl'?'en':'tl';applyLang();});
 
 /* ---------------- Quiz: which 2000s icon are you? ---------------- */
-const ARCH={
+const ARCH00={
  sms:{n:['The Texter','Ang Texter'],ex:'sms'},
  camera:{n:['The Documenter','Ang Documenter'],ex:'camera'},
  friendster:{n:['The Profile Curator','Ang Curator ng Profile'],ex:'friendster'},
@@ -896,7 +908,8 @@ const ARCH={
  mall:{n:['The Tambay','Ang Tambay'],ex:'mall'},
  cafe:{n:['The Piso Net Regular','Ang Suki ng Piso Net'],ex:'cafe'}
 };
-const PQQ=[
+const ARCH=(DECADE==='2020s'&&window.ARCH20)?window.ARCH20:ARCH00;
+const PQQ00=[
  {q:['It\u2019s Friday night in 2007. Where are you?','Biyernes ng gabi, 2007. Nasaan ka?'],o:[
   ['At the mall with the barkada','Sa mall kasama ang barkada','mall'],
   ['Racking up hours at the internet caf\u00e9','Nagpapalipas ng oras sa internet caf\u00e9','cafe'],
@@ -923,6 +936,7 @@ const PQQ=[
   ['An hour of uninterrupted piso net','Isang oras ng tuloy-tuloy na piso net','cafe'],
   ['The Meteor Garden finale on CD','Ang finale ng Meteor Garden sa CD','meteor']]}
 ];
+const PQQ=(DECADE==='2020s'&&window.PQQ20)?window.PQQ20:PQQ00;
 let pqStep=0,pqScore={},pqDots=null;
 function pqTone(f,d,type,g){try{const c=ac();if(c.state==='suspended')c.resume();tone(f,c.currentTime+.02,d||.07,type||'square',g||.07);}catch(e){}}
 function pqFanfare(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>{try{const c=ac();if(c.state==='suspended')c.resume();tone(f,c.currentTime+.02+i*.11,.16,'triangle',.09);}catch(e){}})}
@@ -957,7 +971,7 @@ function pqDraw(){
   x.strokeStyle='#101927';x.lineWidth=6;x.strokeRect(8,8,584,324);
   x.fillStyle='#101927';x.fillRect(8,8,584,64);
   x.fillStyle='#fffefa';x.font='900 26px Archivo Black, Impact, sans-serif';x.textAlign='center';
-  x.fillText('THE 2000s CALLED.',300,52);
+  x.fillText(DECADE==='2020s'?'THE 2020s CALLING.':'THE 2000s CALLED.',300,52);
   x.fillStyle='#ff835d';x.font='900 44px Archivo Black, Impact, sans-serif';
   const nm=a.n[li];x.fillText(nm.length>22?nm.slice(0,22):nm,300,140);
   x.fillStyle='#4a5a6a';x.font='16px "DM Sans", sans-serif';
@@ -974,12 +988,12 @@ function pqDraw(){
   x.fillText(li?'CERTIFIED':'CERTIFIED',0,8);x.restore();
   x.fillStyle='#6b7d90';x.font='13px "Space Mono", monospace';x.textAlign='left';
   const d=new Date();
-  x.fillText('Issued '+(d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()+' \u00b7 the-2000s-called-museum',28,316);
+  x.fillText('Issued '+(d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()+' \u00b7 '+(DECADE==='2020s'?'the-2020s-calling':'the-2000s-called-museum'),28,316);
 }
 const pqDl=$('#pq-dl');
 if(pqDl)pqDl.addEventListener('click',()=>{pqTone(1320,.05);
   const a=document.createElement('a');
-  a.download='2000s-id-card.png';a.href=$('#pq-card').toDataURL('image/png');a.click();
+  a.download=(DECADE==='2020s'?'2020s':'2000s')+'-id-card.png';a.href=$('#pq-card').toDataURL('image/png');a.click();
 });
 const pqRt=$('#pq-retry');
 if(pqRt)pqRt.addEventListener('click',()=>{pqTone(520);setTimeout(()=>pqTone(340),70);pqStep=0;pqScore={};pqRender();});
@@ -988,8 +1002,9 @@ if(pqRt)pqRt.addEventListener('click',()=>{pqTone(520);setTimeout(()=>pqTone(340
 const pbC=$('#pb-canvas');
 if(pbC){
 const pbX=pbC.getContext('2d');
-let pbImg=null,pbFilter='y2k';
+let pbImg=null,pbFilter=window.PB_DEFAULT||'y2k';
 function pbDraw(){
+  if(window.pbDraw20&&['fyp','igstory','zoom'].includes(pbFilter))return window.pbDraw20(pbX,pbImg);
   const W=480,H=360;pbX.fillStyle='#101927';pbX.fillRect(0,0,W,H);
   if(!pbImg){pbX.fillStyle='#6b7d90';pbX.font='15px "DM Sans",sans-serif';pbX.textAlign='center';pbX.fillText(LANG==='tl'?'Pumili ng litrato':'Choose a photo',W/2,H/2);return;}
   const ir=pbImg.width/pbImg.height,cr=W/H;
@@ -1034,7 +1049,7 @@ document.querySelectorAll('.chip[data-f]').forEach(ch=>ch.addEventListener('clic
 }));
 $('#pb-dl').addEventListener('click',()=>{
   if(!pbImg)return;
-  const a=document.createElement('a');a.download='2000s-photo.png';a.href=pbC.toDataURL('image/png');a.click();
+  const a=document.createElement('a');a.download=(DECADE==='2020s'?'2020s':'2000s')+'-photo.png';a.href=pbC.toDataURL('image/png');a.click();
 });
 pbDraw();
 }
