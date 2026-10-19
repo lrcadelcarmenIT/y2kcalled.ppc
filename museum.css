@@ -400,3 +400,26 @@ body.d2020s .cover-stamp{color:#f4c65b}
 #walk-stage{background:#141c2e;border-radius:10px;padding:12px 14px;margin-top:12px}
 #walk-stage h4{color:#f4c65b}
 #walk-res{color:#fff}
+
+/* ---------- Time machine ---------- */
+.timemachine{position:fixed;inset:0;background:rgba(8,12,20,.88);display:flex;align-items:center;justify-content:center;z-index:70;padding:16px}
+.timemachine[hidden]{display:none}
+.tm-box{position:relative;background:#0d1322;border:2px solid #f4c65b;border-radius:18px;max-width:620px;width:100%;padding:34px 28px;text-align:center;color:#eaf3f0;max-height:90vh;overflow:auto}
+.tm-x{position:absolute;top:10px;right:14px;background:none;border:none;color:#8a94a6;font-size:1.8rem;cursor:pointer;line-height:1}
+.tm-clock{font-size:3.2rem;animation:tmspin 6s linear infinite}
+@keyframes tmspin{to{transform:rotate(360deg)}}
+.tm-kick{color:#f4c65b;font-size:.72rem;letter-spacing:.2em;font-weight:800;margin:10px 0 4px;text-transform:uppercase}
+.tm-box h2{margin:0 0 8px;font-size:2rem;letter-spacing:.06em;color:#fff}
+.tm-sub{color:#b9c8ca;margin:0 0 22px;font-size:.95rem}
+.tm-choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:520px){.tm-choices{grid-template-columns:1fr}}
+.tm-choice{background:#141c2e;border:2px solid #2c4a6e;border-radius:12px;padding:20px 14px;color:#fff;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,transform .15s}
+.tm-choice:hover{border-color:#f4c65b;transform:translateY(-2px)}
+.tm-when{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;color:#f4c65b;font-weight:700}
+.tm-decade{font-family:'Archivo Black',Impact,sans-serif;font-size:1.6rem;letter-spacing:.03em}
+.tm-tag{font-size:.82rem;color:#b9c8ca}
+.tm-gallery{background:none;border:none;color:#7cc7ee;font-size:.92rem;cursor:pointer;text-decoration:underline}
+.timetravel{position:fixed;inset:0;background:#0d1322;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80;gap:18px}
+.timetravel[hidden]{display:none}
+.tt-clock{font-size:4.5rem;animation:tmspin .9s linear infinite}
+.tt-label{color:#f4c65b;font-family:'Space Mono',monospace;letter-spacing:.22em;font-weight:700;font-size:.95rem}

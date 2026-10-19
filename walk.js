@@ -34,8 +34,8 @@ const COMPARE=[
  {a:'boxing',b:'mlbb',t:'Fight night becomes game night',n:'2000s: the whole barangay watched Pacquiao. 2020s: millions watch MLBB world championships. Same pride, new arena.'},
  {a:'camera',b:'vlog',t:'From camera to creator',n:'2000s: the digicam captured the trip. 2020s: the camera is the job. Everyone films, everyone posts.'}
 ];
-const HALL00=['y2k','friendster','sms','load','camera','cameraphone','smartphone','ofw','bpo','mall','cafe','boxing','meteor','socialgames'];
-const HALL20=['tiktok','streaming','vlog','onlineclass','meme','ppop','ai','gcash','shopee','mlbb','axie','livesell','delivery','pantry'];
+const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','camera','friendster','bpo','boxing','mall','socialgames','smartphone'];
+const HALL20=['vlog','tiktok','streaming','onlineclass','gcash','shopee','delivery','meme','ppop','mlbb','axie','livesell','pantry','ai'];
 const PANOS={
  facade:'https://i.imgur.com/BWkIoEn.jpg',
  hall00:'https://i.imgur.com/Jdsf0vP.jpg',
@@ -121,10 +121,10 @@ function spread(ids,pitch){
  return ids.map((id,i)=>({yaw:i*(360/ids.length),pitch:pitch,kind:'frame',id:id}));
 }
 const SCENES={
- facade:{img:null,panorama:PANOS.facade,frames:[],nav:[{yaw:0,pitch:-14,to:'hall00',label:'Enter the 2000s wing'}]},
- hall00:{img:null,panorama:PANOS.hall00,frames:spread(HALL00,7),nav:[{yaw:180,pitch:-16,to:'facade',label:'Back to facade'},{yaw:0,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]},
- gallery:{img:null,panorama:PANOS.gallery,frames:COMPARE.map((c,i)=>({yaw:i*60+30,pitch:7,kind:'cmpframe',cmp:c})),nav:[{yaw:180,pitch:-16,to:'hall00',label:'2000s Hall'},{yaw:0,pitch:-16,to:'hall20',label:'2020s Hall'}]},
- hall20:{img:null,panorama:PANOS.hall20,frames:spread(HALL20,7),nav:[{yaw:180,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]}
+ facade:{img:null,panorama:PANOS.facade,frames:[],nav:[{yaw:0,pitch:-14,to:'__time',label:'Enter the museum'}]},
+ hall00:{img:null,panorama:PANOS.hall00,frames:spread(HALL00,7),nav:[{yaw:180,pitch:-16,to:'facade',label:'Back to facade'},{yaw:0,pitch:-16,to:'hall20',label:'Enter the 2020s wing'}]},
+ gallery:{img:null,panorama:PANOS.gallery,frames:COMPARE.map((c,i)=>({yaw:i*60+30,pitch:7,kind:'cmpframe',cmp:c})),nav:[{yaw:180,pitch:-16,to:'hall20',label:'Back to 2020s hall'},{yaw:0,pitch:-16,to:'facade',label:'Back to facade'}]},
+ hall20:{img:null,panorama:PANOS.hall20,frames:spread(HALL20,7),nav:[{yaw:180,pitch:-16,to:'hall00',label:'Back to 2000s hall'},{yaw:0,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]}
 };
 Object.keys(SCENES).forEach(k=>{
  const im=new Image();
@@ -162,7 +162,7 @@ function fitText(x,text,cx,y,maxW,base,color){
 }
 
 function drawFrame(h,px,py,hover){
- const W=216,H=148;
+ const W=150,H=103;
  const x0=px-W/2,y0=py-H/2;
  // shadow
  g.fillStyle='rgba(0,0,0,.45)';rr(g,x0+5,y0+7,W,H,4);g.fill();
@@ -288,7 +288,7 @@ function endPointer(e){
   for(const hr of hotRects){
    if(px>=hr.x&&px<=hr.x+hr.w&&py>=hr.y&&py<=hr.y+hr.h){
     const h=hr.hot;
-    if(h.nav)gotoScene(h.nav.to);
+    if(h.nav){if(h.nav.to==='__time')openTimeMachine();else gotoScene(h.nav.to);}
     else if(h.cmp)openModal({cmp:h.cmp});
     else openModal({id:h.id});
     break;
@@ -330,12 +330,14 @@ function buildChrome(){
  ctl.innerHTML='<button id="tour-zout" class="tour-btn" title="Zoom out" aria-label="Zoom out">\u2212</button>'
   +'<button id="tour-zin" class="tour-btn" title="Zoom in" aria-label="Zoom in">+</button>'
   +'<button id="tour-auto" class="tour-btn" title="Auto-look" aria-label="Auto-look">\u27f3</button>'
-  +'<button id="tour-full" class="tour-btn" title="Fullscreen" aria-label="Fullscreen">\u26f6</button>';
+  +'<button id="tour-full" class="tour-btn" title="Fullscreen" aria-label="Fullscreen">\u26f6</button>'
+  +'<button id="tour-time" class="tour-btn" title="Time machine" aria-label="Time machine">\uD83D\uDD70\uFE0F</button>';
  stage.appendChild(ctl);
  document.getElementById('tour-zin').addEventListener('click',()=>{fov=clamp(fov-12,55,120);});
  document.getElementById('tour-zout').addEventListener('click',()=>{fov=clamp(fov+12,55,120);});
  document.getElementById('tour-auto').addEventListener('click',function(){auto=!auto;this.classList.toggle('on',auto);});
- document.getElementById('tour-full').addEventListener('click',()=>{
+ document.getElementById('tour-time').addEventListener('click',openTimeMachine);
+document.getElementById('tour-full').addEventListener('click',()=>{
   if(document.fullscreenElement)document.exitFullscreen();
   else if(stage.requestFullscreen)stage.requestFullscreen();
  });
@@ -355,3 +357,28 @@ updateWalkBadge();
  if(!modalOpen)draw();
 })();
 })();
+
+/* ---------- Time machine ---------- */
+function openTimeMachine(){
+  document.getElementById('timemachine').hidden=false;
+}
+function closeTimeMachine(){
+  document.getElementById('timemachine').hidden=true;
+}
+function timeTravel(key){
+  const names={hall00:'THE 2000s',hall20:'THE 2020s',gallery:'THE GALLERY'};
+  document.getElementById('tt-label').textContent='TRAVELING TO '+(names[key]||'THE PAST')+'...';
+  document.getElementById('timetravel').hidden=false;
+  setTimeout(()=>{
+    document.getElementById('timetravel').hidden=true;
+    closeTimeMachine();
+    gotoScene(key);
+  },1400);
+}
+document.getElementById('tm-x').addEventListener('click',closeTimeMachine);
+document.getElementById('timemachine').addEventListener('click',e=>{
+  if(e.target.id==='timemachine')closeTimeMachine();
+});
+document.querySelectorAll('#timemachine [data-go]').forEach(b=>{
+  b.addEventListener('click',()=>timeTravel(b.getAttribute('data-go')));
+});

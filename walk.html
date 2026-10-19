@@ -39,6 +39,32 @@
   </div>
 </main>
 
+<div class="timemachine" id="timemachine" hidden>
+  <div class="tm-box" role="dialog" aria-modal="true" aria-label="Time machine">
+    <button type="button" class="tm-x" id="tm-x" aria-label="Close">&times;</button>
+    <div class="tm-clock" aria-hidden="true">🕰️</div>
+    <p class="tm-kick">You walked in off the street</p>
+    <h2>TIME MACHINE</h2>
+    <p class="tm-sub">Pick a decade. The halls are hung in chronological order, so walk them like a timeline.</p>
+    <div class="tm-choices">
+      <button type="button" class="tm-choice" data-go="hall00">
+        <span class="tm-when">2000 &rarr; 2010</span>
+        <span class="tm-decade">THE 2000s</span>
+        <span class="tm-tag">Text, Time Zones &amp; Tambayan &middot; 14 exhibits</span>
+      </button>
+      <button type="button" class="tm-choice" data-go="hall20">
+        <span class="tm-when">2019 &rarr; 2023</span>
+        <span class="tm-decade">THE 2020s</span>
+        <span class="tm-tag">Scrolls, Streams &amp; Side Hustles &middot; 14 exhibits</span>
+      </button>
+    </div>
+    <button type="button" class="tm-gallery" data-go="gallery">Or browse the Then vs Now gallery &rarr;</button>
+  </div>
+</div>
+<div class="timetravel" id="timetravel" hidden>
+  <div class="tt-clock" aria-hidden="true">🕰️</div>
+  <p class="tt-label" id="tt-label">TRAVELING...</p>
+</div>
 <div class="walk-modal" id="walk-modal" hidden>
   <div class="walk-mbox" id="walk-mbox" role="dialog" aria-modal="true"></div>
 </div>
