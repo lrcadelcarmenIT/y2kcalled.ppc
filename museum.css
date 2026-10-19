@@ -461,3 +461,14 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
 #tour-prev{left:10px}
 #tour-next{right:10px}
 @media(max-width:600px){.tour-edge{width:36px;height:52px;font-size:22px}#tour-prev{left:6px}#tour-next{right:6px}}
+
+/* ---------- time machine clock hands ---------- */
+.tm-hand{position:absolute;left:50%;bottom:50%;width:4px;background:#bff3ff;border-radius:2px;transform-origin:50% 100%;opacity:0;box-shadow:0 0 8px rgba(0,212,255,.9)}
+.tm-hand.hour{height:34px;margin-left:-2px}
+.tm-hand.minute{height:48px;margin-left:-2px}
+.tm-pin{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#bff3ff;opacity:0;box-shadow:0 0 10px rgba(0,212,255,1)}
+.tm-core.ticking #tm-year{opacity:0}
+.tm-core.ticking .tm-hand,.tm-core.ticking .tm-pin{opacity:1}
+.tm-core.ticking .tm-hand.hour{animation:tmspin 4s linear infinite}
+.tm-core.ticking .tm-hand.minute{animation:tmspin 1s linear infinite}
+@keyframes tmspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
