@@ -334,3 +334,33 @@ body.d2020s .cover-stamp{color:#f4c65b}
 .fyp-card{font-size:2.6rem}
 .fyp-cap{font-size:.8rem;font-weight:700;max-width:230px}
 @media(max-width:900px){.phone-wrap{grid-template-columns:1fr}.smartphone{margin:0 auto}}
+
+/* ---------- Grand Hall walk ---------- */
+.walk-wrap{max-width:1020px;margin:0 auto;padding:24px 16px 60px}
+.walk-intro{text-align:center;margin:10px 0 22px}
+.walk-intro h1{font-size:clamp(2rem,6vw,3.2rem);letter-spacing:.08em;margin:6px 0 10px}
+.walk-intro .lede{max-width:640px;margin:0 auto;color:#b9c8ca}
+.walk-stage{background:#141c2e;border:2px solid #232f4a;border-radius:16px;padding:14px}
+#walk-canvas{display:block;width:100%;height:auto;border-radius:10px;background:#1a2436;touch-action:none}
+.walk-touch{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:12px}
+#walk-joy{width:110px;height:110px;border-radius:50%;background:#0e1a2e;border:2px solid #232f4a;position:relative;touch-action:none}
+#walk-knob{width:48px;height:48px;border-radius:50%;background:#f4c65b;position:absolute;left:31px;top:31px}
+#walk-act{font-size:1.1rem;padding:16px 28px}
+.walk-hint{color:#8fa0a3;font-size:.85rem;text-align:center;margin:10px 0 0}
+.walk-modal{position:fixed;inset:0;background:rgba(8,12,20,.8);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
+.walk-modal[hidden]{display:none}
+.walk-mbox{position:relative;background:#1a2436;border:2px solid #f4c65b;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;padding:26px 24px}
+.walk-x{position:absolute;top:10px;right:12px;background:none;border:none;color:#b9c8ca;font-size:1.8rem;cursor:pointer;line-height:1}
+.walk-kick{color:#f4c65b;font-size:.75rem;letter-spacing:.18em;font-weight:800;margin:0 0 6px}
+.walk-mbox h3{margin:0 0 10px;font-size:1.5rem}
+.walk-tn{background:#0e1a2e;border-left:4px solid #f4c65b;padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.walk-cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+.walk-cmp>div{background:#0e1a2e;border-radius:10px;padding:12px}
+.walk-actions{margin:14px 0 4px}
+@media(max-width:560px){.walk-cmp{grid-template-columns:1fr}}
+/* Grand Hall lobby card */
+.hall-card{display:block;margin:26px auto 0;max-width:640px;background:#1a2436;border:2px solid #f4c65b;border-radius:16px;padding:26px 24px;text-align:center;text-decoration:none;color:inherit}
+.hall-card:hover{border-color:#fff}
+.hall-card h3{margin:6px 0 8px;font-size:1.5rem;letter-spacing:.04em}
+.hall-card p{color:#b9c8ca;margin:0 0 12px}
+.hall-card .hall-cta{display:inline-block;background:#f4c65b;color:#141c2e;font-weight:800;padding:10px 26px;border-radius:999px}
