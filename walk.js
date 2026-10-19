@@ -339,13 +339,6 @@ document.getElementById('tour-full').addEventListener('click',()=>{
   if(document.fullscreenElement)document.exitFullscreen();
   else if(stage.requestFullscreen)stage.requestFullscreen();
  });
- const sp=document.createElement('div');sp.id='tour-splash';sp.className='tour-splash';
- sp.innerHTML='<div class="tour-splash-card"><p class="kicker">The 2000s Called</p>'
-  +'<h2>THE GRAND HALL</h2>'
-  +'<p class="tour-legend"><span>\u{1f441}\uFE0f Drag to look around</span><span>\u{1f5bc}\uFE0f Tap a painting for its story + mini-game</span><span>\u203a Tap chevrons to walk between rooms</span></p>'
-  +'<button class="mini-again tour-enter" id="tour-enter">Enter the hall</button></div>';
- stage.appendChild(sp);
- document.getElementById('tour-enter').addEventListener('click',()=>{sp.classList.add('off');setTimeout(()=>sp.remove(),450);});
  syncChrome();
 }
 buildChrome();
@@ -404,6 +397,12 @@ function openTimeMachine(){
   if(tmBusy)return;
   tmPaint();
   document.getElementById('timemachine').hidden=false;
+}
+// Time machine is the Grand Hall's main menu: open it right away on load
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',()=>openTimeMachine());
+}else{
+  openTimeMachine();
 }
 function closeTimeMachine(){
   document.getElementById('timemachine').hidden=true;
