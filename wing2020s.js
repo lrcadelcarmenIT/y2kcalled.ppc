@@ -34,30 +34,32 @@ window.T20={
 /* ---------------- Quiz: which 2020s icon are you? ---------------- */
 window.ARCH20={
  tiktok:{n:['The Scroller','Ang Scroller'],ex:'tiktok'},
- vlog:{n:['The Vlogger','Ang Vlogger'],ex:'vlog'},
  ppop:{n:['The P-pop Stan','Ang P-pop Stan'],ex:'ppop'},
+ bini:{n:['The Bloomer','Ang Bloomer'],ex:'bini'},
+ multo:{n:['The Hugot Ghost','Ang Multo'],ex:'multo'},
+ lolla:{n:['The World Stager','Ang Pang-world Stage'],ex:'lolla'},
  ai:{n:['The Prompt Whisperer','Ang Prompt Whisperer'],ex:'ai'}
 };
 window.PQQ20=[
- {q:['It\u2019s Friday night in 2024. Where are you?','Biyernes ng gabi, 2024. Nasaan ka?'],o:[
+ {q:['It\u2019s Friday night in 2026. Where are you?','Biyernes ng gabi, 2026. Nasaan ka?'],o:[
   ['Deep in the FYP, phone an inch from my face','Lubog sa FYP, isang dangkal ang phone sa mukha','tiktok'],
-  ['Editing today\u2019s vlog, thumbnail first','Nag-e-edit ng vlog, thumbnail muna','vlog'],
-  ['Front row of a P-pop concert, lightstick up','Front row ng P-pop concert, taas ang lightstick','ppop'],
-  ['Arguing with an AI about my homework','Nakikipagtalo sa AI tungkol sa homework','ai']]},
- {q:['Pick a side hustle:','Pumili ng side hustle:'],o:[
-  ['Vlogging my everyday life','Vlog ng araw-araw kong buhay','vlog'],
-  ['Posting TikToks until one goes viral','Post nang post ng TikTok hanggang may mag-viral','tiktok'],
-  ['Streaming P-pop like it\u2019s a campaign','Stream nang stream ng P-pop parang kampanya','ppop'],
-  ['Selling AI prompts to classmates','Nagbebenta ng AI prompts sa kaklase','ai']]},
+  ['Front row of a BINI concert, lightstick up','Front row ng BINI concert, taas ang lightstick','bini'],
+  ['Crying to \u201cMulto\u201d on repeat','Umiiyak sa \u201cMulto\u201d nang paulit-ulit','multo'],
+  ['Watching SB19\u2019s Lollapalooza set on replay','Pinapanood nang paulit-ulit ang Lollapalooza set ng SB19','lolla']]},
+ {q:['Pick a concert:','Pumili ng concert:'],o:[
+  ['BINI live \u2014 Pantropiko summer','BINI live \u2014 Pantropiko summer','bini'],
+  ['SB19 at Lollapalooza Chicago','SB19 sa Lollapalooza Chicago','lolla'],
+  ['Cup of Joe \u2014 hugot night','Cup of Joe \u2014 hugot night','multo'],
+  ['P-pop fan meet, all groups','P-pop fan meet, lahat ng grupo','ppop']]},
  {q:['Your group chat is blowing up. It\u2019s...','Sabog ang group chat. Ito ay...'],o:[
   ['A TikTok dance challenge, everyone tagged','TikTok dance challenge, lahat tagged','tiktok'],
-  ['A new vlog just dropped','Bagong vlog, kaka-upload lang','vlog'],
-  ['A P-pop comeback announcement','Anunsyo ng P-pop comeback','ppop'],
-  ['An AI-generated meme','AI-generated meme','ai']]},
+  ['BINI comeback announcement','Anunsyo ng BINI comeback','bini'],
+  ['SB19 world tour dates','World tour dates ng SB19','lolla'],
+  ['Someone\u2019s AI-generated meme','AI-generated meme ng kung sino','ai']]},
  {q:['Choose a 2020s superpower:','Pumili ng 2020s superpower:'],o:[
   ['Going viral overnight','Mag-viral overnight','tiktok'],
-  ['A million subscribers by December','Isang milyong subscriber bago mag-Disyembre','vlog'],
   ['Front-row seats forever','Front-row seats habambuhay','ppop'],
+  ['A voice that haunts like \u201cMulto\u201d','Boses na nananatili tulad ng \u201cMulto\u201d','multo'],
   ['An AI that does all my homework','AI na gagawa ng lahat ng homework ko','ai']]}
 ];
 })();
@@ -194,26 +196,6 @@ streaming(){return{title:'Skip the Intro',
   newEp();
  }}},
 
-vlog(){return{title:'Thumbnail Pick',
- intro:'7 rounds, 8 seconds each. Click the thumbnail a real vlogger would post: red arrow plus shocked face.',
- render(el,{win,lose}){
-  const good=['\u{1f640} \u{1f534} ARROW','YOU WON\u2019T BELIEVE \u{1f534}','\u{1f631}\u{1f534} GONE WRONG','\u{1f534} I CRIED','NOT CLICKBAIT \u{1f534}'];
-  const bad=['my day \u{1f4dd}','vlog #214 \u{1f3a5}','a quiet morning \u{1f331}','weekly dump \u{1f4f7}'];
-  let r=0,left=8,tm=null,done=false;
-  const round=()=>{r++;if(r>7){done=true;clearInterval(tm);win('Viral! 7 thumbnails picked. The algorithm approves.');return;}
-   left=8;const g=good[Math.floor(Math.random()*good.length)];
-   const opts=[g,bad[Math.floor(Math.random()*bad.length)],bad[(Math.floor(Math.random()*bad.length)+1)%bad.length]].sort(()=>Math.random()-.5);
-   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Round ${r}/7 \u00b7 <b style="color:#e2574c" id="vg-t">8</b>s</p>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${opts.map(o=>`<button class="mini-again" data-g="${o===g?1:0}" style="font-size:1rem;padding:20px 14px;min-width:130px">${o}</button>`).join('')}</div>`;
-   const tEl=el.querySelector('#vg-t');
-   clearInterval(tm);tm=setInterval(()=>{left--;if(tEl)tEl.textContent=left;
-    if(left<=0){done=true;clearInterval(tm);lose('Too slow! The trend moved on.');}},1000);
-   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-    if(done)return;clearInterval(tm);
-    if(b.dataset.g==='1'){setTimeout(round,300);}else{done=true;lose('Nobody clicked that. 12 views, 11 from your mom.');}
-   }));};
-  round();
- }}},
 
 onlineclass(){return{title:'Unmute!',
  intro:'12 names called, faster and faster. Tap UNMUTE only for "Christian" (not Christina, not Christianne). 2 mistakes and you are "the noisy one".',
@@ -381,7 +363,67 @@ ai(){return{title:'Prompt Perfect',
      if(pos>=prompts[p].length){clearInterval(tm);p++;setTimeout(round,600);}}
     else{done=true;clearInterval(tm);lose(`"${b.dataset.w}"? The AI drew six fingers. Prompt failed.`);}}));};
   round();
- }}}
+ }}},
+bini(){return{title:'Pantropiko Dance Off',
+ intro:'Learn the choreography! Watch the 4-move sequence, then repeat it. 5 rounds, and it gets longer.',
+ render(el,{win,lose}){
+  const moves=['\u{1f57a}','\u{1f483}','\u{1f646}','\u{2728}'];
+  let seq=[],round=0,showing=false,done=false,idx=0;
+  el.innerHTML=`<div style="font-size:3.5rem;text-align:center;min-height:90px" id="bn-show">\u{1f3b5}</div>
+   <p style="text-align:center;color:#b9c8ca" id="bn-msg">Watch...</p>
+   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${moves.map((m,i)=>`<button class="mini-again" data-m="${i}" style="font-size:2.2rem;padding:14px 18px">${m}</button>`).join('')}</div>`;
+  const show=el.querySelector('#bn-show'),msg=el.querySelector('#bn-msg');
+  const nextRound=()=>{round++;if(round>5){done=true;win('Dance mastered! 5 routines nailed. BINI would be proud.');return;}
+   seq=Array.from({length:round+2},()=>Math.floor(Math.random()*4));idx=0;showing=true;
+   msg.textContent=`Round ${round}/5 \u00b7 Watch the ${seq.length} moves...`;show.textContent='\u{1f440}';
+   let k=0;const tm=setInterval(()=>{if(k>=seq.length){clearInterval(tm);showing=false;msg.textContent='Your turn! Repeat the moves.';show.textContent='\u{1f3b5}';return;}show.textContent=moves[seq[k]];k++;},700);};
+  el.querySelectorAll('button[data-m]').forEach(b=>b.addEventListener('click',()=>{
+   if(done||showing)return;
+   const m=parseInt(b.dataset.m,10);show.textContent=moves[m];
+   if(m===seq[idx]){idx++;if(idx>=seq.length){setTimeout(nextRound,400);}}
+   else{done=true;lose('Wrong move! The choreography fell apart.');}
+  }));
+  nextRound();
+ }}},
+
+multo(){return{title:'Ghost the Hugot',
+ intro:'Ghosts float by. Tap only the HAUNTED ones (\u{1f47b} sad ghost). Tapping a happy ghost (\u{1f60a}) or missing a haunted one costs you. 8 haunted, 3 strikes.',
+ render(el,{win,lose}){
+  let caught=0,strikes=0,done=false,tm=null;
+  el.innerHTML=`<div style="font-size:4rem;text-align:center;min-height:110px;cursor:pointer" id="mu-ghost">\u{1f47b}</div>
+   <p style="text-align:center;color:#b9c8ca" id="mu-msg"></p>`;
+  const g=el.querySelector('#mu-ghost'),msg=el.querySelector('#mu-msg');
+  const upd=()=>{msg.textContent=`Haunted caught ${caught}/8 \u00b7 Strikes ${strikes}/3`;};
+  const spawn=()=>{if(done)return;
+   const haunted=Math.random()<.5;g.textContent=haunted?'\u{1f47b}':'\u{1f60a}';g.dataset.h=haunted?1:0;
+   clearTimeout(tm);tm=setTimeout(()=>{if(done)return;
+    if(g.dataset.h==='1'){strikes++;if(strikes>=3){done=true;lose('The multo got away. Too many missed hauntings.');return;}}
+    spawn();},1100);};
+  g.addEventListener('click',()=>{if(done)return;clearTimeout(tm);
+   if(g.dataset.h==='1'){caught++;if(caught>=8){done=true;win('All ghosts hugged out! 8 haunted caught.');return;}}
+   else{strikes++;if(strikes>=3){done=true;lose('You hugged a happy ghost. Awkward.');return;}}
+   upd();spawn();});
+  upd();spawn();
+ }}},
+
+lolla(){return{title:'Headliner Hype',
+ intro:'You are on stage at Lollapalooza! Keep the CROWD HYPE meter above zero for 25 seconds. Tap PERFORM to hype them up, but each tap has a cooldown.',
+ render(el,{win,lose}){
+  let hype=60,done=false,tm=null,cd=false,left=25;
+  el.innerHTML=`<div style="text-align:center;font-size:3rem">\u{1f3a4}\u{1f525}</div>
+   <div style="height:18px;background:#0e1a2e;border-radius:9px;overflow:hidden;max-width:300px;margin:10px auto"><div id="lo-bar" style="height:100%;width:60%;background:#e2574c;transition:width .3s"></div></div>
+   <p style="text-align:center;color:#b9c8ca"><b id="lo-t">25</b>s left</p>
+   <div style="text-align:center"><button class="mini-again" id="lo-btn" style="font-size:1.3rem;padding:16px 32px">\u{1f3a4} PERFORM!</button></div>`;
+  const bar=el.querySelector('#lo-bar'),t=el.querySelector('#lo-t'),btn=el.querySelector('#lo-btn');
+  const tick=setInterval(()=>{if(done)return;left--;hype=Math.max(0,hype-7);bar.style.width=hype+'%';t.textContent=left;
+   if(hype<=0){done=true;clearInterval(tick);lose('The crowd went quiet. The set fell flat.');}
+   else if(left<=0){done=true;clearInterval(tick);win('Headliner! 25 seconds of pure hype. Chicago will remember this.');}},1000);
+  btn.addEventListener('click',()=>{if(done||cd)return;cd=true;btn.style.opacity=.5;
+   hype=Math.min(100,hype+22);bar.style.width=hype+'%';
+   setTimeout(()=>{cd=false;btn.style.opacity=1;},900);});
+ }}},
+
+
 };
 
 
@@ -757,10 +799,6 @@ window.EXHIBITS20 = {
     flow:[{label:'Download the app',detail:'Lockdown boredom turned TikTok into the most installed app of 2020.'},{label:'Learn the dance',detail:'Filipino creators turned global trends into local hits overnight.'},{label:'Beat the algorithm',detail:'The For You Page let unknown creators reach millions with zero followers.'}],
     sources:[['Wikipedia: TikTok','https://en.wikipedia.org/wiki/TikTok']],
     game:'tiktok'},
-  vlog:{room:0,year:'2019',title:'The Vlog Economy',body:'By 2019, vlogging had grown from hobby to livelihood in the Philippines, as creators built audiences in the millions. YouTube\u2019s Partner Program meant ad revenue and brand sponsorships could rival a corporate salary for top creators.',then:'Then, \u201Cvlog\u201D meant one person, one camera, and a day in my life.',now:'Today, the creator economy spans TikTok, livestreams, and full brand empires.',question:'When does sharing your life online stop being authentic and start being work?',
-    flow:[{label:'Hit record',detail:'Affordable phones and mobile data put a camera in every creator\u2019s pocket.'},{label:'Build the audience',detail:'Daily uploads and collabs turned subscribers into loyal fanbases.'},{label:'Cash the check',detail:'Ad revenue and sponsorships made vlogging a real career.'}],
-    sources:[['Wikipedia: Vlog','https://en.wikipedia.org/wiki/Vlog'],['Wikipedia: YouTuber','https://en.wikipedia.org/wiki/YouTuber']],
-    game:'vlog'},
   ppop:{room:2,year:'2021',title:'The P-Pop Wave',body:'SB19, formed in 2018 under a Korean-style training system, broke through in 2019 when their "Go Up" dance practice video went viral. BINI followed with their 2021 debut, and P-pop grew into a full industry with its own fandoms and sold-out concerts.',then:'Then, skeptics called it a K-pop copy until the fandoms proved them wrong.',now:'Today, P-pop acts headline festivals and chart across Southeast Asia.',question:'Is P-pop the sound of Filipino identity, or just K-pop\u2019s training manual in Tagalog?',
     flow:[{label:'Train for years',detail:'Groups endured K-pop-style boot camps before debuting.'},{label:'Go viral',detail:'One dance practice video turned SB19 into a phenomenon.'},{label:'Fill the arena',detail:'Fandoms now pack concerts and streaming parties nationwide.'}],
     sources:[['Wikipedia: P-pop','https://en.wikipedia.org/wiki/P-pop'],['Wikipedia: SB19','https://en.wikipedia.org/wiki/SB19']],
@@ -768,36 +806,39 @@ window.EXHIBITS20 = {
   ai:{room:2,year:'2023',title:'The AI Classmate',body:'OpenAI released ChatGPT in November 2022, and by 2023 it was in Filipino classrooms, offices, and group chats. Students used it for essays, workers for emails, and everyone argued about whether it was cheating or just a tool.',then:'Then, teachers swore they could spot an AI essay from the first paragraph.',now:'Today, AI is just another tab open next to the homework.',question:'Is AI a shortcut that makes us dumber, or a tool that makes us faster?',
     flow:[{label:'Ask anything',detail:'Homework, code, and love letters all got the chatbot treatment.'},{label:'Debate the rules',detail:'Schools scrambled to decide what counted as cheating.'},{label:'Keep the tab open',detail:'AI settled into daily work like spellcheck before it.'}],
     sources:[['Wikipedia: ChatGPT','https://en.wikipedia.org/wiki/ChatGPT']],
-    game:'ai'}
+    game:'ai'},
+  bini:{room:2,year:'2024',title:'The Pantropiko Summer',body:'BINI\u2019s \u201cPantropiko,\u201d released in late 2023, exploded across TikTok in early 2024 and became the first song by a P-pop group to top the Billboard Philippines chart that April. By July it had passed 100 million streams, and it took Song of the Year at both the P-pop Music Awards and the Myx Music Awards. Follow-up \u201cSalamin, Salamin\u201d kept the run going, and BINI became Spotify\u2019s most-streamed female OPM artist.',then:'Then, skeptics still asked if a girl group could carry P-pop mainstream.',now:'Today, BINI headlines festivals and charts across Southeast Asia.',question:'Did BINI prove P-pop belongs to everyone, or just raise the bar for who gets in?',flow:[{label:'Release the single',detail:'\u201cPantropiko\u201d dropped in November 2023 as a pre-release from the Talaarawan EP.'},{label:'Go viral',detail:'TikTok dance challenges pushed it up the charts through early 2024.'},{label:'Top the chart',detail:'No. 1 on Billboard Philippines in April 2024 \u2014 a first for a P-pop group.'}],sources:[['Wikipedia: Pantropiko','https://en.wikipedia.org/wiki/Pantropiko'],['Billboard Philippines: BINI\u2019s biggest songs of 2024','https://billboardphilippines.com/market/chart-beat/tj-monterde-maki-and-bini-have-the-biggest-songs-in-the-philippines-this-2024/']],game:'bini'},
+  multo:{room:2,year:'2025',title:'The Multo Year',body:'Cup of Joe\u2019s \u201cMulto,\u201d from their debut album Silakbo, became the defining OPM song of 2025. Its ache about a painful heartbreak took over the airwaves and became the background music for everything from tear-jerking hugot videos to funny memes about life. It proved guitar-driven OPM could still own the national conversation in the streaming era.',then:'Then, the charts were all P-pop and hip-hop.',now:'Today, a Baguio band\u2019s heartbreak anthem sits beside them.',question:'Why does a sad song about ghosts haunt the whole country \u2014 comfort, or just a good hook?',flow:[{label:'Drop the album',detail:'Silakbo arrived with \u201cMulto\u201d as its breakout.'},{label:'Own the feed',detail:'The song scored countless hugot edits and memes.'},{label:'Stay on top',detail:'It held the airwaves through most of 2025.'}],sources:[['GMA News: viral moments of 2025','https://www.gmanetwork.com/news/lifestyle/content/970321/from-what-haffen-vela-to-nepo-babies-here-are-viral-moments-that-caught-our-attention-in-2025/story/']],game:'multo'},
+  lolla:{room:2,year:'2026',title:'Lollapalooza, the Filipino Way',body:'On July 30, 2026, SB19 stepped onto the Allianz Stage at Lollapalooza in Chicago \u2014 the first Filipino artist ever to play one of America\u2019s biggest music festivals. They opened with \u201cDAM\u201d and \u201cGENTO,\u201d debuted \u201cLAWLESS\u201d live, and closed with \u201cCRIMZONE.\u201d Billboard named them one of the 12 best performances of the festival out of more than 170 acts.',then:'Then, P-pop was still proving itself at home.',now:'Today, it plays the world\u2019s biggest stages.',question:'When SB19 plays Chicago, is it still P-pop \u2014 or just pop?',flow:[{label:'Take the stage',detail:'July 30, 2026 \u2014 Allianz Stage, Chicago.'},{label:'Play the hits',detail:'\u201cDAM,\u201d \u201cGENTO,\u201d and a live debut of \u201cLAWLESS.\u201d'},{label:'Make the list',detail:'Billboard\u2019s 12 best performances out of 170+ acts.'}],sources:[['Sen. Kiko Pangilinan: SB19 at Lollapalooza','https://kikopangilinan.com/repping-pinoy-sb19-heralds-modern-opm-renaissance-with-lollapalooza-performance-chart-topping-hits/']],game:'lolla'},
 };
 window.ROOMS20 = [
-  {title:'Screens & Streams',short:'Screens',ids:['tiktok','vlog']},
-  {title:'Culture & Code',short:'Culture',ids:['ppop','ai']}
+  {title:'Screens & Streams',short:'Screens',ids:['tiktok','bini']},
+  {title:'Culture & Code',short:'Culture',ids:['ppop','multo','lolla','ai']}
 ];
 window.LENSES20 = {
-  cost:{name:'Cost',ids:['vlog','tiktok'],
-    recap:'In the 2020s, attention became the currency. Vloggers and TikTok creators turned views into livelihoods, and the price of entry was a phone and consistency.',
-    points:['Starting a vlog channel cost a phone, not a studio.','TikTok made fame free to attempt and costly to sustain.','Data, not airtime, became the real everyday expense.'],
+  cost:{name:'Cost',ids:['tiktok','bini'],
+    recap:'In the 2020s, attention became the currency. TikTok creators and P-pop idols turned views and streams into livelihoods, and the price of entry was a phone and consistency.',
+    points:['TikTok made fame free to attempt and costly to sustain.','BINI\u2019s viral hits turned streams into sold-out concerts.','Data, not airtime, became the real everyday expense.'],
     question:'When attention is the currency, who gets rich and who pays?',
     quiz:{prompt:'Where did Filipino attention become money in the 2020s?',
-      options:[['YouTube vlogs','Daily uploads turned life into a livelihood'],['TikTok','60-second clips became careers'],['P-pop streams','Fandoms moved charts like campaigns']]}},
+      options:[['TikTok','60-second clips became careers'],['BINI streams','Viral hits became concert tours'],['P-pop fandoms','Streaming parties moved charts like campaigns']]}},
   time:{name:'Time',ids:['tiktok','ai'],
     recap:'The 2020s sped everything up. Entertainment shrank to seconds, and homework collapsed from hours to instants.',
     points:['TikTok compressed entertainment into 60-second bursts.','AI turned hours of homework into seconds.','Trends now move faster than news cycles.'],
     question:'Did the 2020s give Filipinos more time, or just fill it faster?',
     quiz:{prompt:'What sped up most in the 2020s?',
       options:[['Entertainment','Full shows became 60-second clips'],['Homework','AI collapsed hours into seconds'],['Fame','A 15-second video could make a star overnight']]}},
-  place:{name:'Place',ids:['vlog','ppop'],
-    recap:'In the 2020s, Filipino hangouts moved onto screens. Comment sections became plazas, and fandoms became neighborhoods.',
-    points:['A vlogger\u2019s comment section works like a town plaza.','P-pop streaming parties turned fandom into a place.','Concert venues and group chats are the new barangay hall.'],
-    question:'If community now happens on a screen, what happens to the neighborhood?',
-    quiz:{prompt:'Where does Filipino barkada culture live now?',
-      options:[['Comment sections','Vlog communities gather like town plazas'],['Fandom group chats','P-pop stans organize like barangays'],['The feed','Everyone\u2019s timeline is the new town square']]}},
-};
-/* ---------------- 2020s exhibit media (verified Commons images) ---------------- */
+  place:{name:'Place',ids:['ppop','multo','lolla'],
+    recap:'In the 2020s, Filipino music found its places: the concert arena, the hugot playlist, and finally the world stage.',
+    points:['P-pop fandoms turned concerts into home turf.','\u201cMulto\u201d made every playlist a shared emotional place.','Lollapalooza put Filipino music on the world map.'],
+    question:'When our music plays in Chicago, where is home?',
+    quiz:{prompt:'Where does Filipino music live now?',
+      options:[['Concert arenas','P-pop fandoms pack venues nationwide'],['The hugot playlist','One sad song, millions of shared feels'],['The world stage','From Manila to Lollapalooza']]}},
+};/* ---------------- 2020s exhibit media (verified Commons images) ---------------- */
 window.MEDIA20={
  tiktok:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/TikTok%20app.jpg?width=600',alt:'TikTok app icon on a phone screen',caption:'TikTok app \u00b7 via Wikimedia Commons'},
  mlbb:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Mobile%20Legends%20Bang%20Bang%20character%20Philippines%20full%20shot.jpg?width=480',alt:'Mobile Legends: Bang Bang character artwork',caption:'Mobile Legends: Bang Bang \u00b7 via Wikimedia Commons'},
+ bini:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',alt:'BINI performing at a concert in 2025',caption:'BINI, Binified concert 2025 \u00b7 via Wikimedia Commons'},
  ppop:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',alt:'BINI performing at a concert in 2025',caption:'BINI, Binified concert 2025 \u00b7 via Wikimedia Commons'},
  gcash:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/GCash_logo.svg?width=480',alt:'GCash logo',caption:'GCash logo \u00b7 via Wikimedia Commons'},
  shopee:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Shopee.svg?width=480',alt:'Shopee logo',caption:'Shopee logo \u00b7 via Wikimedia Commons'},
@@ -806,7 +847,6 @@ window.MEDIA20={
  pantry:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/9598Community%20Pantry%20in%20the%20Philippines%2002.jpg?width=600',alt:'Community pantry in the Philippines',caption:'Community pantry, Philippines \u00b7 via Wikimedia Commons'},
  delivery:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Cycle%20Delivery%20boy%20Mr%20Pasha%20from%20Russia..jpg?width=600',alt:'A delivery rider on a bicycle',caption:'Delivery rider \u00b7 via Wikimedia Commons'},
  ai:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/ChatGPT-Logo.svg?width=480',alt:'ChatGPT logo',caption:'ChatGPT logo \u00b7 via Wikimedia Commons'},
- vlog:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Morly%20Alinio%20vlogger%20DZRH2.jpg?width=600',alt:'Filipino vlogger Morly Alinio',caption:'Filipino vlogger \u00b7 via Wikimedia Commons'},
  meme:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/LEGO%20%22Y%20U%20NO%20%22%20meme%20%28Free%20to%20use%29.jpg?width=600',alt:'Y U NO meme built from LEGO bricks',caption:'Y U NO meme \u00b7 free to use via Wikimedia Commons'},
  axie:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/2021-07-01%2022%2013%2049-Inventory%20Axie%20Infinity.png?width=600',alt:'Axie Infinity inventory screen from 2021',caption:'Axie Infinity inventory, 2021 \u00b7 via Wikimedia Commons'}
 };

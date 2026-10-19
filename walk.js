@@ -14,7 +14,7 @@ const GAMES=window.GAMESALL||{};
 function exData(id){return EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
 function mediaFor(id){return EX20[id]?(MED20[id]||null):(MED00[id]||null);}
 const EMOJI00={y2k:'\u{1f4bb}',sms:'\u{1f4ac}',friendster:'\u{1f465}',ofw:'\u2708\uFE0F',bpo:'\u{1f3a7}',meteor:'\u{1f4fa}',boxing:'\u{1f94a}',mall:'\u{1f6cd}\uFE0F',cafe:'\u{1f5a5}\uFE0F',load:'\u{1f4b8}',camera:'\u{1f4f7}',cameraphone:'\u{1f933}',socialgames:'\u{1f69c}',smartphone:'\u{1f4f1}'};
-const EMOJI20={tiktok:'\u{1f4f1}',streaming:'\u{1f4fa}',vlog:'\u{1f3a5}',onlineclass:'\u{1f4bb}',meme:'\u{1f602}',ppop:'\u{1f3a4}',ai:'\u{1f916}',gcash:'\u{1f4b8}',shopee:'\u{1f6cd}\uFE0F',mlbb:'\u{1f3ae}',axie:'\u{1f43e}',livesell:'\u{1f4e2}',delivery:'\u{1f6f5}',pantry:'\u{1f9fa}'};
+const EMOJI20={tiktok:'\u{1f4f1}',ppop:'\u{1f3a4}',ai:'\u{1f916}',bini:'\u{1f33a}',multo:'\u{1f47b}',lolla:'\u{1f3a4}'};
 function em(id){const{d,dec}=exData(id);return dec==='2020s'?(EMOJI20[id]||'\u{1f5bf}'):(EMOJI00[id]||'\u{1f5bf}');}
 function thenNowHTML(d){
  if(d.thenNow)return '<b>Then vs now:</b> '+d.thenNow;
@@ -33,7 +33,7 @@ const COMPARE=[
  {a:'boxing',b:'ppop',t:'Filipino pride takes the stage',n:'2008: the whole barangay watched Pacquiao. 2021: millions stream P-pop comebacks. Same pride, new arena.'}
 ];
 const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','friendster','boxing','socialgames','smartphone'];
-const HALL20=['vlog','tiktok','ppop','ai'];
+const HALL20=['tiktok','ppop','ai','bini','multo','lolla'];
 const PANOS={
  facade:'https://i.imgur.com/BWkIoEn.jpg',
  hall00:'https://i.imgur.com/Jdsf0vP.jpg',
@@ -371,7 +371,7 @@ window.TOUR_API={
 })();
 
 /* ---------- Time machine console ---------- */
-const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2019,2020,2021,2023];
+const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2023,2024,2025,2026];
 let tmIdx=7, tmBusy=false, arriveYaw=null;
 function tmYear(){return TM_YEARS[tmIdx];}
 function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
