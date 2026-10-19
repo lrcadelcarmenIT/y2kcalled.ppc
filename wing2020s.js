@@ -840,6 +840,7 @@ window.LENSES20 = {
       options:[['Concert arenas','P-pop fandoms pack venues nationwide'],['The hugot playlist','One sad song, millions of shared feels'],['The world stage','From Manila to Lollapalooza']]}},
 };/* ---------------- 2020s exhibit media (verified Commons images) ---------------- */
 window.MEDIA20={
+ hidilyn:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Hidilyn%20Diaz%202015.jpg?width=600',alt:'Hidilyn Diaz in 2015',caption:'Hidilyn Diaz (2015) \u00b7 via Wikimedia Commons'},
  tiktok:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/TikTok%20app.jpg?width=600',alt:'TikTok app icon on a phone screen',caption:'TikTok app \u00b7 via Wikimedia Commons'},
  mlbb:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Mobile%20Legends%20Bang%20Bang%20character%20Philippines%20full%20shot.jpg?width=480',alt:'Mobile Legends: Bang Bang character artwork',caption:'Mobile Legends: Bang Bang \u00b7 via Wikimedia Commons'},
  bini:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',alt:'BINI performing at a concert in 2025',caption:'BINI, Binified concert 2025 \u00b7 via Wikimedia Commons'},

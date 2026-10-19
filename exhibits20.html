@@ -79,7 +79,7 @@ list.addEventListener('click',function(e){
   if(!btn)return;
   const id=btn.dataset.game, d=EX[id];
   const box=btn.parentElement.querySelector('.ex-game');
-  const G=window.GAMESALL||{}, gf=G[d.game];
+  const G=Object.assign({},window.GAMESALL||{},window.GAMES20||{}), gf=G[d.game];
   if(typeof gf!=='function'){box.hidden=false;box.innerHTML='<p>Game unavailable.</p>';return;}
   const spec=gf();
   box.hidden=false;
