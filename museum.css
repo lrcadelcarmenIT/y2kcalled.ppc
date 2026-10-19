@@ -439,3 +439,17 @@ body.d2020s .cover-stamp{color:#f4c65b}
 .tt-clock{font-size:4.5rem;animation:tmspin .9s linear infinite;filter:drop-shadow(0 0 18px rgba(0,212,255,.8))}
 @keyframes tmspin{to{transform:rotate(360deg)}}
 .tt-label{color:#00d4ff;font-family:'Space Mono',monospace;letter-spacing:.22em;font-weight:700;font-size:.95rem;text-shadow:0 0 14px rgba(0,212,255,.8)}
+
+/* ---------- Grand Hall: time machine lab theme ---------- */
+body.tm-lab{background:#05070f;color:#dcecff}
+body.tm-lab .walk-intro .kicker{color:#00d4ff;text-shadow:0 0 10px rgba(0,212,255,.7)}
+body.tm-lab .walk-intro h1{color:#fff;text-shadow:0 0 24px rgba(0,212,255,.55);letter-spacing:.12em}
+body.tm-lab .walk-intro .lede{color:#8fa8c8}
+body.tm-lab .walk-stage{background:#070b18;border:2px solid rgba(0,212,255,.45);border-radius:16px;box-shadow:0 0 36px rgba(0,212,255,.18),inset 0 0 60px rgba(0,40,90,.25)}
+body.tm-lab .walk-hint{color:#5f7ba6}
+body.tm-lab .site-head{background:rgba(5,7,15,.92);border-bottom:1px solid rgba(0,212,255,.25)}
+body.tm-lab .brand{color:#dcecff}
+body.tm-lab .brand-sub{color:#5f7ba6}
+body.tm-lab .site-nav a{color:#8fa8c8}
+body.tm-lab .marquee{border-color:rgba(0,212,255,.25);color:#3d5a7a}
+body.tm-lab .grain{opacity:.5}
