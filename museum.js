@@ -454,7 +454,7 @@ const games={
 };
 
 if(window.GAMES20)Object.assign(games,window.GAMES20);
-window.EXHIBITS00=exhibits00;window.GAMESALL=games;
+window.EXHIBITS00=exhibits00;window.GAMESALL=games;window.MEDIA00=media00;
 
 /* ---------- Game renderer ---------- */
 function renderGamePanel(exhibitId){
