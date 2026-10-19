@@ -379,13 +379,26 @@ function tmYear(){return TM_YEARS[tmIdx];}
 function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
 function tmPaint(){
   document.getElementById('tm-year').textContent=tmYear();
-  document.getElementById('tm-slider').value=tmIdx;
   document.getElementById('tm-dest').textContent='DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
-  document.getElementById('tm-status').textContent='Set your destination year.';
+  document.getElementById('tm-status').textContent='Select your destination year.';
+  document.querySelectorAll('#timemachine .tm-ygrid button').forEach(function(b){
+    b.classList.toggle('on',parseInt(b.dataset.y,10)===tmYear());
+  });
 }
-function tmStep(d){
-  if(tmBusy)return;
-  tmIdx=Math.min(TM_YEARS.length-1,Math.max(0,tmIdx+d));
+function tmBuildYears(){
+  var g00=document.getElementById('tm-ygrid00'),g20=document.getElementById('tm-ygrid20');
+  g00.innerHTML='';g20.innerHTML='';
+  TM_YEARS.forEach(function(y){
+    var b=document.createElement('button');
+    b.type='button';b.textContent=y;b.dataset.y=y;
+    b.setAttribute('aria-label','Travel to '+y);
+    b.addEventListener('click',function(){
+      if(tmBusy)return;
+      tmIdx=TM_YEARS.indexOf(y);
+      tmPaint();
+    });
+    (y<=2010?g00:g20).appendChild(b);
+  });
   tmPaint();
 }
 function yawForYear(year,hall){return window.TOUR_API.yawForYear(year,hall);}
@@ -447,20 +460,7 @@ document.getElementById('tm-x').addEventListener('click',closeTimeMachine);
 document.getElementById('timemachine').addEventListener('click',e=>{
   if(e.target.id==='timemachine')closeTimeMachine();
 });
-document.getElementById('tm-minus').addEventListener('click',()=>tmStep(-1));
-document.getElementById('tm-plus').addEventListener('click',()=>tmStep(1));
-document.getElementById('tm-slider').addEventListener('input',e=>{
-  if(tmBusy)return;
-  tmIdx=parseInt(e.target.value,10);
-  tmPaint();
-});
-document.querySelectorAll('#timemachine [data-decade]').forEach(b=>{
-  b.addEventListener('click',()=>{
-    if(tmBusy)return;
-    tmIdx=b.getAttribute('data-decade')==='2000s'?4:12;
-    tmPaint();
-  });
-});
+tmBuildYears();
 document.getElementById('tm-engage').addEventListener('click',tmEngage);
 document.querySelectorAll('#timemachine [data-go]').forEach(b=>{
   b.addEventListener('click',()=>timeTravel(b.getAttribute('data-go')));
