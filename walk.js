@@ -113,14 +113,27 @@ function openModal(it){
  mbox.querySelector('.walk-x').addEventListener('click',closeModal);
 }
 
-/* ---------- scenes ---------- */
-function spread(ids,pitch){
- return ids.map((id,i)=>({yaw:i*(360/ids.length),pitch:pitch,kind:'frame',id:id}));
+/* ---------- scenes: one painting per wall ---------- */
+const EXIDX={hall00:0,hall20:0,gallery:0};
+function sceneIds(id){
+ if(id==='hall00')return HALL00;
+ if(id==='hall20')return HALL20;
+ if(id==='gallery')return COMPARE.map((c,i)=>'cmp'+i);
+ return [];
+}
+function curFrame(id){
+ const ids=sceneIds(id);
+ if(!ids.length)return null;
+ const n=ids.length,idx=((EXIDX[id]||0)%n+n)%n;
+ EXIDX[id]=idx;
+ const key=ids[idx];
+ if(id==='gallery')return {yaw:0,pitch:7,kind:'cmpframe',cmp:COMPARE[idx]};
+ return {yaw:0,pitch:7,kind:'frame',id:key};
 }
 const SCENES={
- hall00:{img:null,panorama:PANOS.hall00,frames:spread(HALL00,7),nav:[{yaw:0,pitch:-16,to:'hall20',label:'Enter the 2020s wing'}]},
- gallery:{img:null,panorama:PANOS.gallery,frames:COMPARE.map((c,i)=>({yaw:i*60+30,pitch:7,kind:'cmpframe',cmp:c})),nav:[{yaw:180,pitch:-16,to:'hall20',label:'Back to 2020s hall'}]},
- hall20:{img:null,panorama:PANOS.hall20,frames:spread(HALL20,7),nav:[{yaw:180,pitch:-16,to:'hall00',label:'Back to 2000s hall'},{yaw:0,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]}
+ hall00:{img:null,panorama:PANOS.hall00,nav:[{yaw:0,pitch:-16,to:'hall20',label:'Enter the 2020s wing'}]},
+ gallery:{img:null,panorama:PANOS.gallery,nav:[{yaw:180,pitch:-16,to:'hall20',label:'Back to 2020s hall'}]},
+ hall20:{img:null,panorama:PANOS.hall20,nav:[{yaw:180,pitch:-16,to:'hall00',label:'Back to 2000s hall'},{yaw:0,pitch:-16,to:'gallery',label:'Then vs Now gallery'}]}
 };
 Object.keys(SCENES).forEach(k=>{
  const im=new Image();
@@ -158,7 +171,7 @@ function fitText(x,text,cx,y,maxW,base,color){
 }
 
 function drawFrame(h,px,py,hover){
- const W=150,H=103;
+ const W=300,H=206;
  const x0=px-W/2,y0=py-H/2;
  // shadow
  g.fillStyle='rgba(0,0,0,.45)';rr(g,x0+5,y0+7,W,H,4);g.fill();
@@ -171,14 +184,14 @@ function drawFrame(h,px,py,hover){
   else if(ia){drawCover(ia,x0,y0,W,H);}
   else if(ib){drawCover(ib,x0,y0,W,H);}
   else{g.fillStyle='#141c2e';g.fillRect(x0,y0,W,H);
-   g.font='54px serif';g.textAlign='center';g.fillText(em(c.a),x0+W/4,y0+92);g.fillText(em(c.b),x0+3*W/4,y0+92);}
+   g.font='72px serif';g.textAlign='center';g.fillText(em(c.a),x0+W/4,y0+130);g.fillText(em(c.b),x0+3*W/4,y0+130);}
   g.fillStyle='#f4c65b';g.beginPath();g.arc(px,py,17,0,7);g.fill();
   g.fillStyle='#0d1322';g.font='800 20px system-ui';g.textAlign='center';g.fillText('\u2194',px,py+7);
  }else{
   const img=photoFor(h.id);
   if(img){drawCover(img,x0,y0,W,H);}
   else{g.fillStyle='#0e1a2e';g.fillRect(x0,y0,W,H);
-   g.font='64px serif';g.textAlign='center';g.fillText(em(h.id),px,y0+96);}
+   g.font='84px serif';g.textAlign='center';g.fillText(em(h.id),px,y0+130);}
  }
  // caption plate: year + topic
  const pw=236,ph=60,pxx=px-pw/2,pyy=y0+H+20;
@@ -228,13 +241,15 @@ function draw(){
  }
  g.fillStyle='rgba(8,12,20,.5)';g.fillRect(0,0,VW,34);g.fillRect(0,VH-34,VW,34);
  hotRects=[];
- // frames
- sc.frames.forEach(h=>{
-  const p=project(h);if(!p)return;
-  const key=(h.id||h.cmp.t);
-  const r=drawFrame(h,p.x,p.y,hoverKey===key);
-  hotRects.push({x:r.x,y:r.y,w:r.w,h:r.h,hot:h,key:key});
- });
+ // single painting for this wall
+ const fr=curFrame(cur);
+ if(fr){
+  const p=project(fr);if(p){
+   const key=(fr.id||fr.cmp.t);
+   const r=drawFrame(fr,p.x,p.y,hoverKey===key);
+   hotRects.push({x:r.x,y:r.y,w:r.w,h:r.h,hot:fr,key:key});
+  }
+ }
  // nav chevrons (low, like floor markers)
  sc.nav.forEach(nv=>{
   const p=project(nv);if(!p)return;
@@ -314,6 +329,14 @@ function buildChrome(){
  title.setAttribute('aria-label','Open time machine');
  title.addEventListener('click',()=>{if(window.openTimeMachine)window.openTimeMachine();});
  stage.appendChild(title);
+ const prev=document.createElement('button');prev.id='tour-prev';prev.className='tour-edge';prev.innerHTML='\u2039';
+ prev.setAttribute('aria-label','Previous exhibit');
+ prev.addEventListener('click',()=>{EXIDX[cur]=(EXIDX[cur]||0)-1;});
+ stage.appendChild(prev);
+ const next=document.createElement('button');next.id='tour-next';next.className='tour-edge';next.innerHTML='\u203a';
+ next.setAttribute('aria-label','Next exhibit');
+ next.addEventListener('click',()=>{EXIDX[cur]=(EXIDX[cur]||0)+1;});
+ stage.appendChild(next);
  const thumbs=document.createElement('div');thumbs.id='tour-thumbs';thumbs.className='tour-thumbs';
  Object.keys(PANOS).forEach(id=>{
   const w=document.createElement('button');w.className='tour-thumbwrap';w.dataset.scene=id;
