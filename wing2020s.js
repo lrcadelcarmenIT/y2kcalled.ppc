@@ -77,54 +77,65 @@ window.PQQ20=[
 ];
 })();
 
-/* ---------------- 14 exhibit mini-games ---------------- */
+/* ---------------- 14 exhibit mini-games (redesigned) ---------------- */
 window.GAMES20={
 tiktok(){return{title:'Stop the Scroll',
- intro:'Videos fly past. Hit STOP only when the \u{1F3AC} clapper appears. Catch 5, miss 3 and the algorithm wins.',
+ intro:'The feed flies. Hit STOP only on the \u{1f3ac} clapper (\u{1f3a5} is a decoy). 7 catches, 3 misses, and it keeps getting faster.',
  render(el,{win,lose}){
-  const pool=['\u{1F57A}','\u{1F957}','\u{1F3A4}','\u{1F4F1}','\u{1F3AC}','\u{1F60E}','\u{1F4A5}','\u{1F3B6}'];
-  el.innerHTML=`<div style="font-size:4rem;text-align:center;min-height:110px" id="tt-show">\u{1F4F1}</div>
+  const pool=['\u{1f57a}','\u{1f957}','\u{1f3a4}','\u{1f3a5}','\u{1f4f1}','\u{1f60e}','\u{1f4a5}','\u{1f3b6}'];
+  el.innerHTML=`<div style="font-size:4rem;text-align:center;min-height:110px" id="tt-show">\u{1f4f1}</div>
    <div style="text-align:center;margin-top:10px"><button class="mini-again" id="tt-stop">STOP</button></div>
-   <p style="text-align:center;color:#b9c8ca" id="tt-msg">Caught 0/5 \u00b7 Misses 0/3</p>`;
+   <p style="text-align:center;color:#b9c8ca" id="tt-msg"></p>`;
   const show=el.querySelector('#tt-show'),msg=el.querySelector('#tt-msg'),btn=el.querySelector('#tt-stop');
-  let caught=0,miss=0,tm=null,done=false;
+  let caught=0,miss=0,streak=0,tm=null,done=false,speed=420;
+  const upd=()=>{msg.textContent=`Caught ${caught}/7 \u00b7 Misses ${miss}/3${streak>1?' \u00b7 STREAK '+streak:''}`;};
   const tick=()=>{show.textContent=pool[Math.floor(Math.random()*pool.length)];};
+  const faster=()=>{clearInterval(tm);speed=Math.max(180,speed-34);tm=setInterval(tick,speed);};
   const end=(ok,m)=>{done=true;clearInterval(tm);btn.disabled=true;ok?win(m):lose(m);};
-  tm=setInterval(tick,420);tick();
+  tm=setInterval(tick,speed);tick();upd();
   btn.addEventListener('click',()=>{
    if(done)return;
-   if(show.textContent==='\u{1F3AC}'){caught++;if(caught>=5){end(true,'FYP tamed! 5 clappers caught. The algorithm respects you.');return;}}
-   else{miss++;if(miss>=3){end(false,'The algorithm wins. Too many random stops.');return;}}
-   msg.textContent=`Caught ${caught}/5 \u00b7 Misses ${miss}/3`;
+   if(show.textContent==='\u{1f3ac}'){caught++;streak++;faster();
+    if(caught>=7){end(true,'FYP tamed! 7 clappers caught at full speed. The algorithm respects you.');return;}}
+   else{miss++;streak=0;if(miss>=3){end(false,'The algorithm wins. Too many random stops.');return;}}
+   upd();
   });
  }}},
 
 mlbb(){return{title:'Turret Rush',
- intro:'The enemy turret is exposed. Tap it 20 times in 10 seconds to take it down.',
+ intro:'Tap the turret to damage it (100 HP). But watch for \u26a0\ufe0f: tap the warning in time or the turret blasts you back 20 HP.',
  render(el,{win,lose}){
-  el.innerHTML=`<div style="text-align:center"><button id="ml-turret" style="font-size:4.5rem;background:none;border:3px solid #0e1a2e;border-radius:16px;padding:18px 30px;cursor:pointer">\u{1F5FC}</button>
-   <p style="color:#b9c8ca" id="ml-msg">Hits 0/20 \u00b7 <b id="ml-t">10</b>s left</p></div>`;
-  const tur=el.querySelector('#ml-turret'),msg=el.querySelector('#ml-msg'),tEl=el.querySelector('#ml-t');
-  let hits=0,left=10,done=false;
-  const tm=setInterval(()=>{left--;tEl.textContent=left;
-   if(left<=0){clearInterval(tm);done=true;tur.disabled=true;hits>=20?win('Turret destroyed! Your team pushes to victory.'):lose(`Time! ${hits}/20 hits. The turret stands.`);}},1000);
-  tur.addEventListener('click',()=>{if(done)return;hits++;msg.firstChild.textContent=`Hits ${hits}/20 \u00b7 `;
-   tur.style.transform='scale(.92)';setTimeout(()=>tur.style.transform='',90);
-   if(hits>=20){clearInterval(tm);done=true;tur.disabled=true;win('Turret destroyed! Your team pushes to victory.');}});
+  el.innerHTML=`<div style="text-align:center"><div style="font-size:1.4rem;min-height:36px" id="ml-warn"></div>
+   <button id="ml-turret" style="font-size:4.5rem;background:none;border:3px solid #0e1a2e;border-radius:16px;padding:18px 30px;cursor:pointer">\u{1f5fc}</button>
+   <div style="height:12px;background:#0e1a2e;border-radius:6px;overflow:hidden;max-width:280px;margin:10px auto"><div id="ml-hp" style="height:100%;width:100%;background:#e2574c"></div></div>
+   <p style="color:#b9c8ca" id="ml-msg">Turret HP 100</p></div>`;
+  const tur=el.querySelector('#ml-turret'),warn=el.querySelector('#ml-warn'),hp=el.querySelector('#ml-hp'),msg=el.querySelector('#ml-msg');
+  let dmg=0,done=false,warned=false;
+  const upd=()=>{hp.style.width=Math.max(0,100-dmg)+'%';msg.textContent=`Turret HP ${Math.max(0,100-dmg)}`;};
+  const warnT=setInterval(()=>{if(done||warned)return;if(Math.random()<.5){warned=true;warn.textContent='\u26a0\ufe0f DODGE!';
+   setTimeout(()=>{if(done)return;if(warned){warned=false;warn.textContent='';dmg=Math.max(0,dmg-20);upd();msg.textContent+=' \u2014 blasted!';}},1100);}},2600);
+  warn.addEventListener('click',()=>{if(warned){warned=false;warn.textContent='';}});
+  tur.addEventListener('click',()=>{
+   if(done)return;
+   if(warned){warned=false;warn.textContent='';dmg+=4;}
+   else{dmg+=3;}
+   tur.style.transform='scale(.92)';setTimeout(()=>tur.style.transform='',90);upd();
+   if(dmg>=100){done=true;clearInterval(warnT);win('Turret destroyed! Your team pushes to victory.');}});
  }}},
 
 ppop(){return{title:'Lightstick Beat',
- intro:'Watch the lightsticks flash, then repeat the pattern. 3 rounds to light up the arena.',
+ intro:'Watch the pattern, repeat it. 4 rounds, longer and faster each time. One wrong beat dims the arena.',
  render(el,{win,lose}){
   const cols=['#e2574c','#2b9fe3','#f4c65b','#3fae6b'];
   el.innerHTML=`<div style="display:flex;gap:12px;justify-content:center;margin:10px 0" id="pp-pads">${cols.map((c,i)=>`<button data-i="${i}" style="width:64px;height:64px;border-radius:50%;background:${c};border:3px solid #0e1a2e;opacity:.45;cursor:pointer" aria-label="pad ${i+1}"></button>`).join('')}</div>
    <p style="text-align:center;color:#b9c8ca" id="pp-msg">Watch\u2026</p>`;
   const pads=[...el.querySelectorAll('#pp-pads button')],msg=el.querySelector('#pp-msg');
   let round=0,seq=[],pos=0,accept=false,done=false;
-  const flash=i=>{pads[i].style.opacity=1;setTimeout(()=>pads[i].style.opacity=.45,320);};
-  const playSeq=()=>{accept=false;pos=0;msg.textContent='Watch\u2026';let k=0;
-   const iv=setInterval(()=>{flash(seq[k]);k++;if(k>=seq.length){clearInterval(iv);accept=true;msg.textContent='Your turn!';}},650);};
-  const nextRound=()=>{round++;if(round>3){done=true;win('Encore! You nailed all 3 patterns. The arena glows.');return;}
+  const flash=i=>{pads[i].style.opacity=1;setTimeout(()=>pads[i].style.opacity=.45,260);};
+  const playSeq=()=>{accept=false;pos=0;msg.textContent=`Round ${round}/4 \u2014 watch\u2026`;let k=0;
+   const gap=Math.max(380,640-round*60);
+   const iv=setInterval(()=>{flash(seq[k]);k++;if(k>=seq.length){clearInterval(iv);accept=true;msg.textContent='Your turn!';}},gap);};
+  const nextRound=()=>{round++;if(round>4){done=true;win('Encore! 4 patterns nailed. The arena glows.');return;}
    seq=Array.from({length:round+2},()=>Math.floor(Math.random()*4));setTimeout(playSeq,700);};
   pads.forEach(p=>p.addEventListener('click',()=>{
    if(done||!accept)return;const i=Number(p.dataset.i);flash(i);
@@ -135,180 +146,196 @@ ppop(){return{title:'Lightstick Beat',
  }}},
 
 gcash(){return{title:'Exact Padala',
- intro:'Send load to 5 friends. Tap peso buttons to match each amount exactly. Overshooting costs you.',
+ intro:'5 friends, 12 seconds each. Tap peso buttons to match each amount exactly. 4 out of 5 sends wins.',
  render(el,{win,lose}){
   const denoms=[1,5,10,20,50,100];
   const targets=[17,42,88,135,263];
-  el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Send <b id="gc-t" style="color:#f4c65b"></b> \u00b7 Friend <b id="gc-n">1</b>/5 \u00b7 Tray <b id="gc-tray">\u20B10</b></p>
-   <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="gc-pad">${denoms.map(d=>`<button class="mini-again" data-v="${d}">\u20B1${d}</button>`).join('')}</div>
+  el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Send <b id="gc-t" style="color:#f4c65b"></b> \u00b7 Friend <b id="gc-n">1</b>/5 \u00b7 Tray <b id="gc-tray">\u20b10</b> \u00b7 <b id="gc-time" style="color:#e2574c">12</b>s</p>
+   <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" id="gc-pad">${denoms.map(d=>`<button class="mini-again" data-v="${d}">\u20b1${d}</button>`).join('')}</div>
    <div style="text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center"><button class="mini-again" id="gc-send">Send</button><button class="mini-again" id="gc-clear">Clear</button></div>
    <p style="text-align:center;color:#b9c8ca" id="gc-msg"></p>`;
-  const q=s=>el.querySelector(s);let r=0,tray=0,done=false;
-  const show=()=>{q('#gc-t').textContent='\u20B1'+targets[r];q('#gc-n').textContent=r+1;q('#gc-tray').textContent='\u20B1'+tray;};
+  const q=s=>el.querySelector(s);let r=0,tray=0,won=0,left=12,tm=null,done=false;
+  const show=()=>{q('#gc-t').textContent='\u20b1'+targets[r];q('#gc-n').textContent=r+1;q('#gc-tray').textContent='\u20b1'+tray;};
+  const next=()=>{r++;tray=0;left=12;
+   if(r>=5){done=true;clearInterval(tm);won>=4?win(`Shift complete! ${won}/5 padalas sent.`):lose(`Only ${won}/5 sent. The friends are asking "na-send mo na?"`);return;}
+   show();};
   show();
-  q('#gc-pad').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||done)return;tray+=Number(b.dataset.v);q('#gc-tray').textContent='\u20B1'+tray;});
+  tm=setInterval(()=>{if(done)return;left--;q('#gc-time').textContent=left;
+   if(left<=0){q('#gc-msg').textContent='Too slow! Next friend.';next();}},1000);
+  q('#gc-pad').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||done)return;tray+=Number(b.dataset.v);q('#gc-tray').textContent='\u20b1'+tray;});
   q('#gc-clear').addEventListener('click',()=>{if(done)return;tray=0;show();});
   q('#gc-send').addEventListener('click',()=>{
    if(done)return;
-   if(tray===targets[r]){r++;tray=0;
-    if(r>=5){done=true;win('All 5 padalas sent. Nobody is on "seen" tonight.');return;}
-    q('#gc-msg').textContent='Sent! Next friend.';show();}
-   else{done=true;lose(`Wrong amount! Needed \u20B1${targets[r]}, tray had \u20B1${tray}.`);}
+   if(tray===targets[r]){won++;q('#gc-msg').textContent='Sent!';}else{q('#gc-msg').textContent=`Wrong! Needed \u20b1${targets[r]}.`;}
+   next();
   });
  }}},
 
 shopee(){return{title:'Voucher Hunt',
- intro:'9 vouchers, 3 real ones. Tap all 3 real vouchers. One fake and the sale ends.',
+ intro:'12 vouchers, 4 real. 25 seconds. Tap all 4 real ones. One fake ends the sale.',
  render(el,{win,lose}){
-  const tiles=['\u{1F39F} 50% OFF','\u{1F39F} FREE SHIPPING','\u{1F6AB} -100% SCAM','\u{1F39F} \u20B1200 OFF','\u{1F6AB} CLICK TO WIN','\u{1F39F} 11:11 DEAL','\u{1F6AB} FREE* (not free)','\u{1F39F} COD OK','\u{1F6AB} SEND LOAD FIRST'];
-  const real=[0,1,3,5,7];
-  const order=[...tiles.keys()].sort(()=>Math.random()-.5);
-  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="sp-grid">${order.map(i=>`<button class="mini-again" data-r="${real.includes(i)?1:0}" style="font-size:.8rem;padding:14px 6px">${tiles[i]}</button>`).join('')}</div>
-   <p style="text-align:center;color:#b9c8ca" id="sp-msg">Found 0/3 real vouchers</p>`;
-  const msg=el.querySelector('#sp-msg');let found=0,done=false;
+  const realT=['\u{1f39f} 50% OFF','\u{1f39f} FREE SHIPPING','\u{1f39f} \u20b1200 OFF','\u{1f39f} 11:11 DEAL'];
+  const fakeT=['\u{1f6ab} -100% SCAM','\u{1f6ab} CLICK TO WIN','\u{1f6ab} FREE* (not free)','\u{1f6ab} SEND LOAD FIRST','\u{1f39f} 90% OFF*','\u{1f39f} MYSTERY BOX','\u{1f6ab} DOUBLE YOUR MONEY','\u{1f39f} 0% OFF'];
+  const tiles=[...realT.map(t=>({t,r:1})),...fakeT.map(t=>({t,r:0}))].sort(()=>Math.random()-.5);
+  el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Found <b id="sp-n">0</b>/4 \u00b7 <b id="sp-t" style="color:#e2574c">25</b>s</p>
+   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="sp-grid">${tiles.map(o=>`<button class="mini-again" data-r="${o.r}" style="font-size:.75rem;padding:14px 6px">${o.t}</button>`).join('')}</div>`;
+  const n=el.querySelector('#sp-n'),t=el.querySelector('#sp-t');let found=0,left=25,done=false;
+  const tm=setInterval(()=>{if(done)return;left--;t.textContent=left;
+   if(left<=0){done=true;clearInterval(tm);lose('Sale ended! The vouchers expired.');}},1000);
   el.querySelectorAll('#sp-grid button').forEach(b=>b.addEventListener('click',()=>{
    if(done||b.disabled)return;b.disabled=true;
-   if(b.dataset.r==='1'){b.style.background='#3fae6b';found++;msg.textContent=`Found ${found}/3 real vouchers`;
-    if(found>=3){done=true;setTimeout(()=>win('Checkout complete! 3 real vouchers stacked.'),350);}}
-   else{b.style.background='#e2574c';done=true;lose('Fake voucher! That "deal" just wanted your load.');}
+   if(b.dataset.r==='1'){b.style.background='#3fae6b';found++;n.textContent=found;
+    if(found>=4){done=true;clearInterval(tm);setTimeout(()=>win('Checkout complete! 4 real vouchers stacked.'),350);}}
+   else{b.style.background='#e2574c';done=true;clearInterval(tm);lose('Fake voucher! That "deal" just wanted your load.');}
   }));
  }}},
 
 streaming(){return{title:'Skip the Intro',
- intro:'The intro is 30 seconds long. Press SKIP only while the marker is inside the gold zone. 3 episodes.',
+ intro:'5 episodes. Press SKIP only inside the gold zone. The zone shrinks and the marker speeds up every episode.',
  render(el,{win,lose}){
   el.innerHTML=`<div style="position:relative;height:34px;background:#0e1a2e;border-radius:17px;overflow:hidden" id="st-bar">
     <div id="st-zone" style="position:absolute;top:0;bottom:0;background:rgba(244,198,91,.6)"></div>
     <div id="st-mark" style="position:absolute;top:0;bottom:0;width:6px;background:#fff"></div></div>
    <div style="text-align:center;margin-top:12px"><button class="mini-again" id="st-skip">SKIP INTRO</button></div>
-   <p style="text-align:center;color:#b9c8ca" id="st-msg">Episode 1/3</p>`;
+   <p style="text-align:center;color:#b9c8ca" id="st-msg">Episode 1/5</p>`;
   const zone=el.querySelector('#st-zone'),mark=el.querySelector('#st-mark'),msg=el.querySelector('#st-msg'),btn=el.querySelector('#st-skip');
-  let ep=0,pos=0,dir=1,z0=0,zw=0,tm=null,done=false;
-  const newEp=()=>{ep++;if(ep>3){done=true;clearInterval(tm);win('Binged! 3 intros skipped, zero theme songs harmed.');return;}
-   z0=20+Math.random()*50;zw=12+Math.random()*10;pos=0;dir=1;
-   zone.style.left=z0+'%';zone.style.width=zw+'%';msg.textContent=`Episode ${ep}/3`;};
-  tm=setInterval(()=>{pos+=dir*2.2;if(pos>=100){pos=100;dir=-1}if(pos<=0){pos=0;dir=1}mark.style.left=pos+'%';},40);
+  let ep=0,pos=0,dir=1,z0=0,zw=0,tm=null,done=false,spd=2.2;
+  const newEp=()=>{ep++;if(ep>5){done=true;clearInterval(tm);win('Binged! 5 intros skipped, zero theme songs harmed.');return;}
+   z0=15+Math.random()*55;zw=Math.max(6,16-ep*2);pos=0;dir=1;spd=2.2+ep*.7;
+   zone.style.left=z0+'%';zone.style.width=zw+'%';msg.textContent=`Episode ${ep}/5`;};
+  tm=setInterval(()=>{pos+=dir*spd;if(pos>=100){pos=100;dir=-1}if(pos<=0){pos=0;dir=1}mark.style.left=pos+'%';},40);
   btn.addEventListener('click',()=>{if(done)return;
    if(pos>=z0&&pos<=z0+zw){msg.textContent='Skipped!';setTimeout(newEp,500);}else{done=true;clearInterval(tm);lose('Too early! Now you are watching the intro again.');}});
   newEp();
  }}},
 
 vlog(){return{title:'Thumbnail Pick',
- intro:'5 rounds. Each round shows 3 thumbnails. Click the one a real vlogger would post: red arrow plus shocked face.',
+ intro:'7 rounds, 8 seconds each. Click the thumbnail a real vlogger would post: red arrow plus shocked face.',
  render(el,{win,lose}){
-  const good=['\u{1F640} \u{1F534} ARROW','YOU WON\u2019T BELIEVE \u{1F534}','\u{1F631}\u{1F534} GONE WRONG'];
-  const bad=['my day \u{1F4DD}','vlog #214 \u{1F3A5}','a quiet morning \u{1F331}'];
-  let r=0,done=false;
-  const round=()=>{r++;if(r>5){done=true;win('Viral! 5 thumbnails picked. The algorithm approves.');return;}
-   const g=good[Math.floor(Math.random()*good.length)];
+  const good=['\u{1f640} \u{1f534} ARROW','YOU WON\u2019T BELIEVE \u{1f534}','\u{1f631}\u{1f534} GONE WRONG','\u{1f534} I CRIED','NOT CLICKBAIT \u{1f534}'];
+  const bad=['my day \u{1f4dd}','vlog #214 \u{1f3a5}','a quiet morning \u{1f331}','weekly dump \u{1f4f7}'];
+  let r=0,left=8,tm=null,done=false;
+  const round=()=>{r++;if(r>7){done=true;clearInterval(tm);win('Viral! 7 thumbnails picked. The algorithm approves.');return;}
+   left=8;const g=good[Math.floor(Math.random()*good.length)];
    const opts=[g,bad[Math.floor(Math.random()*bad.length)],bad[(Math.floor(Math.random()*bad.length)+1)%bad.length]].sort(()=>Math.random()-.5);
-   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Round ${r}/5: pick the clickbait</p>
+   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Round ${r}/7 \u00b7 <b style="color:#e2574c" id="vg-t">8</b>s</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${opts.map(o=>`<button class="mini-again" data-g="${o===g?1:0}" style="font-size:1rem;padding:20px 14px;min-width:130px">${o}</button>`).join('')}</div>`;
+   const tEl=el.querySelector('#vg-t');
+   clearInterval(tm);tm=setInterval(()=>{left--;if(tEl)tEl.textContent=left;
+    if(left<=0){done=true;clearInterval(tm);lose('Too slow! The trend moved on.');}},1000);
    el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
-    if(done)return;
+    if(done)return;clearInterval(tm);
     if(b.dataset.g==='1'){setTimeout(round,300);}else{done=true;lose('Nobody clicked that. 12 views, 11 from your mom.');}
    }));};
   round();
  }}},
 
 onlineclass(){return{title:'Unmute!',
- intro:'The teacher calls 10 names. Tap UNMUTE only when YOUR name is called. 2 wrong unmutes and you are "the noisy one".',
+ intro:'12 names called, faster and faster. Tap UNMUTE only for "Christian" (not Christina, not Christianne). 2 mistakes and you are "the noisy one".',
  render(el,{win,lose}){
-  const names=['Bianca','Marco','Aira','Joshua','Liza','Rico','Sofia','Enzo','Mika'];
-  const calls=[];for(let i=0;i<10;i++){calls.push(Math.random()<.35?'Christian':names[Math.floor(Math.random()*names.length)]);}
+  const names=['Bianca','Marco','Aira','Joshua','Liza','Rico','Sofia','Enzo','Mika','Christina','Christianne','Chris'];
+  const calls=[];for(let i=0;i<12;i++){calls.push(Math.random()<.3?'Christian':names[Math.floor(Math.random()*names.length)]);}
   el.innerHTML=`<div style="font-size:1.6rem;text-align:center;min-height:60px;font-weight:800" id="oc-name">\u2026</div>
-   <div style="text-align:center"><button class="mini-again" id="oc-btn">\u{1F507} UNMUTE</button></div>
-   <p style="text-align:center;color:#b9c8ca" id="oc-msg">Calls 0/10 \u00b7 Mistakes 0/2</p>`;
+   <div style="text-align:center"><button class="mini-again" id="oc-btn">\u{1f507} UNMUTE</button></div>
+   <p style="text-align:center;color:#b9c8ca" id="oc-msg">Calls 0/12 \u00b7 Mistakes 0/2</p>`;
   const nm=el.querySelector('#oc-name'),msg=el.querySelector('#oc-msg'),btn=el.querySelector('#oc-btn');
-  let i=0,mist=0,done=false,cur='';
-  const tm=setInterval(()=>{if(i>=calls.length){clearInterval(tm);done=true;win('Class dismissed! You spoke exactly when called.');return;}
-   cur=calls[i];nm.textContent='\u201C'+cur+'?\u201D';i++;msg.textContent=`Calls ${i}/10 \u00b7 Mistakes ${mist}/2`;},1400);
+  let i=0,mist=0,done=false,cur='',gap=1400;
+  const step=()=>{if(done)return;
+   if(i>=calls.length){done=true;win('Class dismissed! You spoke exactly when called.');return;}
+   cur=calls[i];nm.textContent='\u201c'+cur+'?\u201d';i++;gap=Math.max(700,gap-60);
+   msg.textContent=`Calls ${i}/12 \u00b7 Mistakes ${mist}/2`;
+   setTimeout(step,gap);};
+  step();
   btn.addEventListener('click',()=>{if(done||!cur)return;
    if(cur==='Christian'){cur='';nm.textContent='\u2713 Present!';}
-   else{mist++;if(mist>=2){clearInterval(tm);done=true;lose('Two wrong unmutes. You are now "the noisy one".');return;}
-    msg.textContent=`Calls ${i}/10 \u00b7 Mistakes ${mist}/2`;}});
+   else{mist++;if(mist>=2){done=true;lose('Two wrong unmutes. You are now "the noisy one".');return;}
+    msg.textContent=`Calls ${i}/12 \u00b7 Mistakes ${mist}/2`;}});
  }}},
 
 pantry(){return{title:'Pantry Keeper',
- intro:'Your community pantry starts with 6 goods. 10 neighbors come: approve TAKES only while stock lasts, always approve GIVES. Survive the day.',
+ intro:'Start with 6 goods. 12 neighbors come. Approve TAKES only while stock lasts, always approve GIVES. Declining a take you could afford also fails you.',
  render(el,{win,lose}){
-  const reqs=[];for(let i=0;i<10;i++){const take=Math.random()<.55;reqs.push({take,n:1+Math.floor(Math.random()*3)});}
-  el.innerHTML=`<div style="text-align:center;font-size:2.4rem" id="pa-shelf">\u{1F9F0} \u00d7 <b id="pa-n">6</b></div>
+  const reqs=[];for(let i=0;i<12;i++){const take=Math.random()<.55;reqs.push({take,n:1+Math.floor(Math.random()*3)});}
+  el.innerHTML=`<div style="text-align:center;font-size:2.4rem" id="pa-shelf">\u{1f9f0} \u00d7 <b id="pa-n">6</b></div>
    <p style="text-align:center;font-size:1.1rem;min-height:34px" id="pa-req"></p>
    <div style="text-align:center;display:flex;gap:10px;justify-content:center"><button class="mini-again" id="pa-yes">\u2713 Approve</button><button class="mini-again" id="pa-no">\u2715 Decline</button></div>
-   <p style="text-align:center;color:#b9c8ca" id="pa-msg">Neighbor 1/10</p>`;
+   <p style="text-align:center;color:#b9c8ca" id="pa-msg">Neighbor 1/12</p>`;
   const q=s=>el.querySelector(s);let i=0,stock=6,done=false;
   const show=()=>{q('#pa-n').textContent=stock;const r=reqs[i];
-   q('#pa-req').textContent=r.take?`\u{1F464} takes ${r.n} goods`:`\u{1F464} gives ${r.n} goods`;
-   q('#pa-msg').textContent=`Neighbor ${i+1}/10 \u00b7 Stock ${stock}`;};
+   q('#pa-req').textContent=r.take?`\u{1f464} takes ${r.n} goods`:`\u{1f464} gives ${r.n} goods`;
+   q('#pa-msg').textContent=`Neighbor ${i+1}/12 \u00b7 Stock ${stock}`;};
   const decide=ok=>{if(done)return;const r=reqs[i];
    if(r.take){if(ok){if(stock<r.n){done=true;lose('The shelf is empty! A neighbor left hungry.');return;}stock-=r.n;}
-    else{if(stock>=r.n+2){done=true;lose('You turned away someone the pantry could have fed.');return;}}}
+    else{if(stock>=r.n+3){done=true;lose('You turned away someone the pantry could have fed.');return;}}}
    else{if(!ok){done=true;lose('You refused a donation. The pantry remembers.');return;}stock+=r.n;}
-   i++;if(i>=10){done=true;win(`Day survived with ${stock} goods left. The community eats.`);return;}show();};
+   i++;if(i>=12){done=true;win(`Day survived with ${stock} goods left. The community eats.`);return;}show();};
   q('#pa-yes').addEventListener('click',()=>decide(true));
   q('#pa-no').addEventListener('click',()=>decide(false));
   show();
  }}},
 
 delivery(){return{title:'Rider Rush',
- intro:'20 seconds on the road. Move with \u2190 \u2192 or tap the sides. Dodge the obstacles, deliver the food.',
+ intro:'30 seconds on the road. \u2190 \u2192 or tap sides to switch lanes. Dodge everything. Near misses earn +5 bravery bonus.',
  render(el,{win,lose}){
   el.innerHTML=`<div id="dv-road" tabindex="0" style="position:relative;height:220px;background:#20303f;border-radius:12px;overflow:hidden;outline:none">
-   <div id="dv-bike" style="position:absolute;bottom:14px;left:50%;font-size:2.4rem;transform:translateX(-50%)">\u{1F6F5}</div></div>
-   <p style="text-align:center;color:#b9c8ca" id="dv-msg">Tap the left or right side to switch lanes \u00b7 <b id="dv-t">20</b>s</p>`;
-  const road=el.querySelector('#dv-road'),bike=el.querySelector('#dv-bike'),msg=el.querySelector('#dv-msg'),tEl=el.querySelector('#dv-t');
-  const lanes=[18,50,82];let lane=1,left=20,done=false,obs=[];
+   <div id="dv-bike" style="position:absolute;bottom:14px;left:50%;font-size:2.4rem;transform:translateX(-50%)">\u{1f6f5}</div></div>
+   <p style="text-align:center;color:#b9c8ca" id="dv-msg">Score <b id="dv-s">0</b> \u00b7 <b id="dv-t">30</b>s</p>`;
+  const road=el.querySelector('#dv-road'),bike=el.querySelector('#dv-bike'),tEl=el.querySelector('#dv-t'),sEl=el.querySelector('#dv-s');
+  const lanes=[18,50,82];let lane=1,left=30,score=0,done=false,obs=[];
   const setLane=()=>{bike.style.left=lanes[lane]+'%';};
   const move=d=>{if(done)return;lane=Math.min(2,Math.max(0,lane+d));setLane();};
   road.addEventListener('click',e=>{const r=road.getBoundingClientRect();move(e.clientX-r.left<r.width/2?-1:1);});
   road.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1);});
   const spawn=setInterval(()=>{if(done)return;const o=document.createElement('div');
-   o.textContent=['\u{1F9F1}','\u{1F697}','\u{1F6A7}'][Math.floor(Math.random()*3)];
-   o.style.cssText=`position:absolute;top:-40px;left:${lanes[Math.floor(Math.random()*3)]}%;font-size:2rem;transform:translateX(-50%)`;
-   road.appendChild(o);obs.push({el:o,y:-40,lane:lanes.indexOf(parseFloat(o.style.left))});},900);
+   o.textContent=['\u{1f9f1}','\u{1f697}','\u{1f6a7}','\u{1f6a8}'][Math.floor(Math.random()*4)];
+   const ln=Math.floor(Math.random()*3);
+   o.style.cssText=`position:absolute;top:-40px;left:${lanes[ln]}%;font-size:2rem;transform:translateX(-50%)`;
+   road.appendChild(o);obs.push({el:o,y:-40,lane:ln,near:false});},700);
   const tick=setInterval(()=>{if(done)return;
-   obs.forEach(o=>{o.y+=7;o.el.style.top=o.y+'px';
-    if(o.y>160&&o.y<200&&Math.abs(lanes[lane]-lanes[o.lane])<5){done=true;clearInterval(tick);clearInterval(spawn);
-     lose('Crash! The lugaw spilled. (The customer still gave 5 stars.)');}});
-   obs=obs.filter(o=>{if(o.y>240){o.el.remove();return false;}return true;});
+   obs.forEach(o=>{o.y+=8;o.el.style.top=o.y+'px';
+    const dx=Math.abs(lanes[lane]-lanes[o.lane]);
+    if(o.y>150&&o.y<205&&dx<5){done=true;clearInterval(tick);clearInterval(spawn);
+     lose(`Crash! Score ${score}. The lugaw spilled. (5 stars anyway.)`);}
+    else if(o.y>205&&!o.near&&dx>=5&&dx<28){o.near=true;score+=5;sEl.textContent=score;}});
+   obs=obs.filter(o=>{if(o.y>250){o.el.remove();return false;}return true;});
   },50);
-  const clock=setInterval(()=>{left--;tEl.textContent=left;
-   if(left<=0){done=true;clearInterval(tick);clearInterval(spawn);clearInterval(clock);win('Delivered! 20 seconds, zero spills.');}},1000);
+  const clock=setInterval(()=>{left--;tEl.textContent=left;score+=1;sEl.textContent=score;
+   if(left<=0){done=true;clearInterval(tick);clearInterval(spawn);clearInterval(clock);win(`Delivered! 30 seconds, score ${score}.`);}},1000);
   road.focus({preventScroll:true});
  }}},
 
 livesell(){return{title:'MINE!',
- intro:'Products flash with prices. Tap MINE only on items under \u20B1100. The bots are fast. 10 rounds, 3 mistakes and you lose the budol.',
+ intro:'12 items. Bots snipe fast: you have 2 seconds per item. Tap MINE only under \u20b1100. 3 mistakes and the budol is gone.',
  render(el,{win,lose}){
-  const items=[['\u{1F45A} Blouse',89],['\u{1F45F} Shoes',450],['\u{1F452} Cap',99],['\u{1F45C} Bag',1200],['\u{1F9F6} Socks',49],['\u{1F455} Shirt',95],['\u{1F460} Heels',899],['\u{1F9E2} Scarf',75]];
+  const items=[['\u{1f45a} Blouse',89],['\u{1f45f} Shoes',450],['\u{1f452} Cap',99],['\u{1f45c} Bag',1200],['\u{1f9f6} Socks',49],['\u{1f455} Shirt',95],['\u{1f460} Heels',899],['\u{1f9e2} Scarf',75],['\u{1f457} Dress',150],['\u{1f45d} Clutch',85]];
   let r=0,mist=0,done=false,tm=null;
-  const round=()=>{r++;if(r>10){done=true;win('Budol secured! 10 items mined, wallet crying.');return;}
+  const round=()=>{r++;if(r>12){done=true;win('Budol secured! 12 items mined, wallet crying.');return;}
    const[it,pr]=items[Math.floor(Math.random()*items.length)];
-   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Item ${r}/10 \u00b7 Mistakes ${mist}/3</p>
+   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Item ${r}/12 \u00b7 Mistakes ${mist}/3</p>
     <div style="text-align:center;font-size:3rem">${it.split(' ')[0]}</div>
-    <p style="text-align:center;font-size:1.3rem;font-weight:800">${it} \u00b7 \u20B1${pr}</p>
+    <p style="text-align:center;font-size:1.3rem;font-weight:800">${it} \u00b7 \u20b1${pr}</p>
     <div style="text-align:center"><button class="mini-again" id="lv-mine">MINE!</button></div>`;
    el.querySelector('#lv-mine').addEventListener('click',()=>{
     if(done)return;clearTimeout(tm);
-    const good=pr<100;
-    if(good){setTimeout(round,350);}
-    else{mist++;if(mist>=3){done=true;lose('Too pricey! The bots got everything good.');return;}setTimeout(round,350);}
+    if(pr<100){setTimeout(round,300);}
+    else{mist++;if(mist>=3){done=true;lose('Too pricey! The bots got everything good.');return;}setTimeout(round,300);}
    });
-   tm=setTimeout(()=>{if(done)return;if(pr<100){mist++;if(mist>=3){done=true;lose('Too slow! The bots mined it first.');return;}}setTimeout(round,350);},2200);};
+   tm=setTimeout(()=>{if(done)return;if(pr<100){mist++;if(mist>=3){done=true;lose('Too slow! A bot mined it first.');return;}}setTimeout(round,300);},2000);};
   round();
  }}},
 
 meme(){return{title:'Meme Match',
- intro:'4 meme templates, 4 captions. Click a meme, then its caption. Match them all.',
+ intro:'6 meme templates, 6 captions, 60 seconds. Click a meme, then its caption. Match them all before time runs out.',
  render(el,{win,lose}){
-  const pairs=[['\u{1F42D}','"ako na lang mag-isa"'],['\u{1F923}','"sana all may jowa"'],['\u{1F480}','"seen at 11:59pm"'],['\u{1F974}','"puyat is life"']];
+  const pairs=[['\u{1f42d}','"ako na lang mag-isa"'],['\u{1f923}','"sana all may jowa"'],['\u{1f480}','"seen at 11:59pm"'],['\u{1f974}','"puyat is life"'],['\u{1f62d}','"iyak tawa"'],['\u{1f911}','"money manifesting"']];
   const caps=pairs.map(p=>p[1]).sort(()=>Math.random()-.5);
-  el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-   <div>${pairs.map((p,i)=>`<button class="mini-again" data-m="${i}" style="font-size:2rem;width:100%;padding:16px">${p[0]}</button>`).join('')}</div>
-   <div>${caps.map(c=>`<button class="mini-again" data-c="${c}" style="width:100%;padding:16px;margin-bottom:10px;font-size:.85rem">${c}</button>`).join('')}</div></div>
-   <p style="text-align:center;color:#b9c8ca" id="mm-msg">Matched 0/4</p>`;
-  const msg=el.querySelector('#mm-msg');let sel=null,matched=0,done=false;
+  el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Matched <b id="mm-n">0</b>/6 \u00b7 <b id="mm-t" style="color:#e2574c">60</b>s</p>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+   <div>${pairs.map((p,i)=>`<button class="mini-again" data-m="${i}" style="font-size:2rem;width:100%;padding:14px">${p[0]}</button>`).join('')}</div>
+   <div>${caps.map(c=>`<button class="mini-again" data-c="${c}" style="width:100%;padding:14px;margin-bottom:8px;font-size:.8rem">${c}</button>`).join('')}</div></div>`;
+  const n=el.querySelector('#mm-n'),t=el.querySelector('#mm-t');let sel=null,matched=0,done=false,left=60;
+  const tm=setInterval(()=>{if(done)return;left--;t.textContent=left;
+   if(left<=0){done=true;clearInterval(tm);lose('Time! The memes went stale.');}},1000);
   el.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{
    if(done||b.disabled)return;
    el.querySelectorAll('[data-m]').forEach(x=>x.style.outline='');b.style.outline='3px solid #f4c65b';sel=Number(b.dataset.m);}));
@@ -317,250 +344,328 @@ meme(){return{title:'Meme Match',
    if(pairs[sel][1]===b.dataset.c){matched++;
     el.querySelector(`[data-m="${sel}"]`).disabled=true;b.disabled=true;
     el.querySelector(`[data-m="${sel}"]`).style.opacity=.35;b.style.opacity=.35;
-    msg.textContent=`Matched ${matched}/4`;sel=null;
-    if(matched>=4){done=true;setTimeout(()=>win('Certified meme lord. The group chat fears you.'),350);}}
-   else{done=true;lose('Wrong pairing. That meme deserved better.');}}));
+    n.textContent=matched;sel=null;
+    if(matched>=6){done=true;clearInterval(tm);setTimeout(()=>win('Certified meme lord. The group chat fears you.'),350);}}
+   else{done=true;clearInterval(tm);lose('Wrong pairing. That meme deserved better.');}}));
  }}},
 
 axie(){return{title:'Arena Draft',
- intro:'Draft 3 axies. Their combined power must reach 15 to beat the enemy team. Choose wisely.',
+ intro:'Best of 3 rounds. Each round: draft 3 axies, beat the rival team\u2019s power. Win 2 rounds to take the arena.',
  render(el,{win,lose}){
-  const axies=[['\u{1F33F}',7],['\u{1F41F}',5],['\u{1F98E}',6],['\u{1F419}',4],['\u{1F422}',8],['\u{1F43E}',3]];
-  el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Tap 3 axies \u00b7 Team power <b id="ax-p">0</b>/15</p>
-   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${axies.map((a,i)=>`<button class="mini-again" data-i="${i}" style="font-size:1.8rem;padding:16px">${a[0]}<br><small style="font-size:.75rem">PWR ${a[1]}</small></button>`).join('')}</div>
+  const axies=[['\u{1f33f}',7],['\u{1f41f}',5],['\u{1f98e}',6],['\u{1f419}',4],['\u{1f422}',8],['\u{1f43e}',3]];
+  let round=0,wins=0,done=false;
+  const play=()=>{round++;
+   if(round>3){done=true;wins>=2?win(`Arena champion! ${wins}/3 rounds.`):lose(`Out-drafted. ${wins}/3 rounds.`);return;}
+   const rival=12+Math.floor(Math.random()*6);
+   const picked=new Set();
+   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Round ${round}/3 (won ${wins}) \u00b7 Rival power <b style="color:#e2574c">${rival}</b> \u00b7 Yours <b id="ax-p">0</b></p>
+   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${axies.map((a,i)=>`<button class="mini-again" data-i="${i}" style="font-size:1.8rem;padding:14px">${a[0]}<br><small style="font-size:.75rem">PWR ${a[1]}</small></button>`).join('')}</div>
    <div style="text-align:center;margin-top:12px"><button class="mini-again" id="ax-go">Battle!</button></div>`;
-  const picked=new Set();let done=false;
-  const pEl=el.querySelector('#ax-p');
-  el.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{
-   if(done)return;const i=Number(b.dataset.i);
-   if(picked.has(i)){picked.delete(i);b.style.outline='';}
-   else{if(picked.size>=3)return;picked.add(i);b.style.outline='3px solid #f4c65b';}
-   pEl.textContent=[...picked].reduce((s,i)=>s+axies[i][1],0);}));
-  el.querySelector('#ax-go').addEventListener('click',()=>{
-   if(done||picked.size<3)return;done=true;
-   const total=[...picked].reduce((s,i)=>s+axies[i][1],0);
-   total>=15?win(`Victory! Power ${total} crushes the enemy team.`):lose(`Defeat. Power ${total} was not enough for the arena.`)});
+   const pEl=el.querySelector('#ax-p');
+   el.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{
+    if(done)return;const i=Number(b.dataset.i);
+    if(picked.has(i)){picked.delete(i);b.style.outline='';}
+    else{if(picked.size>=3)return;picked.add(i);b.style.outline='3px solid #f4c65b';}
+    pEl.textContent=[...picked].reduce((s,i)=>s+axies[i][1],0);}));
+   el.querySelector('#ax-go').addEventListener('click',()=>{
+    if(done||picked.size<3)return;
+    const total=[...picked].reduce((s,i)=>s+axies[i][1],0);
+    if(total>rival){wins++;el.innerHTML=`<p style="text-align:center;font-size:1.3rem">Round ${round} won! ${total} vs ${rival}.</p>`;}
+    else{el.innerHTML=`<p style="text-align:center;font-size:1.3rem">Round ${round} lost. ${total} vs ${rival}.</p>`;}
+    setTimeout(play,1200);});};
+  play();
  }}},
 
 ai(){return{title:'Prompt Perfect',
- intro:'2 prompts, words all shuffled. Tap the words in order to build each prompt correctly.',
+ intro:'3 prompts, words shuffled, decoys included. 20 seconds each. Tap words in order to build each prompt.',
  render(el,{win,lose}){
-  const prompts=[['draw','a','cat','wearing','barong'],['write','a','jingle','about','lumpia']];
+  const prompts=[['draw','a','cat','wearing','barong'],['write','a','jingle','about','lumpia'],['make','a','meme','about','traffic']];
+  const decoys=['banana','quantum','yesterday'];
   let p=0,done=false;
   const round=()=>{if(p>=prompts.length){done=true;win('Chef\u2019s kiss. The AI understood you perfectly.');return;}
-   const words=[...prompts[p]].sort(()=>Math.random()-.5);let pos=0;
-   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Prompt ${p+1}/2</p>
+   const words=[...prompts[p],decoys[p]].sort(()=>Math.random()-.5);let pos=0,left=20,tm=null;
+   el.innerHTML=`<p style="text-align:center;color:#b9c8ca">Prompt ${p+1}/3 \u00b7 <b id="ai-t" style="color:#e2574c">20</b>s</p>
     <p style="text-align:center;font-size:1.2rem;min-height:40px;font-weight:700" id="ai-out"></p>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">${words.map(w=>`<button class="mini-again" data-w="${w}">${w}</button>`).join('')}</div>`;
-   const out=el.querySelector('#ai-out');
+   const out=el.querySelector('#ai-out'),tEl=el.querySelector('#ai-t');
+   tm=setInterval(()=>{if(done)return;left--;tEl.textContent=left;
+    if(left<=0){done=true;clearInterval(tm);lose('Too slow! The AI got bored and drew six fingers.');}},1000);
    el.querySelectorAll('[data-w]').forEach(b=>b.addEventListener('click',()=>{
     if(done||b.disabled)return;
     if(b.dataset.w===prompts[p][pos]){b.disabled=true;b.style.opacity=.35;out.textContent+=(out.textContent?' ':'')+b.dataset.w;pos++;
-     if(pos>=prompts[p].length){p++;setTimeout(round,600);}}
-    else{done=true;lose('The AI drew six fingers. Prompt failed.');}}));};
+     if(pos>=prompts[p].length){clearInterval(tm);p++;setTimeout(round,600);}}
+    else{done=true;clearInterval(tm);lose(`"${b.dataset.w}"? The AI drew six fingers. Prompt failed.`);}}));};
   round();
  }}}
 };
 
-/* ---------------- 2020s arcade games ---------------- */
+
+/* ---------------- 2020s arcade games (redesigned) ---------------- */
 window.addEventListener('DOMContentLoaded',()=>{
 'use strict';
 const $=s=>document.querySelector(s);
 const lsG=(k,d)=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):d}catch(e){return d}};
 const lsS=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+function beep(f,d,type,g){try{const c=new (window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator(),v=c.createGain();o.type=type||'square';o.frequency.value=f;v.gain.value=g||.06;o.connect(v);v.connect(c.destination);o.start();o.stop(c.currentTime+(d||.08));}catch(e){}}
 
-/* 01 Budol Cart */
+/* 01 Budol Cart: 60s, combos, powerups, 3 hearts */
 (function(){
  const cv=$('#bdl');if(!cv)return;
  const g=cv.getContext('2d'),W=320,H=240;
  const go=$('#bdl-go'),sc=$('#bdl-score'),best=$('#bdl-best'),msg=$('#bdl-msg');
- let bx=160,items=[],tm=null,tm2=null,score=0,left=30,run=false;
+ let bx=160,items=[],pops=[],tm=null,sp2=null,score=0,combo=0,hearts=3,left=60,run=false,magnet=0,shield=false,elapsed=0;
  const bk=lsG('museum-budol',0);best.textContent=bk;
- const blip=f=>{try{const c=new (window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator(),v=c.createGain();o.type='square';o.frequency.value=f;v.gain.value=.06;o.connect(v);v.connect(c.destination);o.start();o.stop(c.currentTime+.08);}catch(e){}};
  function draw(){
   g.fillStyle='#20303f';g.fillRect(0,0,W,H);
-  g.fillStyle='#f4c65b';g.font='12px monospace';g.fillText(left+'s',8,16);
-  g.font='30px serif';g.fillText('\u{1F6D2}',bx-15,H-38);
+  g.fillStyle='#f4c65b';g.font='bold 12px monospace';g.textAlign='left';
+  g.fillText(Math.ceil(left)+'s  '+'\u2764'.repeat(hearts)+'\u2661'.repeat(Math.max(0,3-hearts)),8,16);
+  if(combo>1){g.fillStyle='#7cc7ee';g.textAlign='right';g.fillText('COMBO x'+Math.min(combo,5),W-8,16);}
+  if(magnet>0){g.fillStyle='#f4c65b';g.textAlign='center';g.fillText('\u2b50 MAGNET',W/2,16);}
+  if(shield){g.fillStyle='#7cc7ee';g.textAlign='center';g.fillText('\u{1f6e1} SHIELD',W/2,32);}
+  g.font='30px serif';g.textAlign='left';
+  if(shield){g.fillStyle='rgba(124,199,238,.35)';g.beginPath();g.arc(bx,H-30,26,0,7);g.fill();}
+  g.fillText('\u{1f6d2}',bx-15,H-38);
   items.forEach(it=>{g.font='24px serif';g.fillText(it.k,it.x,it.y);});
+  g.font='bold 13px monospace';g.textAlign='center';
+  pops.forEach(p=>{g.fillStyle=p.c;g.fillText(p.t,p.x,p.y);});
  }
+ function pop(t,x,y,c){pops.push({t,x,y,c:c||'#fff',life:1});}
  function spawn(){
-  const fake=Math.random()<.32;
-  items.push({x:20+Math.random()*(W-40),y:-20,k:fake?'\u{1F480}':'\u{1F39F}',fake,vy:2+Math.random()*2.4});
+  const r=Math.random(),spd=2+elapsed*.045+Math.random()*2;
+  if(r<.60)items.push({x:20+Math.random()*(W-40),y:-20,k:'\u{1f39f}',vy:spd,kind:'v'});
+  else if(r<.82)items.push({x:20+Math.random()*(W-40),y:-20,k:'\u{1f480}',vy:spd+.6,kind:'f'});
+  else if(r<.92)items.push({x:20+Math.random()*(W-40),y:-20,k:'\u2b50',vy:spd,kind:'s'});
+  else items.push({x:20+Math.random()*(W-40),y:-20,k:'\u{1f6e1}',vy:spd,kind:'p'});
  }
  function tick(){
-  left-=.1;if(left<=0){end();return;}
-  items.forEach(it=>it.y+=it.vy);
+  left-=.05;elapsed+=.05;if(magnet>0)magnet-=.05;
+  if(left<=0){end(true);return;}
+  items.forEach(it=>{
+   it.y+=it.vy;
+   if(magnet>0&&it.kind==='v'){it.x+=(bx-it.x)*.12;}
+  });
   items=items.filter(it=>{
-   if(it.y>H-46&&it.y<H-8&&Math.abs(it.x-bx)<24){
-    if(it.fake){score=Math.max(0,score-15);blip(160);flash('#e2574c');}
-    else{score+=10;blip(880);}
+   if(it.y>H-48&&it.y<H-6&&Math.abs(it.x-bx)<26){
+    if(it.kind==='v'){combo=Math.min(combo+1,5);const pts=10*Math.max(1,combo);score+=pts;pop('+'+pts,it.x,it.y-8,'#7cc7ee');beep(660+combo*80,.07);}
+    else if(it.kind==='s'){magnet=5;pop('MAGNET!',it.x,it.y-8,'#f4c65b');beep(990,.12,'sine',.08);}
+    else if(it.kind==='p'){shield=true;pop('SHIELD!',it.x,it.y-8,'#7cc7ee');beep(520,.12,'sine',.08);}
+    else{if(shield){shield=false;pop('BLOCKED',it.x,it.y-8,'#7cc7ee');beep(300,.1);}
+     else{hearts--;combo=0;pop('-1 \u2764',it.x,it.y-8,'#e2574c');beep(150,.2,'sawtooth',.08);flash('#e2574c');
+      if(hearts<=0){end(false);return false;}}}
     sc.textContent=score;return false;
    }
    return it.y<H+30;
   });
+  pops.forEach(p=>{p.y-=1;p.life-=.03;});
+  pops=pops.filter(p=>p.life>0);
   draw();
  }
  function flash(c){cv.style.boxShadow=`0 0 0 4px ${c}`;setTimeout(()=>cv.style.boxShadow='',180);}
- function end(){
-  run=false;clearInterval(tm);clearInterval(tm2);
+ function end(won){
+  run=false;clearInterval(tm);clearInterval(sp2);
   if(score>bk){lsS('museum-budol',score);best.textContent=score;}
-  msg.textContent=`Sale over! You stacked \u20B1${score*10} in vouchers.`;
-  go.textContent='\u25B6 Play again';
+  msg.textContent=won?`Sale survived! \u20B1${score} in vouchers stacked.`:`Sold out! The fakes got you. \u20B1${score} banked.`;
+  go.textContent='\u25b6 Play again';
  }
+ function loop(){ if(run){spawn();sp2=setTimeout(loop,Math.max(320,720-elapsed*8));} }
  go.addEventListener('click',()=>{
-  bx=160;items=[];score=0;left=30;sc.textContent=0;run=true;
-  msg.textContent='Catch \u{1F39F}, dodge \u{1F480}!';go.textContent='\u25B6 Restart';
-  clearInterval(tm);clearInterval(tm2);
-  tm=setInterval(tick,50);tm2=setInterval(()=>{if(run)spawn();},650);draw();cv.focus({preventScroll:true});
+  bx=160;items=[];pops=[];score=0;combo=0;hearts=3;left=60;elapsed=0;magnet=0;shield=false;run=true;
+  sc.textContent=0;msg.textContent='Catch \u{1f39f}, dodge \u{1f480}. Combos multiply!';go.textContent='\u25b6 Restart';
+  clearInterval(tm);clearTimeout(sp2);
+  tm=setInterval(tick,50);loop();draw();cv.focus({preventScroll:true});
  });
  cv.tabIndex=0;
- cv.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')bx=Math.max(20,bx-22);if(e.key==='ArrowRight')bx=Math.min(W-20,bx+22);if(run)draw();});
- cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect();bx=e.clientX-r.left< r.width/2?Math.max(20,bx-30):Math.min(W-20,bx+30);if(run)draw();});
+ cv.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')bx=Math.max(20,bx-24);if(e.key==='ArrowRight')bx=Math.min(W-20,bx+24);if(run)draw();});
  let tx=null;
  cv.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
- cv.addEventListener('touchmove',e=>{if(tx===null)return;const dx=e.touches[0].clientX-tx;bx=Math.min(W-20,Math.max(20,bx+dx));tx=e.touches[0].clientX;if(run)draw();e.preventDefault();},{passive:false});
+ cv.addEventListener('touchmove',e=>{if(tx===null)return;bx=Math.min(W-20,Math.max(20,bx+(e.touches[0].clientX-tx)));tx=e.touches[0].clientX;if(run)draw();e.preventDefault();},{passive:false});
  draw();
 })();
 
-/* 02 Last Hit */
+/* 02 Last Hit: 3 lanes, tower defense, perfect-hit combos */
 (function(){
  const scr=$('#lhit-screen');if(!scr)return;
  const msg=$('#lhit-msg'),go=$('#lhit-go'),sc=$('#lhit-score'),mi=$('#lhit-miss'),be=$('#lhit-best');
- let wave=0,miss=0,gold=0,hp=100,spd=1,tm=null,run=false;
- const bk=lsG('museum-lasthit',0);be.textContent=bk==='0'&&!lsG('museum-lasthit',null)?'\u2013':bk;
+ let lanes=[],gold=0,miss=0,combo=0,kills=0,tower=100,left=90,tm=null,run=false;
+ const bk=lsG('museum-lasthit',0);be.textContent=bk?bk:'\u2013';
+ function newMinion(l){return{l,hp:100,spd:.55+Math.random()*.7+kills*.02,wait:0};}
  function render(){
-  scr.innerHTML=`<div class="lhit-row"><div class="lhit-minion" id="lh-m" role="button" tabindex="0" aria-label="Attack minion">\u{1F47E}</div>
-   <div class="lhit-hp"><div class="lhit-zone" style="left:0;width:25%"></div><div class="lhit-fill" id="lh-f" style="width:${hp}%"></div></div></div>
-   <p style="margin:0;color:#b9c8ca;font-size:.85rem">Wave ${Math.min(wave+1,10)}/10 \u00b7 tap when the bar is in the gold zone</p>`;
-  const m=scr.querySelector('#lh-m');
-  const hit=()=>{if(!run)return;
-   if(hp<=25){gold+=100;sc.textContent=gold;wave++;blip(660);
-    if(wave>=10){end(true);return;}
-    hp=100;spd=.9+Math.random()*1.4;render();}
-   else{miss++;mi.textContent=miss;blip(180);
-    if(miss>=3){end(false);return;}}};
-  m.addEventListener('click',hit);
-  m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit();}});
+  scr.innerHTML=`<div style="margin-bottom:8px"><div style="height:10px;background:#0e1a2e;border-radius:5px;overflow:hidden"><div id="lh-tw" style="height:100%;width:${tower}%;background:#3fae6b"></div></div><small style="color:#b9c8ca">\u{1f6e1} Tower ${Math.ceil(tower)}%</small></div>`+
+  lanes.map((m,i)=>`<div class="lhit-row"><div class="lhit-minion" data-l="${i}" role="button" tabindex="0" aria-label="Attack minion ${i+1}" style="${m.wait>0?'opacity:.25':''}">\u{1f47e}</div>
+   <div class="lhit-hp"><div class="lhit-zone" style="left:0;width:25%"></div><div class="lhit-fill" style="width:${Math.max(0,m.hp)}%"></div></div></div>`).join('')+
+  `<p style="margin:6px 0 0;color:#b9c8ca;font-size:.85rem">Gold ${gold} \u00b7 Kills ${kills} \u00b7 ${combo>1?'COMBO x'+Math.min(combo,5)+' \u00b7 ':''}<b>${Math.ceil(left)}s</b></p>`;
+  scr.querySelectorAll('.lhit-minion').forEach(el=>{
+   const hit=()=>{if(!run)return;const m=lanes[Number(el.dataset.l)];
+    if(m.wait>0)return;
+    if(m.hp<=25){const perfect=m.hp<=10;combo=Math.min(combo+1,5);
+     const pts=(perfect?150:100)*Math.max(1,combo);gold+=pts;kills++;tower=Math.min(100,tower+4);
+     sc.textContent=gold;beep(perfect?990:660,.08);if(perfect)msg.textContent='PERFECT last hit!';
+     lanes[m.l]=newMinion(m.l);lanes[m.l].wait=30;}
+    else{miss++;combo=0;mi.textContent=miss;beep(180,.12);
+     if(miss>=3){end(false,'Too many whiffs. The minions overrun you.');return;}}
+    render();};
+   el.addEventListener('click',hit);
+   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit();}});
+  });
  }
- function blip(f){try{const c=new (window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator(),v=c.createGain();o.type='square';o.frequency.value=f;v.gain.value=.06;o.connect(v);v.connect(c.destination);o.start();o.stop(c.currentTime+.09);}catch(e){}}
- function end(won){
+ function end(won,why){
   run=false;clearInterval(tm);
   const prev=lsG('museum-lasthit',0);if(gold>prev){lsS('museum-lasthit',gold);be.textContent=gold;}
-  msg.textContent=won?`Victory! ${gold} gold, turret next.`:`The turret fell. ${gold} gold earned.`;
-  go.textContent='\u25B6 Play again';
+  msg.textContent=won?`Victory! ${gold} gold, ${kills} last hits.`:(why||`The tower fell. ${gold} gold earned.`);
+  go.textContent='\u25b6 Play again';
  }
  go.addEventListener('click',()=>{
-  wave=0;miss=0;gold=0;hp=100;spd=1.2;run=true;
-  sc.textContent=0;mi.textContent=0;msg.textContent='';go.textContent='\u25B6 Restart';
+  lanes=[newMinion(0),newMinion(1),newMinion(2)];gold=0;miss=0;combo=0;kills=0;tower=100;left=90;run=true;
+  sc.textContent=0;mi.textContent=0;msg.textContent='Defend the tower!';go.textContent='\u25b6 Restart';
   render();clearInterval(tm);
-  tm=setInterval(()=>{if(!run)return;hp-=spd;
-   const f=scr.querySelector('#lh-f');if(f)f.style.width=Math.max(0,hp)+'%';
-   if(hp<=0){miss++;mi.textContent=miss;blip(180);hp=100;
-    if(miss>=3){end(false);return;}}},60);
+  tm=setInterval(()=>{
+   if(!run)return;left-=.06;tower-=.06;
+   lanes.forEach(m=>{if(m.wait>0){m.wait--;}else{m.hp-=m.spd;
+    if(m.hp<=0){m.hp=100;tower-=3;combo=0;}}});
+   if(tower<=0){end(false);return;}
+   if(left<=0){end(true);return;}
+   const tw=scr.querySelector('#lh-tw');if(tw)tw.style.width=Math.max(0,tower)+'%';
+   scr.querySelectorAll('.lhit-fill').forEach((f,i)=>{if(lanes[i])f.style.width=Math.max(0,lanes[i].hp)+'%';});
+   const p=scr.querySelector('p');if(p&&p.lastChild)p.textContent=`Gold ${gold} \u00b7 Kills ${kills} \u00b7 ${combo>1?'COMBO x'+Math.min(combo,5)+' \u00b7 ':''}`;
+   const b=scr.querySelector('b');if(b)b.textContent=Math.ceil(left)+'s';
+  },60);
  });
 })();
 
-/* 03 FYP Rush */
+/* 03 FYP Rush: streaks, viral cards, 45s */
 (function(){
  const card=$('#fyp-card');if(!card)return;
  const info=$('#fyp-info'),msg=$('#fyp-msg'),sc=$('#fyp-score'),ti=$('#fyp-time'),be=$('#fyp-best');
  const likeB=$('#fyp-like'),skipB=$('#fyp-skip'),go=$('#fyp-go');
  const deck=[
-  {e:'\u{1F57A}',c:'POV: your tita learns the trend',good:true},
-  {e:'\u{1F957}',c:'Rating street food in Quiapo',good:true},
-  {e:'\u{1F4E2}',c:'AD: download this game now',good:false},
-  {e:'\u{1F3A4}',c:'Budol find under \u20B199',good:true},
-  {e:'\u{1F4F1}',c:'SPONSORED: a phone plan',good:false},
-  {e:'\u{1F60E}',c:'GRWM: first day of classes',good:true},
-  {e:'\u{1F4B8}',c:'PROMO: crypto doubling',good:false},
-  {e:'\u{1F3B6}',c:'SB19 fan cam, 2M views',good:true}];
- let score=0,left=30,tm=null,run=false,cur=null;
+  {e:'\u{1f57a}',c:'POV: your tita learns the trend',good:true},
+  {e:'\u{1f957}',c:'Rating street food in Quiapo',good:true},
+  {e:'\u{1f3a4}',c:'Budol find under \u20b199',good:true},
+  {e:'\u{1f60e}',c:'GRWM: first day of classes',good:true},
+  {e:'\u{1f3b6}',c:'P-pop fan cam, 2M views',good:true},
+  {e:'\u{1f63a}',c:'Cat does taxes (somehow)',good:true},
+  {e:'\u{1f4e2}',c:'AD: download this game now',good:false},
+  {e:'\u{1f4f1}',c:'SPONSORED: a phone plan',good:false},
+  {e:'\u{1f4b8}',c:'PROMO: crypto doubling',good:false},
+  {e:'\u{1f6d2}',c:'FLASH SALE ends in 1 min',good:false}];
+ let score=0,streak=0,left=45,tm=null,auto=null,run=false,cur=null,viralT=null;
  const bk=lsG('museum-fyp',0);be.textContent=bk?bk:'\u2013';
- function blip(f){try{const c=new (window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator(),v=c.createGain();o.type='sine';o.frequency.value=f;v.gain.value=.08;o.connect(v);v.connect(c.destination);o.start();o.stop(c.currentTime+.09);}catch(e){}}
+ const mult=()=>Math.min(3,1+Math.floor(streak/4));
  function deal(){
-  cur=deck[Math.floor(Math.random()*deck.length)];
-  card.innerHTML=`<div class="fyp-card">${cur.e}</div><div class="fyp-cap">${cur.c}</div>`;
-  info.textContent=cur.good?'\u2665 it or skip it':'looks like an ad\u2026';
+  clearTimeout(auto);clearInterval(viralT);
+  const viral=Math.random()<.18;
+  const base=deck[Math.floor(Math.random()*deck.length)];
+  cur={...base,viral};
+  let bar='';
+  if(viral){bar=`<div style="height:6px;background:#0e1a2e;border-radius:3px;overflow:hidden;max-width:230px;margin:6px auto 0"><div id="fyp-vb" style="height:100%;width:100%;background:#f4c65b"></div></div>`;}
+  card.innerHTML=`<div class="fyp-card" style="${viral?'filter:drop-shadow(0 0 12px #f4c65b)':''}">${cur.e}</div><div class="fyp-cap">${viral?'\u2b50 VIRAL! ':''}${cur.c}</div>${bar}`;
+  info.textContent=(streak>1?`STREAK ${streak} (x${mult()}) \u00b7 `:'')+(viral?'VIRAL: like it fast!':(cur.good?'\u2665 it or skip it':'looks like an ad\u2026'));
+  if(viral){let w=100;viralT=setInterval(()=>{w-=4;const vb=card.querySelector('#fyp-vb');if(vb)vb.style.width=w+'%';
+   if(w<=0){clearInterval(viralT);streak=0;deal();}},100);}
+  auto=setTimeout(()=>{if(run)deal();},viral?2600:3400);
  }
  function judge(liked){
-  if(!run||!cur)return;
-  if(cur.good&&liked){score+=10;blip(880);}
-  else if(!cur.good&&!liked){score+=5;blip(660);}
-  else if(!cur.good&&liked){score=Math.max(0,score-15);blip(180);}
-  sc.textContent=score;deal();
+  if(!run||!cur)return;clearTimeout(auto);clearInterval(viralT);
+  const m=mult();let d='';
+  if(cur.viral&&liked){score+=50*m;streak+=2;d='VIRAL +'+(50*m);beep(990,.1);}
+  else if(cur.viral&&!liked){streak=0;d='missed the viral';beep(220,.1);}
+  else if(cur.good&&liked){score+=10*m;streak++;d='+'+(10*m);beep(880,.07);}
+  else if(cur.good&&!liked){d='skipped';}
+  else if(!cur.good&&liked){score=Math.max(0,score-20);streak=0;d='-20 AD!';beep(160,.15,'sawtooth',.07);}
+  else{score+=5*m;streak++;d='+'+(5*m)+' ad dodged';beep(660,.07);}
+  sc.textContent=score;msg.textContent=d;deal();
  }
  likeB.addEventListener('click',()=>judge(true));
  skipB.addEventListener('click',()=>judge(false));
  function end(){
-  run=false;clearInterval(tm);
+  run=false;clearInterval(tm);clearTimeout(auto);clearInterval(viralT);
   const prev=lsG('museum-fyp',0);if(score>prev){lsS('museum-fyp',score);be.textContent=score;}
   msg.textContent=`Time! FYP score: ${score}. The algorithm has notes.`;
-  go.textContent='\u25B6 Play again';
+  go.textContent='\u25b6 Play again';
  }
  go.addEventListener('click',()=>{
-  score=0;left=30;run=true;sc.textContent=0;ti.textContent=30;msg.textContent='';go.textContent='\u25B6 Restart';
+  score=0;streak=0;left=45;run=true;sc.textContent=0;ti.textContent=45;msg.textContent='';go.textContent='\u25b6 Restart';
   deal();clearInterval(tm);
   tm=setInterval(()=>{left--;ti.textContent=left;if(left<=0)end();},1000);
  });
- card.innerHTML='<div class="fyp-card">\u{1F4F1}</div><div class="fyp-cap">Press Start for your For You Page</div>';
-})();
+ card.innerHTML='<div class="fyp-card">\u{1f4f1}</div><div class="fyp-cap">Press Start for your For You Page</div>';
+});
 });
 
-/* ---------------- 2020s soundboard (all synthesized) ---------------- */
+
+/* ---------------- 2020s soundboard (layered synthesis) ---------------- */
 window.addEventListener('DOMContentLoaded',()=>{
 'use strict';
 let AC20=null;
 const ac20=()=>AC20||(AC20=new (window.AudioContext||window.webkitAudioContext)());
-function s20tone(f,delay,d,type,g){
- try{const c=ac20();if(c.state==='suspended')c.resume();const t=c.currentTime+.03+(delay||0);
- const o=c.createOscillator(),v=c.createGain();o.type=type||'sine';o.frequency.value=f;
- v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(g||.15,t+.015);
- v.gain.exponentialRampToValueAtTime(.0001,t+d);
- o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+d+.05);}catch(e){}
+function env(v,t,a,peak,dur){
+ v.gain.setValueAtTime(.0001,t);
+ v.gain.exponentialRampToValueAtTime(peak,t+a);
+ v.gain.exponentialRampToValueAtTime(.0001,t+dur);
 }
-function s20sweep(f0,f1,d,type,g){
- try{const c=ac20();if(c.state==='suspended')c.resume();const t=c.currentTime+.03;
- const o=c.createOscillator(),v=c.createGain();o.type=type||'sine';
- o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+d);
- v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(g||.12,t+.02);
- v.gain.exponentialRampToValueAtTime(.0001,t+d);
- o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+d+.05);}catch(e){}
+function lay(notes){
+ /* notes: [{f,at,d,type,g,slide}] layered into one gesture */
+ try{const c=ac20();if(c.state==='suspended')c.resume();const t0=c.currentTime+.03;
+ notes.forEach(n=>{
+  const t=t0+(n.at||0),o=c.createOscillator(),v=c.createGain();
+  o.type=n.type||'sine';o.frequency.setValueAtTime(n.f,t);
+  if(n.slide)o.frequency.exponentialRampToValueAtTime(n.slide,t+(n.d||.15));
+  env(v,t,.012,n.g||.14,(n.d||.15)+.05);
+  o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+(n.d||.15)+.1);
+ });}catch(e){}
+}
+function thump(at,f,dur,g){
+ try{const c=ac20();if(c.state==='suspended')c.resume();const t=c.currentTime+.03+(at||0);
+ const o=c.createOscillator(),v=c.createGain();o.type='sine';
+ o.frequency.setValueAtTime(f||120,t);o.frequency.exponentialRampToValueAtTime(40,t+(dur||.18));
+ env(v,t,.008,g||.22,(dur||.18)+.05);
+ o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+(dur||.18)+.1);}catch(e){}
 }
 const note=m=>{const n=document.getElementById('sb-note');if(n)n.textContent=m;};
 const on=(id,fn)=>{const b=document.getElementById(id);if(b)b.addEventListener('click',fn);};
 
-on('sb20-gcash',()=>{ /* money received: bright two-note chime */
- s20tone(987.77,0,.22,'sine',.16);s20tone(1318.5,.16,.4,'sine',.16);s20sweep(1318.5,2637,.5,'sine',.04);
- note('GCash: money received. Check the balance.');});
-on('sb20-tiktok',()=>{ /* notification bloop */
- s20sweep(500,980,.12,'sine',.14);s20tone(1244.5,.1,.1,'sine',.1);
+on('sb20-gcash',()=>{ /* payment received: bright ascending sparkle */
+ lay([{f:987.77,d:.16},{f:1975.5,d:.16,g:.05},{f:1318.5,at:.13,d:.3},{f:2637,at:.13,d:.3,g:.05},{f:1568,at:.26,d:.42},{f:3136,at:.26,d:.42,g:.04}]);
+ note('GCash: payment received. Check the balance.');});
+on('sb20-tiktok',()=>{ /* punchy notification bloop */
+ lay([{f:620,slide:1180,d:.1,g:.16},{f:1240,at:.06,d:.09,g:.08}]);
+ thump(0,180,.08,.1);
  note('TikTok: someone liked your video.');});
-on('sb20-shopee',()=>{ /* perky ascending triple */
- [523.25,659.25,783.99].forEach((f,i)=>s20tone(f,i*.11,.14,'triangle',.14));
+on('sb20-shopee',()=>{ /* perky four-note jingle with harmony */
+ [523.25,659.25,783.99,1046.5].forEach((f,i)=>{
+  lay([{f,at:i*.1,d:.13,type:'triangle',g:.13},{f:f*2,at:i*.1,d:.13,type:'sine',g:.04}]);});
  note('Shopee: your parcel is on its way.');});
-on('sb20-ml',()=>{ /* victory fanfare */
- [392,523.25,659.25,783.99].forEach((f,i)=>s20tone(f,i*.13,.2,'sawtooth',.07));
- s20tone(1046.5,.55,.5,'sawtooth',.07);
+on('sb20-ml',()=>{ /* victory fanfare: brass + drum */
+ [392,523.25,659.25,783.99].forEach((f,i)=>{
+  lay([{f,at:i*.12,d:.18,type:'sawtooth',g:.06},{f:f/2,at:i*.12,d:.18,type:'triangle',g:.08}]);});
+ lay([{f:1046.5,at:.5,d:.5,type:'sawtooth',g:.06},{f:523.25,at:.5,d:.5,type:'triangle',g:.08}]);
+ thump(.5,90,.3,.25);thump(.62,90,.3,.2);
  note('Victory! The enemy nexus has fallen.');});
-on('sb20-msg',()=>{ /* messenger pop */
- s20sweep(880,420,.09,'sine',.16);
+on('sb20-msg',()=>{ /* messenger pop: pitch-drop pop + click */
+ lay([{f:900,slide:380,d:.08,g:.18},{f:1800,slide:760,d:.05,g:.06}]);
  note('Messenger: you have a new message.');});
-on('sb20-tritone',()=>{ /* iPhone tri-tone, approximated */
- [659.25,587.33,440].forEach((f,i)=>s20tone(f,i*.16,.18,'sine',.12));
+on('sb20-tritone',()=>{ /* tri-tone with long natural decay */
+ [659.25,587.33,440].forEach((f,i)=>{
+  lay([{f,at:i*.17,d:.5,g:.1},{f:f*2,at:i*.17,d:.4,g:.03}]);});
  note('iPhone tri-tone. Classic.');});
-on('sb20-grab',()=>{ /* two-tone alert */
- s20tone(880,0,.16,'sine',.14);s20tone(659.25,.18,.3,'sine',.14);
+on('sb20-grab',()=>{ /* two-tone alert with gentle vibrato */
+ lay([{f:880,d:.16,g:.12},{f:1760,d:.16,g:.04}]);
+ lay([{f:659.25,at:.19,d:.34,g:.12},{f:1318.5,at:.19,d:.34,g:.04}]);
  note('Grab: your rider is arriving.');});
-on('sb20-zoom',()=>{ /* soft join chime */
- s20tone(392,0,.2,'sine',.1);s20tone(523.25,.18,.35,'sine',.1);
+on('sb20-zoom',()=>{ /* soft marimba-like join chime */
+ [392,523.25].forEach((f,i)=>{
+  lay([{f,at:i*.16,d:.3,g:.09},{f:f*2,at:i*.16,d:.22,g:.03},{f:f*3,at:i*.16,d:.12,g:.015}]);});
  note('Zoom: you joined the meeting. Mic muted, we hope.');});
-on('sb20-discord',()=>{ /* join chirp */
- s20sweep(420,840,.11,'square',.06);
+on('sb20-discord',()=>{ /* join boop: detuned double chirp */
+ lay([{f:430,slide:860,d:.1,type:'square',g:.05},{f:445,slide:890,d:.1,type:'square',g:.05}]);
  note('Discord: someone joined the voice channel.');});
-on('sb20-cashin',()=>{ /* coin arpeggio */
- [659.25,783.99,987.77,1318.5].forEach((f,i)=>s20tone(f,i*.08,.12,'triangle',.13));
+on('sb20-cashin',()=>{ /* coin arpeggio with shimmer */
+ [659.25,783.99,987.77,1318.5].forEach((f,i)=>{
+  lay([{f,at:i*.07,d:.14,type:'triangle',g:.12},{f:f*2,at:i*.07,d:.1,g:.04}]);});
+ thump(.3,1500,.06,.05);
  note('Cash-in confirmed. Balance updated.');});
 });
+
 
 /* ---------------- 2020s photo booth filters ---------------- */
 window.pbDraw20=function(x,img){
@@ -649,6 +754,9 @@ if(decBtns.length){
   decBtns.forEach(b=>{const on=b.dataset.decade===d;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
   try{localStorage.setItem('museum-decade',d);}catch(e){}
   document.getElementById('menu-title').textContent=d==='2020s'?'Home screen':'Main menu';
+  const na=document.getElementById('nav-archive'),np=document.getElementById('nav-play');
+  if(na)na.href=d==='2020s'?'exhibits20.html':'exhibits.html';
+  if(np)np.href=d==='2020s'?'play20.html':'play.html';
  };
  decBtns.forEach(b=>b.addEventListener('click',()=>setD(b.dataset.decade)));
  let init='2000s';
@@ -754,5 +862,8 @@ window.MEDIA20={
  onlineclass:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Student%20attending%20online%20class%20in%20Kerala.jpg?width=600',alt:'Student attending an online class on a laptop',caption:'Online class \u00b7 via Wikimedia Commons'},
  pantry:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/9598Community%20Pantry%20in%20the%20Philippines%2002.jpg?width=600',alt:'Community pantry in the Philippines',caption:'Community pantry, Philippines \u00b7 via Wikimedia Commons'},
  delivery:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Cycle%20Delivery%20boy%20Mr%20Pasha%20from%20Russia..jpg?width=600',alt:'A delivery rider on a bicycle',caption:'Delivery rider \u00b7 via Wikimedia Commons'},
- ai:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/ChatGPT-Logo.svg?width=480',alt:'ChatGPT logo',caption:'ChatGPT logo \u00b7 via Wikimedia Commons'}
+ ai:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/ChatGPT-Logo.svg?width=480',alt:'ChatGPT logo',caption:'ChatGPT logo \u00b7 via Wikimedia Commons'},
+ vlog:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Morly%20Alinio%20vlogger%20DZRH2.jpg?width=600',alt:'Filipino vlogger Morly Alinio',caption:'Filipino vlogger \u00b7 via Wikimedia Commons'},
+ meme:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/LEGO%20%22Y%20U%20NO%20%22%20meme%20%28Free%20to%20use%29.jpg?width=600',alt:'Y U NO meme built from LEGO bricks',caption:'Y U NO meme \u00b7 free to use via Wikimedia Commons'},
+ axie:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/2021-07-01%2022%2013%2049-Inventory%20Axie%20Infinity.png?width=600',alt:'Axie Infinity inventory screen from 2021',caption:'Axie Infinity inventory, 2021 \u00b7 via Wikimedia Commons'}
 };

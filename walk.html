@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Grand Hall · The 2000s Called</title>
+<meta name="description" content="Walk through the museum: the 2000s wing, the 2020s wing, and the Then vs Now gallery. Two decades, one building.">
+<link rel="stylesheet" href="museum.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="marquee" aria-hidden="true"><div class="marquee-in" id="marquee-in"></div></div>
+
+<header class="site-head">
+  <a class="brand" href="index.html">The 2000s Called <span class="brand-sub">Museum of PH Pop Culture</span></a>
+  <nav class="site-nav" aria-label="Primary">
+    <a href="index.html" id="nav-home">Lobby</a>
+    <a href="walk.html" id="nav-walk" aria-current="page">Grand Hall</a>
+    <a href="guestbook.html" id="nav-guest">Guestbook</a>
+    <span class="nav-stamp off" id="stamp-badge" title="Exhibits stamped">🎫 <span id="stamp-count">0/28</span></span>
+    <button id="lang-toggle" aria-pressed="false" title="Taglish toggle">TAGLISH</button>
+  </nav>
+</header>
+
+<main class="walk-wrap">
+  <section class="walk-intro">
+    <p class="kicker">You are here</p>
+    <h1>THE GRAND HALL</h1>
+    <p class="lede">Two wings, one building. Walk the 2000s on the west side, the 2020s on the east, and the Then vs Now gallery up north. Approach any pedestal to read its plaque, and play its mini-game to earn the stamp.</p>
+  </section>
+
+  <div class="walk-stage">
+    <canvas id="walk-canvas" width="960" height="600" aria-label="Walkable museum map. Use arrow keys or WASD to move."></canvas>
+    <div class="walk-touch">
+      <div id="walk-joy" aria-label="Joystick"><div id="walk-knob"></div></div>
+      <button id="walk-act" class="mini-again">📖 READ</button>
+    </div>
+    <p class="walk-hint">Move: WASD / arrows / joystick &nbsp;·&nbsp; Read plaque: E / tap the pedestal / READ &nbsp;·&nbsp; 28 exhibits + 6 comparisons</p>
+  </div>
+</main>
+
+<div class="walk-modal" id="walk-modal" hidden>
+  <div class="walk-mbox" id="walk-mbox" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="celebrate" id="celebrate" role="dialog" aria-modal="true" aria-labelledby="celebrate-title" hidden>
+  <div class="celebrate-card">
+    <div class="celebrate-stamp" aria-hidden="true">★</div>
+    <h2 id="celebrate-title">Hall fully walked!</h2>
+    <p>You collected every museum stamp.<br>Both decades, fully explored.</p>
+    <button type="button" class="action" id="celebrate-close">Keep exploring</button>
+  </div>
+</div>
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+<button type="button" id="to-top" aria-label="Back to top" title="Back to top">↑</button>
+
+<footer class="site-foot">
+  <p>Group 9 · MO-HUM080 · Mapúa Malayan Digital College</p>
+  <p class="foot-note">A student project. Exhibit text is original; photos via Wikimedia Commons; sounds synthesized in-browser.</p>
+</footer>
+
+<script>window.MUSEUM_WALK=true;</script>
+<script src="wing2020s.js"></script>
+<script src="museum.js"></script>
+<script src="walk.js"></script>
+<script>
+document.getElementById('marquee-in').textContent='THE GRAND HALL \u00b7 WALK THE MUSEUM \u00b7 TWO DECADES, ONE BUILDING \u00b7 '.repeat(6);
+</script>
+</body>
+</html>
