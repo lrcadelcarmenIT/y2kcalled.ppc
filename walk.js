@@ -36,7 +36,7 @@ const COMPARE=[
 const HALL00=['y2k','friendster','sms','load','camera','cameraphone','smartphone','ofw','bpo','mall','cafe','boxing','meteor','socialgames'];
 const HALL20=['tiktok','streaming','vlog','onlineclass','meme','ppop','ai','gcash','shopee','mlbb','axie','livesell','delivery','pantry'];
 const PANOS={
- facade:'https://n.uguu.se/lkZJyTdZ.jpg',
+ facade:'https://d.uguu.se/HBwHJiiY.jpg',
  hall00:'https://n.uguu.se/vbbnpBZi.jpg',
  gallery:'https://h.uguu.se/aaQbeFtM.jpg',
  hall20:'https://h.uguu.se/UXahxVFr.jpg'
@@ -127,13 +127,15 @@ const SCENES={
 };
 Object.keys(SCENES).forEach(k=>{
  const im=new Image();
- im.onload=()=>{SCENES[k].img=im;};
+ const done=()=>{SCENES[k].img=im;SCENES[k].ready=true;};
+ im.onload=()=>{if(im.decode)im.decode().then(done).catch(done);else done();};
+ im.onerror=()=>{SCENES[k].ready=true;};
  im.src=SCENES[k].panorama;
 });
 
 /* ---------- viewer state ---------- */
 let cur='facade',yaw=0,pitch=0,tYaw=0,tPitch=0,fov=90,auto=false;
-let fade=0,fadeDir=0,pending=null,hotRects=[],hoverKey=null;
+let fade=0,fadeDir=0,pending=null,hotRects=[],hoverKey=null,tick=0;
 const wrapDeg=d=>((d%360)+540)%360-180;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -203,22 +205,31 @@ function project(h){
 
 function draw(){
  const sc=SCENES[cur];
+ tick++;
  g.fillStyle='#0d1322';g.fillRect(0,0,VW,VH);
  yaw+=(tYaw-yaw)*.16;pitch+=(tPitch-pitch)*.16;
  yaw=wrapDeg(yaw);
  if(auto&&fadeDir===0)tYaw=wrapDeg(tYaw+.3);
  const img=sc.img;
- if(img&&img.complete&&img.naturalWidth){
-  const scale=VH/img.naturalHeight*1.3;
-  const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
-  let xoff=-(yaw/360)*dw;
-  xoff=((xoff%dw)+dw)%dw-dw;
-  const yoff=VH/2-dh/2-(pitch/180)*dh*.85;
-  for(let k=0;k<3;k++)g.drawImage(img,xoff+k*dw,yoff,dw,dh);
+ if(img&&sc.ready&&img.naturalWidth){
+  // source-rect panorama: exactly fov degrees across VW, so drag, hotspots and walls move in lockstep
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const srcW=(fov/360)*W,scale=VW/srcW,srcH=VH/scale;
+  let sx=(yaw/360)*W-srcW/2;
+  sx=((sx%W)+W)%W;
+  const sy=clamp(H/2-srcH/2+(pitch/180)*H,0,Math.max(0,H-srcH));
+  if(sx+srcW<=W){
+   g.drawImage(img,sx,sy,srcW,srcH,0,0,VW,VH);
+  }else{
+   const w1=W-sx,dw1=w1*scale,w2=srcW-w1;
+   g.drawImage(img,sx,sy,w1,srcH,0,0,dw1,VH);
+   if(w2>0.5)g.drawImage(img,0,sy,w2,srcH,dw1,0,VW-dw1,VH);
+  }
  }else{
   g.fillStyle='rgba(255,255,255,.55)';g.font='700 16px system-ui';g.textAlign='center';
   g.fillText('Loading panorama\u2026',VW/2,VH/2);
  }
+ g.fillStyle='rgba(8,12,20,.5)';g.fillRect(0,0,VW,34);g.fillRect(0,VH-34,VW,34);
  hotRects=[];
  // frames
  sc.frames.forEach(h=>{
@@ -231,6 +242,9 @@ function draw(){
  sc.nav.forEach(nv=>{
   const p=project(nv);if(!p)return;
   const r=24;
+  const pulse=(Math.sin(tick*0.07)+1)/2;
+  g.strokeStyle='rgba(244,198,91,'+(0.35+0.45*pulse)+')';g.lineWidth=4;
+  g.beginPath();g.arc(p.x,p.y,r+6+4*pulse,0,7);g.stroke();
   g.fillStyle='#8e2f32';g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill();
   g.strokeStyle='#fff';g.lineWidth=3;g.beginPath();g.arc(p.x,p.y,r,0,7);g.stroke();
   g.fillStyle='#fff';g.font='800 26px system-ui';g.textAlign='center';g.fillText('\u203a',p.x,p.y+9);
