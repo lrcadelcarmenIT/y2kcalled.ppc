@@ -210,7 +210,7 @@ function draw(){
  g.fillStyle='#0d1322';g.fillRect(0,0,VW,VH);
  yaw+=(tYaw-yaw)*.16;pitch+=(tPitch-pitch)*.16;
  yaw=wrapDeg(yaw);
- if(auto&&fadeDir===0)tYaw=wrapDeg(tYaw+.3);
+ if(auto&&fadeDir===0)tYaw=wrapDeg(tYaw+.1);
  const img=sc.img;
  if(img&&sc.ready&&img.naturalWidth){
   // source-rect panorama: exactly fov degrees across VW, so drag, hotspots and walls move in lockstep
@@ -355,3 +355,93 @@ updateWalkBadge();
  if(!modalOpen)draw();
 })();
 })();
+
+/* ---------- Living museum map background ---------- */
+(function(){
+  const cv=document.createElement('canvas');
+  cv.id='hall-map';
+  cv.setAttribute('aria-hidden','true');
+  document.body.prepend(cv);
+  const ctx=cv.getContext('2d');
+  const rooms=[
+    {key:'facade', x:35,y:52,w:30,h:14,label:'ENTRANCE'},
+    {key:'hall00', x:6, y:24,w:36,h:24,label:'2000s HALL'},
+    {key:'hall20', x:58,y:24,w:36,h:24,label:'2020s HALL'},
+    {key:'gallery',x:32,y:4, w:36,h:16,label:'THEN VS NOW'}
+  ];
+  const order=['facade','hall00','hall20','gallery'];
+  let W=0,H=0,scale=1,ox=0,oy=0,hover=null,cur='facade',pulse=0;
+  function resize(){
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    W=window.innerWidth;H=window.innerHeight;
+    cv.width=W*dpr;cv.height=H*dpr;
+    cv.style.width=W+'px';cv.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    scale=Math.min((W-48)/100,(H-48)/72);
+    ox=(W-100*scale)/2;oy=(H-72*scale)/2;
+  }
+  function px(r){return [ox+r.x*scale,oy+r.y*scale,r.w*scale,r.h*scale];}
+  function ctr(r){const b=px(r);return [b[0]+b[2]/2,b[1]+b[3]/2];}
+  function draw(){
+    if(!W)return;
+    ctx.clearRect(0,0,W,H);
+    ctx.save();
+    ctx.strokeStyle='rgba(201,162,39,.45)';ctx.lineWidth=2;ctx.setLineDash([7,7]);
+    ctx.beginPath();
+    const pts=order.map(k=>ctr(rooms.find(r=>r.key===k)));
+    pts.push(pts[0]);
+    pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+    ctx.stroke();ctx.restore();
+    rooms.forEach(r=>{
+      const b=px(r),isCur=r.key===cur,isHov=r.key===hover;
+      ctx.fillStyle=isHov?'rgba(244,198,91,.25)':isCur?'rgba(244,198,91,.14)':'rgba(195,204,217,.14)';
+      ctx.fillRect(b[0],b[1],b[2],b[3]);
+      ctx.strokeStyle=isCur?'#c9a227':'#c3ccd9';
+      ctx.lineWidth=isCur?2.5:1.5;
+      ctx.strokeRect(b[0],b[1],b[2],b[3]);
+      ctx.fillStyle=isHov||isCur?'#0e1a2e':'#8a94a6';
+      ctx.font='700 '+Math.max(9,Math.round(10*scale))+'px "Space Mono",monospace';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(r.label.split('').join('\u2009'),b[0]+b[2]/2,b[1]+b[3]/2);
+    });
+    const rc=rooms.find(r=>r.key===cur),c=ctr(rc);
+    ctx.beginPath();ctx.arc(c[0],c[1],6+14*pulse,0,7);
+    ctx.strokeStyle='rgba(201,162,39,'+(0.55*(1-pulse)).toFixed(2)+')';
+    ctx.lineWidth=2;ctx.stroke();
+    ctx.beginPath();ctx.arc(c[0],c[1],6,0,7);
+    ctx.fillStyle='#c9a227';ctx.fill();
+    ctx.strokeStyle='#0e1a2e';ctx.lineWidth=2;ctx.stroke();
+  }
+  function hit(mx,my){
+    return rooms.find(r=>{
+      const b=px(r);
+      return mx>=b[0]&&mx<=b[0]+b[2]&&my>=b[1]&&my<=b[1]+b[3];
+    })||null;
+  }
+  cv.addEventListener('mousemove',e=>{
+    const r=hit(e.clientX,e.clientY),k=r?r.key:null;
+    if(k!==hover){hover=k;cv.style.cursor=k?'pointer':'default';}
+  });
+  cv.addEventListener('mouseleave',()=>{hover=null;});
+  cv.addEventListener('click',e=>{
+    const r=hit(e.clientX,e.clientY);
+    if(r&&window.TOUR&&window.TOUR.go)window.TOUR.go(r.key);
+  });
+  window.addEventListener('resize',resize);
+  window.HALLMAP={setScene(k){cur=k;}};
+  resize();
+  (function loop(){
+    pulse=(pulse+0.02)%1;
+    if(document.visibilityState==='visible')draw();
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* expose tour control for the map */
+window.TOUR=window.TOUR||{};
+window.TOUR.go=function(key){goScene(key);};
+const _origGoScene=goScene;
+goScene=function(key){
+  _origGoScene(key);
+  if(window.HALLMAP)window.HALLMAP.setScene(key);
+};

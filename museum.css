@@ -349,13 +349,13 @@ body.d2020s .cover-stamp{color:#f4c65b}
 .walk-hint{color:#8fa0a3;font-size:.85rem;text-align:center;margin:10px 0 0}
 .walk-modal{position:fixed;inset:0;background:rgba(8,12,20,.8);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px}
 .walk-modal[hidden]{display:none}
-.walk-mbox{position:relative;background:#1a2436;border:2px solid #f4c65b;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;padding:26px 24px}
-.walk-x{position:absolute;top:10px;right:12px;background:none;border:none;color:#b9c8ca;font-size:1.8rem;cursor:pointer;line-height:1}
-.walk-kick{color:#f4c65b;font-size:.75rem;letter-spacing:.18em;font-weight:800;margin:0 0 6px}
-.walk-mbox h3{margin:0 0 10px;font-size:1.5rem}
-.walk-tn{background:#0e1a2e;border-left:4px solid #f4c65b;padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.walk-mbox{position:relative;background:#f6f1e5;color:#1d2433;border:2px solid #f4c65b;border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;padding:26px 24px}
+.walk-x{position:absolute;top:10px;right:12px;background:none;border:none;color:#5a6577;font-size:1.8rem;cursor:pointer;line-height:1}
+.walk-kick{color:#8a6d3b;font-size:.75rem;letter-spacing:.18em;font-weight:800;margin:0 0 6px}
+.walk-mbox h3{margin:0 0 10px;font-size:1.5rem;color:#141c2e}.walk-mbox p{color:#2b3547}.walk-mbox a{color:#1a56db}
+.walk-tn{background:#ece4cf;border-left:4px solid #c9a227;color:#1d2433;padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
 .walk-cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
-.walk-cmp>div{background:#0e1a2e;border-radius:10px;padding:12px}
+.walk-cmp>div{background:#ece4cf;border-radius:10px;padding:12px;color:#1d2433}
 .walk-actions{margin:14px 0 4px}
 @media(max-width:560px){.walk-cmp{grid-template-columns:1fr}}
 /* Grand Hall lobby card */
@@ -394,3 +394,13 @@ body.d2020s .cover-stamp{color:#f4c65b}
 /* ---------- 360 tour canvas ---------- */
 #tour-pano{display:block;width:100%;height:auto;border-radius:10px;background:#0d1322;touch-action:none;cursor:grab}
 #tour-pano:active{cursor:grabbing}
+
+.walk-mbox .mini-again{background:#f4c65b;border:2px solid #f4c65b;color:#141c2e;border-radius:8px}
+.walk-mbox .mini-again:hover{background:#ffd97a;border-color:#ffd97a}
+#walk-stage{background:#141c2e;border-radius:10px;padding:12px 14px;margin-top:12px}
+#walk-stage h4{color:#f4c65b}
+#walk-res{color:#fff}
+
+/* ---------- Living museum map background (walk.html) ---------- */
+#hall-map{position:fixed;inset:0;z-index:0;pointer-events:auto}
+.walk-wrap,.site-head,.site-foot{position:relative;z-index:1}
