@@ -364,3 +364,28 @@ body.d2020s .cover-stamp{color:#f4c65b}
 .hall-card h3{margin:6px 0 8px;font-size:1.5rem;letter-spacing:.04em}
 .hall-card p{color:#b9c8ca;margin:0 0 12px}
 .hall-card .hall-cta{display:inline-block;background:#f4c65b;color:#141c2e;font-weight:800;padding:10px 26px;border-radius:999px}
+
+/* ---------- Grand Hall first-person tour ---------- */
+.walk-stage{position:relative}
+.tour-title{position:absolute;top:22px;left:50%;transform:translateX(-50%);background:rgba(10,14,24,.78);color:#fff;font-weight:700;font-size:.95rem;letter-spacing:.06em;padding:8px 22px;border-radius:999px;pointer-events:none;white-space:nowrap}
+.tour-thumbs{position:absolute;left:22px;bottom:22px;display:flex;gap:8px;max-width:60%;overflow-x:auto;padding:4px}
+.tour-thumbwrap{background:rgba(10,14,24,.78);border:2px solid transparent;border-radius:10px;padding:4px;cursor:pointer;color:#fff;display:flex;flex-direction:column;gap:2px;align-items:center;min-width:86px}
+.tour-thumbwrap .tour-thumb{border-radius:6px;display:block}
+.tour-thumbwrap span{font-size:.58rem;letter-spacing:.04em;color:#b9c8ca;white-space:nowrap;max-width:86px;overflow:hidden;text-overflow:ellipsis}
+.tour-thumbwrap:hover{border-color:#8fa0a3}
+.tour-thumbwrap:has(.tour-thumb.on){border-color:#f4c65b}
+.tour-ctl{position:absolute;right:22px;bottom:22px;display:flex;gap:10px}
+.tour-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.94);border:none;color:#141c2e;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tour-btn.on{background:#f4c65b}
+.tour-splash{position:absolute;inset:14px;background:rgba(10,14,24,.94);border-radius:10px;display:flex;align-items:center;justify-content:center;z-index:20;transition:opacity .4s}
+.tour-splash.off{opacity:0;pointer-events:none}
+.tour-splash-card{text-align:center;padding:30px;max-width:480px}
+.tour-splash-card h2{font-size:clamp(1.8rem,5vw,2.8rem);letter-spacing:.1em;margin:8px 0 16px;color:#fff}
+.tour-legend{display:flex;flex-direction:column;gap:8px;color:#b9c8ca;margin:0 0 22px}
+.tour-enter{font-size:1.1rem;padding:14px 40px}
+@media(max-width:640px){
+ .tour-thumbs{max-width:52%;left:12px;bottom:12px}
+ .tour-ctl{right:12px;bottom:12px}
+ .tour-btn{width:44px;height:44px;font-size:1.2rem}
+ .tour-title{font-size:.8rem;top:20px}
+}
