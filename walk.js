@@ -223,8 +223,11 @@ function draw(){
   if(p.cmp)emIcon='\u2194';
   else emIcon=em(p.id);
   g.fillText(emIcon,p.x,p.y+7);
-  if(isNear){g.fillStyle='#fff';g.font='700 12px system-ui';
-   g.fillText(p.dir?'DIRECTORY':(p.cmp?'THEN \u2194 NOW':exData(p.id).d.title),p.x,p.y-p.r-8);}
+  if(isNear){const label=p.dir?'DIRECTORY':(p.cmp?'THEN \u2194 NOW':exData(p.id).d.title);
+   g.font='700 12px system-ui';const tw=g.measureText(label).width;
+   g.fillStyle='rgba(10,14,24,.88)';g.beginPath();
+   if(g.roundRect)g.roundRect(p.x-tw/2-9,p.y-p.r-30,tw+18,22,11);else g.rect(p.x-tw/2-9,p.y-p.r-30,tw+18,22);
+   g.fill();g.fillStyle='#fff';g.fillText(label,p.x,p.y-p.r-13);}
  });
  // player
  g.font='30px serif';
