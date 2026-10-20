@@ -536,3 +536,31 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
 .stamp-nudge{margin-top:14px;font-size:.92rem;color:#8fa8c8}
 .stamp-nudge a{color:#00d4ff}
 .stamp-nudge b{color:#f4c65b}
+
+/* ---------- gallery spotlight ---------- */
+.ex-spotlight{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120%;max-width:700px;height:70%;pointer-events:none;
+ background:radial-gradient(ellipse 50% 60% at 50% 0%,rgba(255,244,214,.14),transparent 70%);}
+.ex-view{position:relative;z-index:2}
+
+/* ---------- floor reflection ---------- */
+.ex-reflect{position:relative;margin:6px auto 0;width:fit-content;max-width:88%;opacity:.28;
+ transform:scaleY(-1);-webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.7),transparent 65%);
+ mask-image:linear-gradient(to top,rgba(0,0,0,.7),transparent 65%);pointer-events:none;overflow:hidden}
+.ex-reflect img{max-width:280px;max-height:200px;object-fit:cover;display:block;border-radius:4px}
+.ex-reflect .ex-emoji{font-size:3rem;display:block;text-align:center}
+@media(max-width:640px){.ex-reflect img{max-width:200px;max-height:140px}}
+
+/* ---------- ambient dust ---------- */
+.ex-dust{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.ex-dust i{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(255,244,220,.5);
+ animation:drift linear infinite}
+@keyframes drift{
+ from{transform:translateY(10vh);opacity:0}
+ 15%{opacity:.7}
+ 85%{opacity:.5}
+ to{transform:translateY(-105vh);opacity:0}
+}
+@media(prefers-reduced-motion:reduce){.ex-dust{display:none}}
+
+/* ---------- video background ---------- */
+.ex-bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(18px) brightness(.55) saturate(1.1);}

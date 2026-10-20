@@ -74,16 +74,43 @@ function renderExhibit(){
   emoji=em(key);
  }
  const bgEl=document.getElementById('ex-bg');
- if(bgUrl){bgEl.style.backgroundImage='url("'+bgUrl+'")';bgEl.style.backgroundColor='';}
- else{bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#141c2e';}
+ const vid=document.getElementById('ex-video');
+ const vidSrc=vidFor(key);
+ if(vidSrc){
+  vid.src=vidSrc;vid.style.display='block';
+  bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#0a0f1e';
+ }else{
+  vid.removeAttribute('src');vid.style.display='none';
+  if(bgUrl){bgEl.style.backgroundImage='url("'+bgUrl+'")';bgEl.style.backgroundColor='';}
+  else{bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#141c2e';}
+ }
 
  const frame=document.getElementById('ex-frame');
+ const reflect=document.getElementById('ex-reflect');
  if(photoUrl){
   frame.innerHTML='<img src="'+photoUrl+'" alt="">';
   frame.classList.remove('no-photo');
+  reflect.innerHTML='<img src="'+photoUrl+'" alt="">';
  }else{
   frame.innerHTML='<span class="ex-emoji">'+emoji+'</span>';
   frame.classList.add('no-photo');
+  reflect.innerHTML='<span class="ex-emoji">'+emoji+'</span>';
+ }
+
+ /* dust particles */
+ const dust=document.getElementById('ex-dust');
+ if(dust&&!dust.dataset.done){
+  dust.dataset.done='1';
+  for(let i=0;i<24;i++){
+   const p=document.createElement('i');
+   p.style.left=Math.random()*100+'%';
+   p.style.bottom='-10px';
+   p.style.animationDuration=(9+Math.random()*14)+'s';
+   p.style.animationDelay=(Math.random()*14)+'s';
+   const sz=2+Math.random()*3;
+   p.style.width=p.style.height=sz+'px';
+   dust.appendChild(p);
+  }
  }
  document.getElementById('ex-year').textContent=yearText;
  document.getElementById('ex-topic').textContent=titleText;
@@ -98,6 +125,10 @@ function syncChrome(){
  const thumbs=document.querySelectorAll('.tour-thumbwrap');
  for(let i=0;i<thumbs.length;i++){thumbs[i].classList.toggle('on',thumbs[i].dataset.scene===cur);}
 }
+
+/* ---------- video backgrounds ---------- */
+const VIDMAP={y2k:'y2k.mp4',sms:'sms.mp4',ofw:'ofw.mp4',meteor:'meteor.mp4',cameraphone:'cameraphone.mp4',load:'load.mp4',cafe:'cafe.mp4',friendster:'friendster.mp4',boxing:'boxing.mp4',socialgames:'socialgames.mp4',smartphone:'smartphone.mp4',tiktok:'tiktok.mp4',ppop:'bini.mp4',bini:'bini.mp4'};
+function vidFor(key){return VIDMAP[key]?'vid/'+VIDMAP[key]:null;}
 
 /* ---------- plaque modal (story only) ---------- */
 function openPlaque(){
@@ -124,8 +155,9 @@ function closeModal(){document.getElementById('walk-modal').hidden=true;}
 
 /* ---------- chrome ---------- */
 function buildChrome(){
- stage.innerHTML='<div class="ex-bg" id="ex-bg" aria-hidden="true"></div>'
- +'<div class="ex-view"><button class="ex-frame" id="ex-frame" aria-label="Read the plaque"></button>'
+ stage.innerHTML='<div class="ex-bg" id="ex-bg" aria-hidden="true"><video id="ex-video" autoplay muted loop playsinline></video></div>'
+ +'<div class="ex-spotlight" aria-hidden="true"></div><div class="ex-dust" id="ex-dust" aria-hidden="true"></div>'
+ +'<div class="ex-view"><button class="ex-frame" id="ex-frame" aria-label="Read the plaque"></button><div class="ex-reflect" id="ex-reflect" aria-hidden="true"></div>'
  +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p><p class="ex-count" id="ex-count"></p></div></div>'
  +'<button class="tour-title" id="tour-title" aria-label="Open time machine"></button>'
  +'<button class="tour-edge" id="tour-prev" aria-label="Previous exhibit">\u2039</button>'
