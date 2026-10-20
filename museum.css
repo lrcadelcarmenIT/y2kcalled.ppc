@@ -687,6 +687,6 @@ body.tm-lab .site-nav a{color:#aee9ff}
 /* ============ MOVING REFLECTION + BRIGHTER SHARED BACKDROP (2026-10-21) ============ */
 .ex-bg.has-video{filter:none}
 .ex-bg.has-video video{filter:blur(18px) brightness(.66) saturate(1.15)}
-.ex-reflect{opacity:.42}
+.ex-reflect{opacity:.5}
 .ex-reflect video{width:280px;height:200px;object-fit:cover;display:block;border-radius:4px}
 @media(max-width:640px){.ex-reflect video{width:200px;height:140px}}
