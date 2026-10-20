@@ -638,3 +638,26 @@ body.future .ex-card .ex-src a{color:#7ce7ff}
 body.future .wing-card .go{color:#38e0ff}
 body.future .wing-card p{color:#b9d4ea}
 body.future .hall-card p{color:#b9d4ea}
+
+/* ============ FUTURE THEME: TUNNEL EVERYWHERE (2026-10-20) ============ */
+.site-bgvid{filter:brightness(.55) saturate(1.25)}
+body.future .intro{background:transparent}
+body.future .mast{background:rgba(6,10,20,.85)}
+body.future .card{background:rgba(8,14,28,.84)}
+body.future .ex-card{background:rgba(8,14,28,.85)}
+body.future .wing-card,body.future .hall-card{background:rgba(8,14,28,.85)}
+body.future .stage{background:rgba(8,14,28,.88)}
+body.future .guestbook{background:rgba(8,14,28,.9)}
+body.future .quiz{background:rgba(8,14,28,.9)}
+body.future .arc-card{background:rgba(8,14,28,.9)}
+body.future .compare .flip-card{background:rgba(10,20,38,.88)}
+body.future .compare .flip-card:nth-child(2){background:rgba(24,12,38,.88)}
+body.future .recap-list div{background:rgba(8,14,28,.88)}
+body.future .pass-card{background:rgba(8,14,28,.88)}
+body.future .entry-bar{background:rgba(6,11,22,.9)}
+body.future .stats-strip{background:rgba(6,11,22,.88)}
+body.future .foot{background:rgba(4,6,15,.88)}
+body.future .ex-game{background:rgba(6,10,20,.94)}
+body.future .gb-entry{background:rgba(16,32,54,.88)}
+body.tm-lab .walk-stage{background:rgba(7,11,24,.88)}
+body.tm-lab .site-head{background:rgba(5,7,15,.85)}
