@@ -408,12 +408,12 @@ function timeTravel(key){
   sndJump();
   document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':'THE GALLERY')+'...';
   document.getElementById('timetravel').hidden=false;
-  warpEase(ttVid(),1150,2.4,.3);
+  warpEase(ttVid(),1150,2.8,.15);
   setTimeout(()=>{
     document.getElementById('timetravel').hidden=true;
     closeTimeMachine();
     window.TOUR_API.gotoScene(key);
-    warpEase(bgVid(),2600,.35,1);
+    warpEase(bgVid(),6000,.25,1);warpEase(document.querySelector('.ex-bg video'),6000,.25,1);
     sndArrive();
   },1200);
 }
@@ -443,13 +443,13 @@ function tmEngage(){
         sndJump();
         document.getElementById('tt-label').textContent='TRAVELING TO '+yr+'...';
         document.getElementById('timetravel').hidden=false;
-        warpEase(ttVid(),1250,2.6,.3);
+        warpEase(ttVid(),1250,3.0,.15);
         setTimeout(()=>{
           document.getElementById('timetravel').hidden=true;
           closeTimeMachine();
           try{arriveYaw=yawForYear(yr,hall);}catch(e){arriveYaw=0;}
           window.TOUR_API.gotoScene(hall);
-          warpEase(bgVid(),2600,.35,1);
+          warpEase(bgVid(),6000,.25,1);warpEase(document.querySelector('.ex-bg video'),6000,.25,1);
           sndArrive();
           tmBusy=false;
           engage.disabled=false;
