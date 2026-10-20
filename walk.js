@@ -344,12 +344,12 @@ function warpEase(vid,dur,from,to){
   if(!vid)return;
   try{
     vid.playbackRate=from;
-    var t0=performance.now();
-    (function step(now){
-      var p=Math.min(1,(((now===undefined)?performance.now():now)-t0)/dur), e=1-Math.pow(1-p,3);
+    var t0=Date.now();
+    var iv=setInterval(function(){
+      var p=Math.min(1,(Date.now()-t0)/dur), e=1-Math.pow(1-p,3);
       try{vid.playbackRate=from+(to-from)*e;}catch(_){}
-      if(p<1)requestAnimationFrame(step);
-    })(t0);
+      if(p>=1){try{vid.playbackRate=to;}catch(_){} clearInterval(iv);}
+    },50);
   }catch(_){}
 }
 function ttVid(){return document.querySelector('.tt-vid');}
