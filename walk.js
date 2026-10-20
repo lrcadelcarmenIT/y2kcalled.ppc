@@ -96,6 +96,9 @@ function renderExhibit(){
   frame.classList.add('no-photo');
   reflect.innerHTML='<span class="ex-emoji">'+emoji+'</span>';
  }
+ if(!localStorage.getItem('museum-hint-seen')){
+  frame.insertAdjacentHTML('beforeend','<span class="ex-hint" aria-hidden="true">\uD83D\uDC46 Click the img!</span>');
+ }
 
  /* dust particles */
  const dust=document.getElementById('ex-dust');
@@ -133,6 +136,9 @@ window.vidFor=vidFor;
 
 /* ---------- plaque modal (story only) ---------- */
 function openPlaque(){
+ localStorage.setItem('museum-hint-seen','1');
+ document.querySelectorAll('.ex-hint').forEach(function(el){el.remove();});
+
  const key=stage.dataset.exkey;
  const mbox=document.getElementById('walk-mbox');
  if(cur==='gallery'){
