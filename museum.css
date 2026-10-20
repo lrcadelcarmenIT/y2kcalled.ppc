@@ -669,3 +669,15 @@ body.tm-lab .site-head{background:rgba(5,7,15,.85)}
 @media (prefers-reduced-motion: reduce){.ex-hint{animation:none}}
 /* 2020s hero: stagger SIDE HUSTLES to the right (Jenna's suggestion) */
 .intro-grid[data-pane='2020s'] h1 em{display:inline-block;margin-left:clamp(24px,9vw,150px)}
+
+/* ============ GRAND HALL HEADER: MOVING TEXTS (2026-10-20) ============ */
+.brand-ticker{display:block;flex:1 1 100%;overflow:hidden;white-space:nowrap;text-decoration:none;padding:2px 0}
+.brand-track{display:inline-flex;animation:brandscroll 24s linear infinite;will-change:transform}
+.brand-track>span{font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.14em;color:#4de3ff;font-size:.85rem;text-transform:uppercase}
+@keyframes brandscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.brand-ticker:hover .brand-track,.brand-ticker:focus-visible .brand-track{animation-play-state:paused}
+.nav-sway{animation:navsway 9s ease-in-out infinite alternate;will-change:transform}
+@keyframes navsway{from{transform:translateX(0)}to{transform:translateX(-16px)}}
+.site-head:hover .nav-sway,.site-head:focus-within .nav-sway,.site-head:active .nav-sway{animation-play-state:paused}
+body.tm-lab .site-nav a{color:#aee9ff}
+@media (prefers-reduced-motion: reduce){.brand-track,.nav-sway{animation:none}}
