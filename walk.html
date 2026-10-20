@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Grand Hall · The 2000s Called</title>
 <meta name="description" content="Walk through the museum: the 2000s wing, the 2020s wing, and the Then vs Now gallery. Two decades, one building.">
-<link rel="stylesheet" href="museum.css?v=clean1">
+<link rel="stylesheet" href="museum.css?v=clean2">
 </head>
 <body class="tm-lab">
 <div class="grain" aria-hidden="true"></div>
+<div class="marquee" aria-hidden="true"><div class="marquee-in" id="marquee-in"></div></div>
 
 <header class="site-head">
   <a class="brand" href="index.html">The 2000s Called <span class="brand-sub">Museum of PH Pop Culture</span></a>
@@ -20,6 +21,10 @@
     <button id="lang-toggle" aria-pressed="false" title="Taglish toggle">TAGLISH</button>
   </nav>
 </header>
+<div class="headline-ticker" aria-hidden="true"><div class="headline-inner">
+<span>◆ TEMPORAL NAVIGATION ONLINE</span><span>◆ 17 EXHIBITS · 2000 → 2026</span><span>◆ COLLECT ALL 17 STAMPS</span><span>◆ SWIPE TO TRAVEL · TAP A PAINTING FOR ITS STORY</span>
+<span>◆ TEMPORAL NAVIGATION ONLINE</span><span>◆ 17 EXHIBITS · 2000 → 2026</span><span>◆ COLLECT ALL 17 STAMPS</span><span>◆ SWIPE TO TRAVEL · TAP A PAINTING FOR ITS STORY</span>
+</div></div>
 
 <main class="walk-wrap">
   <section class="walk-intro">
@@ -86,7 +91,8 @@
 <script>window.MUSEUM_WALK=true;</script>
 <script src="wing2020s.js?v=tmconsole4"></script>
 <script src="museum.js?v=tmconsole4"></script>
-<script src="walk.js?v=clean1"></script>
+<script>document.getElementById('marquee-in').textContent='THE GRAND HALL \u00b7 WALK THE MUSEUM \u00b7 TWO DECADES, ONE BUILDING \u00b7 '.repeat(6);</script>
+<script src="walk.js?v=clean2"></script>
 <script>
 </script>
 </body>
