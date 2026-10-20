@@ -77,21 +77,19 @@ ids.forEach(id=>{
 list.addEventListener('click',function(e){
   const btn=e.target.closest('.ex-play');
   if(!btn)return;
-  const id=btn.dataset.game, d=EX[id];
-  const box=btn.parentElement.querySelector('.ex-game');
-  const G=Object.assign({},window.GAMESALL||{},window.GAMES20||{}), gf=G[d.game];
-  if(typeof gf!=='function'){box.hidden=false;box.innerHTML='<p>Game unavailable.</p>';return;}
-  const spec=gf();
-  box.hidden=false;
-  box.innerHTML='<h4>'+spec.title+'</h4><p class="mini-msg">'+spec.intro+'</p><div class="mini-stage"></div><p class="mini-msg" data-res style="font-weight:700;min-height:1.5em"></p>';
-  const stageEl=box.querySelector('.mini-stage'), res=box.querySelector('[data-res]');
-  let cleanup=null;
+  const id=btn.dataset.game;
+  const card=btn.closest('.ex-card');
+  let box=card.querySelector('.ex-game');
+  if(box.dataset.wired){box.hidden=!box.hidden;return;}
+  box.dataset.wired='1';
   try{
-    spec.render(stageEl,{
-      win:function(m){if(cleanup)cleanup();res.textContent=m;awardStamp(id);btn.classList.add('done');btn.innerHTML='✓ Stamped — play again';const st=document.querySelector('[data-stamp="'+id+'"]');if(st)st.textContent='🎫';updateStampUI();},
-      lose:function(m){if(cleanup)cleanup();res.textContent=m;}
-    },function(fn){cleanup=fn;});
-  }catch(err){box.innerHTML='<p>Game failed to start.</p>';}
+    box.innerHTML=renderGamePanel(id);
+    initGame(id,card);
+    box.hidden=false;
+  }catch(err){
+    box.innerHTML='<p>Game failed to start.</p>';
+    box.hidden=false;
+  }
 });
 })();
 </script>
