@@ -297,9 +297,55 @@ let tmIdx=7, tmBusy=false, arriveYaw=null;
 function tmYear(){return TM_YEARS[tmIdx];}
 function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
 const TM_KEY={2000:'y2k',2001:'sms',2002:'ofw',2003:'meteor',2004:'cameraphone',2005:'load',2006:'cafe',2007:'friendster',2008:'boxing',2009:'socialgames',2010:'smartphone',2020:'tiktok',2021:'hidilyn',2023:'ai',2024:'bini',2025:'halalan',2026:'gta6'};
+/* ---------- time machine sounds (synthesized, no files) ---------- */
+let tmAC=null;
+function tmCtx(){
+  try{
+    if(!tmAC)tmAC=new (window.AudioContext||window.webkitAudioContext)();
+    if(tmAC.state==='suspended')tmAC.resume();
+    return tmAC.state==='running'?tmAC:null;
+  }catch(e){return null;}
+}
+function tmTone(f0,f1,dur,type,vol,delay){
+  const ac=tmCtx();if(!ac)return;
+  const t0=ac.currentTime+(delay||0);
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type||'sine';
+  o.frequency.setValueAtTime(Math.max(f0,1),t0);
+  o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),t0+dur);
+  g.gain.setValueAtTime(0,t0);
+  g.gain.linearRampToValueAtTime(vol||.06,t0+.02);
+  g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+  o.connect(g);g.connect(ac.destination);
+  o.start(t0);o.stop(t0+dur+.05);
+}
+function tmWhoosh(dur,vol){
+  const ac=tmCtx();if(!ac)return;
+  const t0=ac.currentTime,len=Math.max(1,Math.floor(ac.sampleRate*dur));
+  const buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+  const src=ac.createBufferSource();src.buffer=buf;
+  const bp=ac.createBiquadFilter();bp.type='bandpass';bp.Q.value=1.1;
+  bp.frequency.setValueAtTime(300,t0);
+  bp.frequency.exponentialRampToValueAtTime(2600,t0+dur*.7);
+  bp.frequency.exponentialRampToValueAtTime(500,t0+dur);
+  const g=ac.createGain();
+  g.gain.setValueAtTime(0,t0);
+  g.gain.linearRampToValueAtTime(vol||.1,t0+dur*.3);
+  g.gain.linearRampToValueAtTime(0,t0+dur);
+  src.connect(bp);bp.connect(g);g.connect(ac.destination);
+  src.start(t0);src.stop(t0+dur+.05);
+}
+function sndOpen(){tmTone(180,520,.35,'sine',.05);tmTone(90,260,.35,'triangle',.035);}
+function sndSelect(){tmTone(740,740,.07,'square',.03);tmTone(1180,1180,.05,'sine',.025,.02);}
+function sndCharge(){tmTone(70,880,.95,'sawtooth',.04);tmTone(140,1760,.95,'sine',.018);}
+function sndJump(){tmWhoosh(1.1,.11);}
+function sndArrive(){tmTone(660,660,.16,'sine',.045);tmTone(990,990,.3,'sine',.045,.13);}
+function sndClose(){tmTone(320,170,.14,'sine',.03);}
+
 function tmPaint(){
   const bgv=document.getElementById('tm-bgvid');
-  if(bgv){const src=(window.vidFor?window.vidFor(TM_KEY[tmYear()]):null)||'vid/y2k.mp4';if(!bgv.src.endsWith(src))bgv.src=src;}
+  if(bgv){const src='vid/warp.mp4';if(!bgv.src.endsWith(src))bgv.src=src;}
   document.getElementById('tm-year').textContent=tmYear();
   document.getElementById('tm-dest').textContent='DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
   document.getElementById('tm-status').textContent='Select your destination year.';
@@ -318,6 +364,7 @@ function tmBuildYears(){
       if(tmBusy)return;
       tmIdx=TM_YEARS.indexOf(y);
       tmPaint();
+      sndSelect();
     });
     (y<=2010?g00:g20).appendChild(b);
   });
@@ -328,6 +375,7 @@ function openTimeMachine(){
   if(tmBusy)return;
   tmPaint();
   document.getElementById('timemachine').hidden=false;
+  sndOpen();
 }
 window.openTimeMachine=openTimeMachine;
 // Time machine is the Grand Hall's main menu: open it right away on load
@@ -338,20 +386,24 @@ if(document.readyState==='loading'){
 }
 function closeTimeMachine(){
   document.getElementById('timemachine').hidden=true;
+  sndClose();
 }
 function timeTravel(key){
   // gallery shortcut bypasses the console
+  sndJump();
   document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':'THE GALLERY')+'...';
   document.getElementById('timetravel').hidden=false;
   setTimeout(()=>{
     document.getElementById('timetravel').hidden=true;
     closeTimeMachine();
     window.TOUR_API.gotoScene(key);
+    sndArrive();
   },1200);
 }
 function tmEngage(){
   if(tmBusy)return;
   tmBusy=true;
+  sndCharge();
   const yr=tmYear(), hall=tmHall();
   const engage=document.getElementById('tm-engage');
   const lights=document.getElementById('tm-lights');
@@ -371,6 +423,7 @@ function tmEngage(){
       status.textContent='LOCKED: '+yr+'. INITIATING JUMP...';
       setTimeout(()=>{
         lights.classList.remove('charging');
+        sndJump();
         document.getElementById('tt-label').textContent='TRAVELING TO '+yr+'...';
         document.getElementById('timetravel').hidden=false;
         setTimeout(()=>{
@@ -378,6 +431,7 @@ function tmEngage(){
           closeTimeMachine();
           try{arriveYaw=yawForYear(yr,hall);}catch(e){arriveYaw=0;}
           window.TOUR_API.gotoScene(hall);
+          sndArrive();
           tmBusy=false;
           engage.disabled=false;
           document.querySelector('.tm-core').classList.remove('ticking');
