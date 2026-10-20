@@ -621,3 +621,20 @@ body.future a{color:#7cc7ee}
 body.future .kbd-hint{color:#8fa9c4}
 body.future .kbd-hint kbd{background:rgba(10,20,38,.9);border-color:rgba(56,224,255,.4);color:#cfeefb}
 body.future .foot{background:rgba(4,6,15,.9);color:#b9d4ea}
+
+/* ============ FUTURE THEME FIXES (2026-10-20 QA) ============ */
+/* body bg must be transparent or it paints OVER the fixed video (z-index:-1) */
+body.future{background:transparent}
+html:has(body.tm-lab){background:#04060f}
+body.tm-lab{background:transparent}
+/* exhibit hall cards (simplified halls use .ex-card, defined inline per page) */
+body.future .ex-card{background:rgba(8,14,28,.94);border:2px solid rgba(56,224,255,.55);box-shadow:0 0 22px rgba(56,224,255,.15)}
+body.future .ex-card .ex-year{color:#f4c65b}
+body.future .ex-card .ex-text{color:#dcecfb}
+body.future .ex-card .ex-tn{background:rgba(16,42,56,.92);border-left-color:#38e0ff;color:#cfeefb}
+body.future .ex-card .ex-src{color:#9fc3dd}
+body.future .ex-card .ex-src a{color:#7ce7ff}
+/* lobby wing cards: CTA + body copy readability */
+body.future .wing-card .go{color:#38e0ff}
+body.future .wing-card p{color:#b9d4ea}
+body.future .hall-card p{color:#b9d4ea}
