@@ -676,8 +676,8 @@ body.tm-lab .site-head{background:rgba(5,7,15,.85)}
 .brand-track>span{font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.14em;color:#4de3ff;font-size:.85rem;text-transform:uppercase}
 @keyframes brandscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .brand-ticker:hover .brand-track,.brand-ticker:focus-visible .brand-track{animation-play-state:paused}
-.nav-sway{animation:navsway 9s ease-in-out infinite alternate;will-change:transform}
-@keyframes navsway{from{transform:translateX(0)}to{transform:translateX(-16px)}}
+.nav-sway{animation:navsway 9s ease-in-out infinite alternate;will-change:transform;margin-left:12px}
+@keyframes navsway{from{transform:translateX(0)}to{transform:translateX(-8px)}}
 .site-head:hover .nav-sway,.site-head:focus-within .nav-sway,.site-head:active .nav-sway{animation-play-state:paused}
 body.tm-lab .site-nav a{color:#aee9ff}
 @media (prefers-reduced-motion: reduce){.brand-track,.nav-sway{animation:none}}
