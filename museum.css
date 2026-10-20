@@ -582,3 +582,42 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
 .tm-lab .walk-intro h1{background:linear-gradient(100deg,#eaf6ff 40%,#00d4ff 50%,#eaf6ff 60%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:h1scan 5s ease-in-out infinite}
 @keyframes h1scan{0%,100%{background-position:110% 0}50%{background-position:-10% 0}}
 @media(prefers-reduced-motion:reduce){.tm-lab .walk-intro h1{animation:none}}
+
+/* ============ FUTURE THEME (neon tunnel, per Christian 2026-10-20) ============ */
+.site-bgvid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;filter:brightness(.48) saturate(1.2);background:#04060f;pointer-events:none}
+@media (prefers-reduced-motion: reduce){.site-bgvid{display:none}}
+html:has(body.future){background:#04060f}
+body.future{background:#04060f;color:#dcecfb}
+body.future .marquee{background:#060b18;color:#7ce7ff;border-bottom:2px solid rgba(56,224,255,.6)}
+body.future .section-heading{border-bottom-color:rgba(56,224,255,.65)}
+body.future .section-heading h2,body.future .intro h1,body.future .stage h2{color:#eaf7ff;text-shadow:0 0 16px rgba(56,224,255,.65),0 0 46px rgba(56,224,255,.3)}
+body.future .room{border-bottom-color:rgba(124,199,238,.25)}
+body.future .room-head span{color:#7ce7ff}
+body.future .card{background:rgba(8,14,28,.93);border:1.5px solid rgba(56,224,255,.55);box-shadow:0 0 22px rgba(56,224,255,.16),5px 5px 0 rgba(3,6,14,.8);color:#dcecfb}
+body.future .card .source-tag{color:#7ce7ff}
+body.future .card .mini-flow{background:rgba(20,50,66,.85);border-left-color:#38e0ff;color:#cfeefb}
+body.future .card-media{border-bottom:1.5px solid rgba(56,224,255,.4)}
+body.future .wing-card,body.future .hall-card{background:rgba(8,14,28,.93);border:2px solid rgba(56,224,255,.55);box-shadow:0 0 22px rgba(56,224,255,.18),5px 5px 0 rgba(3,6,14,.8);color:#dcecfb}
+body.future .wing-card:hover,body.future .hall-card:hover{background:rgba(14,26,48,.95)}
+body.future .stage{background:rgba(8,14,28,.94);border:1.5px solid rgba(56,224,255,.55);box-shadow:0 0 30px rgba(56,224,255,.18);color:#dcecfb}
+body.future .stage-visual{border-color:rgba(56,224,255,.5)}
+body.future .compare .flip-card{background:rgba(10,20,38,.93);color:#dcecfb;border-top-color:#38e0ff}
+body.future .compare .flip-card:nth-child(2){background:rgba(24,12,38,.93);border-top-color:#ff2bd6}
+body.future .recap-list div{background:rgba(8,14,28,.93);border-color:rgba(56,224,255,.45);color:#dcecfb}
+body.future .recap-question{background:rgba(38,24,8,.92);border-left-color:#f4c65b;color:#ffe9b0}
+body.future .pass-card{background:rgba(8,14,28,.93);color:#dcecfb;border-color:rgba(56,224,255,.6)}
+body.future .entry-bar{background:rgba(6,11,22,.94);color:#dcecfb;box-shadow:0 -7px 0 #38e0ff}
+body.future .lens-button{background:rgba(10,20,38,.95);color:#dcecfb;border-color:rgba(56,224,255,.55);box-shadow:4px 4px 0 rgba(3,6,14,.85)}
+body.future .lens-button small{color:#9fc3dd}
+body.future .lens-button[aria-pressed="true"]{background:#2b9fe3;color:#04121f}
+body.future .route-note{color:#9fc3dd}
+body.future .flow{background:rgba(8,14,28,.93);border-color:rgba(56,224,255,.5)}
+body.future .flow .flow-item{color:#dcecfb}
+body.future .flow .flow-item:hover{background:rgba(43,159,227,.25)}
+body.future .stats-strip{background:rgba(6,11,22,.92);border-bottom-color:rgba(56,224,255,.5);color:#dcecfb}
+body.future .action{box-shadow:0 0 16px rgba(43,159,227,.5),3px 3px 0 rgba(3,6,14,.85)}
+body.future .mini-start{box-shadow:0 0 16px rgba(43,159,227,.55)}
+body.future a{color:#7cc7ee}
+body.future .kbd-hint{color:#8fa9c4}
+body.future .kbd-hint kbd{background:rgba(10,20,38,.9);border-color:rgba(56,224,255,.4);color:#cfeefb}
+body.future .foot{background:rgba(4,6,15,.9);color:#b9d4ea}
