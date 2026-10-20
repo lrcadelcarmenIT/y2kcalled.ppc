@@ -78,10 +78,12 @@ function renderExhibit(){
  const vid=document.getElementById('ex-video');
  const vidSrc=vidFor(key);
  if(vidSrc){
+  bgEl.classList.add('has-video');
   vid.src=vidSrc;vid.style.display='block';
   try{vid.playbackRate=window.HALL_RATE;vid.defaultPlaybackRate=window.HALL_RATE;}catch(e){}
   bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#0a0f1e';
  }else{
+  bgEl.classList.remove('has-video');
   vid.removeAttribute('src');vid.style.display='none';
   if(bgUrl){bgEl.style.backgroundImage='url("'+bgUrl+'")';bgEl.style.backgroundColor='';}
   else{bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#141c2e';}
@@ -97,6 +99,11 @@ function renderExhibit(){
   frame.innerHTML='<span class="ex-emoji">'+emoji+'</span>';
   frame.classList.add('no-photo');
   reflect.innerHTML='<span class="ex-emoji">'+emoji+'</span>';
+ }
+ if(vidSrc){
+  reflect.innerHTML='<video src="'+vidSrc+'" autoplay muted loop playsinline></video>';
+  const rv=reflect.querySelector('video');
+  try{rv.playbackRate=window.HALL_RATE;rv.defaultPlaybackRate=window.HALL_RATE;}catch(e){}
  }
  if(!localStorage.getItem('museum-hint-seen')){
   frame.insertAdjacentHTML('beforeend','<span class="ex-hint" aria-hidden="true">\uD83D\uDC46 Click the img!</span>');
