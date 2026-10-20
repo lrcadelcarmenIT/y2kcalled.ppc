@@ -436,6 +436,8 @@ body.d2020s .cover-stamp{color:#f4c65b}
 .tm-gallery{background:none;border:none;color:#7cc7ee;font-size:.9rem;cursor:pointer;text-decoration:underline}
 .timetravel{position:fixed;inset:0;background:#04060f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80;gap:18px}
 .timetravel[hidden]{display:none}
+.tt-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.85) saturate(1.1)}
+.tt-clock,.tt-label{position:relative;z-index:1}
 .tt-clock{font-size:4.5rem;animation:tmspin .9s linear infinite;filter:drop-shadow(0 0 18px rgba(0,212,255,.8))}
 @keyframes tmspin{to{transform:rotate(360deg)}}
 .tt-label{color:#00d4ff;font-family:'Space Mono',monospace;letter-spacing:.22em;font-weight:700;font-size:.95rem;text-shadow:0 0 14px rgba(0,212,255,.8)}
