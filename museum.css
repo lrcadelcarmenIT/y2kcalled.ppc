@@ -584,7 +584,7 @@ body.tm-lab .walk-wrap,body.tm-lab .site-head,body.tm-lab .marquee{position:rela
 @media(prefers-reduced-motion:reduce){.tm-lab .walk-intro h1{animation:none}}
 
 /* ============ FUTURE THEME (neon tunnel, per Christian 2026-10-20) ============ */
-.site-bgvid{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;filter:brightness(.48) saturate(1.2);background:#04060f;pointer-events:none}
+.site-bgvid{position:fixed;inset:0;width:100%;height:100%;height:100lvh;object-fit:cover;object-position:center;z-index:-1;filter:brightness(.48) saturate(1.2);background:#04060f;pointer-events:none}
 @media (prefers-reduced-motion: reduce){.site-bgvid{display:none}}
 html:has(body.future){background:#04060f}
 body.future{background:#04060f;color:#dcecfb}
@@ -668,7 +668,7 @@ body.tm-lab .site-head{background:rgba(5,7,15,.85)}
 @keyframes hintpulse{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
 @media (prefers-reduced-motion: reduce){.ex-hint{animation:none}}
 /* 2020s hero: stagger SIDE HUSTLES to the right (Jenna's suggestion) */
-.intro-grid[data-pane='2020s'] h1 em{display:inline-block;margin-left:clamp(24px,9vw,150px)}
+.intro-grid[data-pane='2020s'] h1 em{display:inline-block;margin-left:clamp(14px,3.5vw,56px);white-space:nowrap}
 
 /* ============ GRAND HALL HEADER: MOVING TEXTS (2026-10-20) ============ */
 .brand-ticker{display:block;flex:1 1 100%;overflow:hidden;white-space:nowrap;text-decoration:none;padding:2px 0}
