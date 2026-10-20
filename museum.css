@@ -668,4 +668,4 @@ body.tm-lab .site-head{background:rgba(5,7,15,.85)}
 @keyframes hintpulse{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
 @media (prefers-reduced-motion: reduce){.ex-hint{animation:none}}
 /* 2020s hero: stagger SIDE HUSTLES to the right (Jenna's suggestion) */
-.d2020s .intro h1 em{display:inline-block;margin-left:clamp(24px,9vw,150px)}
+.intro-grid[data-pane='2020s'] h1 em{display:inline-block;margin-left:clamp(24px,9vw,150px)}
