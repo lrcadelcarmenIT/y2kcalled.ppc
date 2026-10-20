@@ -171,7 +171,7 @@ function closeModal(){document.getElementById('walk-modal').hidden=true;}
 
 /* ---------- chrome ---------- */
 function buildChrome(){
- stage.innerHTML='<div class="ex-bg" id="ex-bg" aria-hidden="true"><video id="ex-video" autoplay muted loop playsinline></video></div>'
+ stage.innerHTML='<video class="ex-warp" src="vid/warp.mp4" autoplay muted loop playsinline aria-hidden="true"></video><div class="ex-bg" id="ex-bg" aria-hidden="true"><video id="ex-video" autoplay muted loop playsinline></video></div>'
  +'<div class="ex-spotlight" aria-hidden="true"></div><div class="ex-dust" id="ex-dust" aria-hidden="true"></div>'
  +'<div class="ex-view"><button class="ex-frame" id="ex-frame" aria-label="Read the plaque"></button><div class="ex-reflect" id="ex-reflect" aria-hidden="true"></div>'
  +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p><p class="ex-count" id="ex-count"></p></div></div>'
@@ -180,6 +180,7 @@ function buildChrome(){
  +'<button class="tour-edge" id="tour-next" aria-label="Next exhibit">\u203a</button>'
  +'<button class="tour-tmbtn" id="tour-tm" aria-label="Open time machine">\u{1f570}\ufe0f</button>'
  +'<div class="tour-thumbs" id="tour-thumbs"></div>';
+ const _wv=stage.querySelector('.ex-warp'); if(_wv){try{_wv.muted=true;const _wp=_wv.play();if(_wp&&_wp.catch)_wp.catch(function(){});}catch(e){}}
  document.getElementById('ex-frame').addEventListener('click',openPlaque);
  document.getElementById('tour-title').addEventListener('click',function(){if(window.openTimeMachine)window.openTimeMachine();});
  document.getElementById('tour-prev').addEventListener('click',function(){EXIDX[cur]--;renderExhibit();});
