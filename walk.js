@@ -339,6 +339,21 @@ function tmWhoosh(dur,vol){
 function sndOpen(){tmTone(180,520,.35,'sine',.05);tmTone(90,260,.35,'triangle',.035);}
 function sndSelect(){tmTone(740,740,.07,'square',.03);tmTone(1180,1180,.05,'sine',.025,.02);}
 function sndCharge(){tmTone(70,880,.95,'sawtooth',.04);tmTone(140,1760,.95,'sine',.018);}
+// warp deceleration: streaks race at jump, then ease down as you arrive
+function warpEase(vid,dur,from,to){
+  if(!vid)return;
+  try{
+    vid.playbackRate=from;
+    var t0=performance.now();
+    (function step(now){
+      var p=Math.min(1,(((now===undefined)?performance.now():now)-t0)/dur), e=1-Math.pow(1-p,3);
+      try{vid.playbackRate=from+(to-from)*e;}catch(_){}
+      if(p<1)requestAnimationFrame(step);
+    })(t0);
+  }catch(_){}
+}
+function ttVid(){return document.querySelector('.tt-vid');}
+function bgVid(){return document.querySelector('.site-bgvid');}
 function sndJump(){tmWhoosh(1.1,.11);}
 function sndArrive(){tmTone(660,660,.16,'sine',.045);tmTone(990,990,.3,'sine',.045,.13);}
 function sndClose(){tmTone(320,170,.14,'sine',.03);}
@@ -393,10 +408,12 @@ function timeTravel(key){
   sndJump();
   document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':'THE GALLERY')+'...';
   document.getElementById('timetravel').hidden=false;
+  warpEase(ttVid(),1150,2.4,.3);
   setTimeout(()=>{
     document.getElementById('timetravel').hidden=true;
     closeTimeMachine();
     window.TOUR_API.gotoScene(key);
+    warpEase(bgVid(),2600,.35,1);
     sndArrive();
   },1200);
 }
@@ -426,11 +443,13 @@ function tmEngage(){
         sndJump();
         document.getElementById('tt-label').textContent='TRAVELING TO '+yr+'...';
         document.getElementById('timetravel').hidden=false;
+        warpEase(ttVid(),1250,2.6,.3);
         setTimeout(()=>{
           document.getElementById('timetravel').hidden=true;
           closeTimeMachine();
           try{arriveYaw=yawForYear(yr,hall);}catch(e){arriveYaw=0;}
           window.TOUR_API.gotoScene(hall);
+          warpEase(bgVid(),2600,.35,1);
           sndArrive();
           tmBusy=false;
           engage.disabled=false;
