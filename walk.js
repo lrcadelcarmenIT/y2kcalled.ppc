@@ -129,6 +129,7 @@ function syncChrome(){
 /* ---------- video backgrounds ---------- */
 const VIDMAP={y2k:'y2k.mp4',sms:'sms.mp4',ofw:'ofw.mp4',meteor:'meteor.mp4',cameraphone:'cameraphone.mp4',load:'load.mp4',cafe:'cafe.mp4',friendster:'friendster.mp4',boxing:'boxing.mp4',socialgames:'socialgames.mp4',smartphone:'smartphone.mp4',tiktok:'tiktok.mp4',ppop:'bini.mp4',bini:'bini.mp4'};
 function vidFor(key){return VIDMAP[key]?'vid/'+VIDMAP[key]:null;}
+window.vidFor=vidFor;
 
 /* ---------- plaque modal (story only) ---------- */
 function openPlaque(){
@@ -292,7 +293,7 @@ function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
 const TM_KEY={2000:'y2k',2001:'sms',2002:'ofw',2003:'meteor',2004:'cameraphone',2005:'load',2006:'cafe',2007:'friendster',2008:'boxing',2009:'socialgames',2010:'smartphone',2020:'tiktok',2021:'hidilyn',2023:'ai',2024:'bini',2025:'halalan',2026:'gta6'};
 function tmPaint(){
   const bgv=document.getElementById('tm-bgvid');
-  if(bgv){const src=vidFor(TM_KEY[tmYear()])||'vid/y2k.mp4';if(!bgv.src.endsWith(src))bgv.src=src;}
+  if(bgv){const src=(window.vidFor?window.vidFor(TM_KEY[tmYear()]):null)||'vid/y2k.mp4';if(!bgv.src.endsWith(src))bgv.src=src;}
   document.getElementById('tm-year').textContent=tmYear();
   document.getElementById('tm-dest').textContent='DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
   document.getElementById('tm-status').textContent='Select your destination year.';
