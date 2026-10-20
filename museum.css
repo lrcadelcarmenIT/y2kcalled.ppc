@@ -640,7 +640,7 @@ body.future .wing-card p{color:#b9d4ea}
 body.future .hall-card p{color:#b9d4ea}
 
 /* ============ FUTURE THEME: TUNNEL EVERYWHERE (2026-10-20) ============ */
-.site-bgvid{filter:brightness(.55) saturate(1.25)}
+.site-bgvid{filter:brightness(.9) saturate(1.1)}
 body.future .intro{background:transparent}
 body.future .mast{background:rgba(6,10,20,.85)}
 body.future .card{background:rgba(8,14,28,.84)}
