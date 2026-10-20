@@ -1,3 +1,4 @@
+window.HALL_RATE=0.3;
 /* The Grand Hall: themed exhibit viewer (one painting per wall) */
 (function(){
 'use strict';
@@ -78,6 +79,7 @@ function renderExhibit(){
  const vidSrc=vidFor(key);
  if(vidSrc){
   vid.src=vidSrc;vid.style.display='block';
+  try{vid.playbackRate=window.HALL_RATE;vid.defaultPlaybackRate=window.HALL_RATE;}catch(e){}
   bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#0a0f1e';
  }else{
   vid.removeAttribute('src');vid.style.display='none';
@@ -395,7 +397,8 @@ function openTimeMachine(){
 window.openTimeMachine=openTimeMachine;
 // Time machine is the Grand Hall's main menu: open it right away on load
 if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',()=>openTimeMachine());
+  document.addEventListener('DOMContentLoaded',()=>{var b=document.querySelector('.site-bgvid');if(b){try{b.playbackRate=window.HALL_RATE;b.defaultPlaybackRate=window.HALL_RATE;}catch(e){}}});
+document.addEventListener('DOMContentLoaded',()=>openTimeMachine());
 }else{
   openTimeMachine();
 }
@@ -413,8 +416,7 @@ function timeTravel(key){
     document.getElementById('timetravel').hidden=true;
     closeTimeMachine();
     window.TOUR_API.gotoScene(key);
-    warpEase(bgVid(),6000,.25,1);warpEase(document.querySelector('.ex-bg video'),6000,.25,1);
-    sndArrive();
+        sndArrive();
   },1200);
 }
 function tmEngage(){
@@ -449,8 +451,7 @@ function tmEngage(){
           closeTimeMachine();
           try{arriveYaw=yawForYear(yr,hall);}catch(e){arriveYaw=0;}
           window.TOUR_API.gotoScene(hall);
-          warpEase(bgVid(),6000,.25,1);warpEase(document.querySelector('.ex-bg video'),6000,.25,1);
-          sndArrive();
+                    sndArrive();
           tmBusy=false;
           engage.disabled=false;
           document.querySelector('.tm-core').classList.remove('ticking');
