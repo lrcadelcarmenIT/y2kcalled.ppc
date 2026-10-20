@@ -289,7 +289,10 @@ const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021
 let tmIdx=7, tmBusy=false, arriveYaw=null;
 function tmYear(){return TM_YEARS[tmIdx];}
 function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
+const TM_KEY={2000:'y2k',2001:'sms',2002:'ofw',2003:'meteor',2004:'cameraphone',2005:'load',2006:'cafe',2007:'friendster',2008:'boxing',2009:'socialgames',2010:'smartphone',2020:'tiktok',2021:'hidilyn',2023:'ai',2024:'bini',2025:'halalan',2026:'gta6'};
 function tmPaint(){
+  const bgv=document.getElementById('tm-bgvid');
+  if(bgv){const src=vidFor(TM_KEY[tmYear()])||'vid/y2k.mp4';if(!bgv.src.endsWith(src))bgv.src=src;}
   document.getElementById('tm-year').textContent=tmYear();
   document.getElementById('tm-dest').textContent='DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
   document.getElementById('tm-status').textContent='Select your destination year.';
