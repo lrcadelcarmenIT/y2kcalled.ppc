@@ -661,3 +661,11 @@ body.future .ex-game{background:rgba(6,10,20,.94)}
 body.future .gb-entry{background:rgba(16,32,54,.88)}
 body.tm-lab .walk-stage{background:rgba(7,11,24,.88)}
 body.tm-lab .site-head{background:rgba(5,7,15,.85)}
+
+/* ============ CLICK HINT (Jenna's suggestion, 2026-10-20) ============ */
+.ex-frame{position:relative}
+.ex-hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(4,10,20,.88);color:#aee9ff;border:1.5px solid #38e0ff;border-radius:999px;padding:7px 14px;font-family:'DM Sans',Arial,sans-serif;font-weight:800;font-size:.82rem;letter-spacing:.02em;white-space:nowrap;pointer-events:none;z-index:3;box-shadow:0 0 16px rgba(56,224,255,.5);animation:hintpulse 1.6s ease-in-out infinite}
+@keyframes hintpulse{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
+@media (prefers-reduced-motion: reduce){.ex-hint{animation:none}}
+/* 2020s hero: stagger SIDE HUSTLES to the right (Jenna's suggestion) */
+.d2020s .intro h1 em{display:inline-block;margin-left:clamp(24px,9vw,150px)}
