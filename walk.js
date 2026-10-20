@@ -80,7 +80,7 @@ function renderExhibit(){
  if(vidSrc){
   bgEl.classList.add('has-video');
   vid.src=vidSrc;vid.style.display='block';
-  try{vid.playbackRate=window.HALL_RATE;vid.defaultPlaybackRate=window.HALL_RATE;}catch(e){}
+  try{vid.playbackRate=window.HALL_RATE;vid.defaultPlaybackRate=window.HALL_RATE;const vp=vid.play();if(vp&&vp.catch)vp.catch(function(){});}catch(e){}
   bgEl.style.backgroundImage='';bgEl.style.backgroundColor='#0a0f1e';
  }else{
   bgEl.classList.remove('has-video');
@@ -103,7 +103,7 @@ function renderExhibit(){
  if(vidSrc){
   reflect.innerHTML='<video src="'+vidSrc+'" autoplay muted loop playsinline></video>';
   const rv=reflect.querySelector('video');
-  try{rv.playbackRate=window.HALL_RATE;rv.defaultPlaybackRate=window.HALL_RATE;}catch(e){}
+  try{rv.muted=true;rv.playbackRate=1;rv.defaultPlaybackRate=1;const rp=rv.play();if(rp&&rp.catch)rp.catch(function(){});}catch(e){}
  }
  if(!localStorage.getItem('museum-hint-seen')){
   frame.insertAdjacentHTML('beforeend','<span class="ex-hint" aria-hidden="true">\uD83D\uDC46 Click the img!</span>');
