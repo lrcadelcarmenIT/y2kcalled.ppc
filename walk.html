@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Grand Hall · The 2000s Called</title>
 <meta name="description" content="Walk through the museum: the 2000s wing, the 2020s wing, and the Then vs Now gallery. Two decades, one building.">
-<link rel="stylesheet" href="museum.css?v=navfuture1">
+<link rel="stylesheet" href="museum.css?v=clockfx1">
 </head>
 <body class="tm-lab">
 <div class="grain" aria-hidden="true"></div>
@@ -46,9 +46,16 @@
     <p class="tm-kick">Temporal Navigation Console</p>
     <h2>TIME MACHINE</h2>
     <div class="tm-orb" aria-hidden="true">
-      <div class="tm-ring r1"></div>
-      <div class="tm-ring r2"></div>
-      <div class="tm-ring r3"></div>
+      <div class="tm-bezel">
+        <div class="tm-face"></div>
+        <svg class="tm-ticks" viewBox="0 0 100 100"><circle class="tk-min" cx="50" cy="50" r="46.5"/><circle class="tk-hr" cx="50" cy="50" r="46.5"/></svg>
+        <div class="tm-sweep"></div>
+        <div class="tm-ring r1"></div>
+        <div class="tm-ring r2"></div>
+        <div class="tm-ring r3"></div>
+        <i class="tm-screw sc1"></i><i class="tm-screw sc2"></i><i class="tm-screw sc3"></i><i class="tm-screw sc4"></i>
+        <div class="tm-glass"></div>
+      </div>
       <div class="tm-core"><span id="tm-year">2007</span><div class="tm-hand hour" id="tm-hour"></div><div class="tm-hand minute" id="tm-minute"></div><div class="tm-pin"></div></div>
     </div>
     <p class="tm-dest" id="tm-dest">DESTINATION: THE 2000s</p>
