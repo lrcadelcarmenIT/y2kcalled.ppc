@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Grand Hall · The 2000s Called</title>
 <meta name="description" content="Walk through the museum: the 2000s wing, the 2020s wing, and the Then vs Now gallery. Two decades, one building.">
-<link rel="stylesheet" href="museum.css?v=clockfx1">
+<link rel="stylesheet" href="museum.css?v=ttclock1">
 </head>
 <body class="tm-lab">
 <div class="grain" aria-hidden="true"></div>
@@ -72,8 +72,20 @@
   </div>
 </div>
 <div class="timetravel" id="timetravel" hidden>
-  <video class="tt-vid" src="vid/warp.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
-  <div class="tt-clock" aria-hidden="true">🕰️</div>
+  <div class="site-dust tt-dust" id="tt-dust" aria-hidden="true"></div>
+  <div class="tt-dialwrap"><div class="tm-orb tt-orb" aria-hidden="true">
+    <div class="tm-bezel">
+      <div class="tm-face"></div>
+      <svg class="tm-ticks" viewBox="0 0 100 100"><circle class="tk-min" cx="50" cy="50" r="46.5"/><circle class="tk-hr" cx="50" cy="50" r="46.5"/></svg>
+      <div class="tm-sweep"></div>
+      <div class="tm-ring r1"></div>
+      <div class="tm-ring r2"></div>
+      <div class="tm-ring r3"></div>
+      <i class="tm-screw sc1"></i><i class="tm-screw sc2"></i><i class="tm-screw sc3"></i><i class="tm-screw sc4"></i>
+      <div class="tm-glass"></div>
+    </div>
+    <div class="tm-core ticking"><div class="tm-hand hour"></div><div class="tm-hand minute"></div><div class="tm-pin"></div></div>
+  </div></div>
   <p class="tt-label" id="tt-label">TRAVELING...</p>
 </div>
 <div class="walk-modal" id="walk-modal" hidden>
@@ -98,7 +110,7 @@
 
 <script>window.MUSEUM_WALK=true;</script>
 <script src="wing2020s.js?v=eheads1"></script>
-<script src="museum.js?v=bubbles1"></script>
+<script src="museum.js?v=ttdust1"></script>
 <script>document.getElementById('marquee-in').textContent='THE GRAND HALL · WALK THE MUSEUM · TWO DECADES, ONE BUILDING · '.repeat(6);</script>
 <script src="walk.js?v=eheads1"></script>
 <script>

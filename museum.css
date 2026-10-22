@@ -745,3 +745,13 @@ body.tm-lab #lang-toggle[aria-pressed="true"]{background:#00d4ff;color:#03101c;t
 .tm-orb:has(.tm-core.ticking) .tm-sweep{animation-duration:1.1s}
 .tm-orb:has(.tm-core.ticking) .tm-ring.r1{animation-duration:1.6s}
 .tm-orb:has(.tm-core.ticking) .tm-bezel{box-shadow:0 0 0 1px rgba(0,212,255,.65),0 0 58px rgba(0,212,255,.6),inset 0 2px 5px rgba(190,230,255,.35),inset 0 -8px 16px rgba(0,0,0,.8),inset 0 0 26px rgba(0,0,0,.75)}
+
+/* ---------- travel screen: new dial + site dust ---------- */
+.timetravel .site-dust{position:absolute;inset:0}
+.tt-dialwrap{position:relative;z-index:1}
+.tt-orb{width:200px;height:200px;margin:0}
+.tt-orb .tm-core{inset:56px}
+.tt-orb .tm-hand.hour{height:30px}
+.tt-orb .tm-hand.minute{height:42px}
+.tt-orb .tm-core.ticking .tm-hand.hour{animation-duration:1.1s}
+.tt-orb .tm-core.ticking .tm-hand.minute{animation-duration:.4s}

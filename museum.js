@@ -1271,7 +1271,10 @@ if(document.getElementById('nokia-screen')){
 })();
 /* sitewide dust background: same bubbles as the Grand Hall (walk.js) */
 function buildSiteDust(){
-  var dust=document.getElementById('site-dust');
+  fillDust(document.getElementById('site-dust'));
+  fillDust(document.getElementById('tt-dust'));
+}
+function fillDust(dust){
   if(!dust||dust.dataset.done)return;
   dust.dataset.done='1';
   for(var i=0;i<24;i++){
