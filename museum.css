@@ -753,5 +753,9 @@ body.tm-lab #lang-toggle[aria-pressed="true"]{background:#00d4ff;color:#03101c;t
 .tt-orb .tm-core{inset:56px}
 .tt-orb .tm-hand.hour{height:30px}
 .tt-orb .tm-hand.minute{height:42px}
-.tt-orb .tm-core.ticking .tm-hand.hour{animation-duration:1.1s}
-.tt-orb .tm-core.ticking .tm-hand.minute{animation-duration:.4s}
+.tt-orb .tm-core.ticking .tm-hand.hour{animation-duration:1.1s;animation-direction:reverse}
+.tt-orb .tm-core.ticking .tm-hand.minute{animation-duration:.4s;animation-direction:reverse}
+
+/* travel dial runs backwards (rewinding time) */
+.tt-orb .tm-sweep{animation-direction:reverse}
+.tt-orb .tm-ring.r1{animation-direction:reverse}
