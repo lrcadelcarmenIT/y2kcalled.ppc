@@ -9,7 +9,7 @@ const EX00=window.EXHIBITS00||{},EX20=window.EXHIBITS20||{};
 const MED00=window.MEDIA00||{},MED20=window.MEDIA20||{};
 function mediaFor(id){return EX20[id]?(MED20[id]||null):(MED00[id]||null);}
 const EMOJI00={y2k:'\u{1f4bb}',sms:'\u{1f4ac}',friendster:'\u{1f465}',ofw:'\u2708\ufe0f',meteor:'\u{1f4fa}',boxing:'\u{1f94a}',cafe:'\u{1f5a5}\ufe0f',load:'\u{1f4b8}',cameraphone:'\u{1f933}',socialgames:'\u{1f69c}',smartphone:'\u{1f4f1}'};
-const EMOJI20={tiktok:'\u{1f4f1}',hidilyn:'\u{1f3cb}\u{fe0f}',ai:'\u{1f916}',bini:'\u{1f33a}',halalan:'\u{1f5f3}\u{fe0f}',gta6:'\u{1f3ae}'};
+const EMOJI20={tiktok:'\u{1f4f1}',hidilyn:'\u{1f3cb}\u{fe0f}',ai:'\u{1f916}',bini:'\u{1f33a}',halalan:'\u{1f5f3}\u{fe0f}',gta6:'\u{1f3ae}',eraserheads:'\u{1f3b8}'};
 function exData(id){return EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
 function em(id){const r=exData(id);return r.dec==='2020s'?(EMOJI20[id]||'\u{1f5bf}'):(EMOJI00[id]||'\u{1f5bf}');}
 function thenNowHTML(d){
@@ -24,7 +24,7 @@ function sourceHTML(d){
 
 /* ---------- exhibit lists ---------- */
 const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','friendster','boxing','socialgames','smartphone'];
-const HALL20=['tiktok','hidilyn','ai','bini','halalan','gta6'];
+const HALL20=['tiktok','hidilyn','eraserheads','ai','bini','halalan','gta6'];
 const COMPARE=[
  {t:'Friendster \u2194 TikTok',a:'friendster',b:'tiktok',n:'From top 8 to For You Page.'},
  {t:'Cameraphone \u2194 Vlog',a:'cameraphone',b:'vlog',n:'From pixels to personalities.'},
@@ -294,7 +294,7 @@ window.TOUR_API={
 })();
 
 /* ---------- Time machine console ---------- */
-const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2023,2024,2025,2026];
+const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
 let tmIdx=7, tmBusy=false, arriveYaw=null;
 function tmYear(){return TM_YEARS[tmIdx];}
 function tmHall(){return tmYear()<=2010?'hall00':'hall20';}

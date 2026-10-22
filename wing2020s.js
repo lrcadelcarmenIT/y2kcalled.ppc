@@ -129,6 +129,29 @@ hidilyn(){return{title:'The Gold Lift',
    else{done=true;clearInterval(tick);lose('Missed the zone. The bar crashed down.');}});
  }}},
 
+eraserheads(){return{title:'Reunion Quiz',
+ intro:'How well do you know the Huling El Bimbo reunion? Answer 4 questions. Get at least 3 right to win.',
+ render(el,{win,lose}){
+  const Q=[
+   {q:'When was the Huling El Bimbo reunion concert?',opts:['December 22, 2022','December 25, 2022','November 30, 2022','January 1, 2023'],a:0},
+   {q:'Where was the concert held?',opts:['Philippine Arena','Araneta Coliseum','SMDC Festival Grounds','CCP Open Grounds'],a:2},
+   {q:'About how many fans filled the grounds?',opts:['10,000','35,000','75,000','150,000'],a:2},
+   {q:'The show opened with Superproxy and a hologram of which late rapper?',opts:['Andrew E.','Francis M','Gloc-9','Freddie Aguilar'],a:1}
+  ];
+  let qi=0,score=0,done=false;
+  const show=()=>{
+   if(qi>=Q.length){done=true;score>=3?win('Encore! '+score+'/4 correct. You were there in spirit.'):lose('Only '+score+'/4. The setlist fooled you.');return;}
+   const q=Q[qi];
+   el.innerHTML='<p style="color:#f4c65b;font-weight:700">Question '+(qi+1)+'/'+Q.length+'</p><p style="font-size:1.05rem;margin:8px 0 14px">'+q.q+'</p><div style="display:flex;flex-direction:column;gap:8px">'+q.opts.map((o,i)=>'<button class="mini-again" data-i="'+i+'" style="text-align:left">'+o+'</button>').join('')+'</div>';
+   el.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{
+    if(done)return;const i=Number(b.dataset.i);
+    if(i===q.a){score++;b.style.background='#3fae6b';}else{b.style.background='#e2574c';}
+    qi++;setTimeout(show,650);
+   }));
+  };
+  show();
+ }}},
+
 gcash(){return{title:'Exact Padala',
  intro:'5 friends, 12 seconds each. Tap peso buttons to match each amount exactly. 4 out of 5 sends wins.',
  render(el,{win,lose}){
@@ -807,6 +830,10 @@ window.EXHIBITS20 = {
     flow:[{label:'The wait',detail:'97 years, 14 Olympic appearances, zero gold \u2014 until Tokyo.'},{label:'The lift',detail:'127kg clean and jerk, an Olympic record, won by a single kilo.'},{label:'The anthem',detail:'Lupang Hinirang on the Olympic podium for the first time.'}],
     sources:[['Wikipedia: Hidilyn Diaz','https://en.wikipedia.org/wiki/Hidilyn_Diaz']],
     game:'hidilyn'},
+  eraserheads:{room:2,year:'2022',title:'The Final Reunion',body:'On December 22, 2022, the Eraserheads played together one last time. Ely Buendia, Raimund Marasigan, Buddy Zabala, and Marcus Adoro headlined Huling El Bimbo at the SMDC Festival Grounds in Parañaque, a reunion billed as the band\u2019s final show in the Philippines. Around 75,000 fans sang through a 31-song set that ran nearly four hours, under a giant glowing inverted E. The night opened with Superproxy and a hologram of Francis M, and the show streamed live to fans abroad. For one night, the soundtrack of the 90s was not a memory. It was live.',then:'Then, the Eraserheads belonged to memory. The band split in 2002, and a full reunion looked impossible.',now:'Now, fans who grew up on their parents\u2019 cassette tapes have an Eheads night of their own to remember.',question:'Was Huling El Bimbo a goodbye, or proof that some bands never really leave?',
+    flow:[{label:'The teaser',detail:'September 2022. The band posts its inverted E logo online, and the internet loses it.'},{label:'The night',detail:'December 22, 2022. Around 75,000 fans at the SMDC Festival Grounds.'},{label:'The set',detail:'31 songs, nearly four hours, one giant inverted E overhead.'}],
+    sources:[['Wikipedia: Huling El Bimbo live album','https://en.m.wikipedia.org/wiki/Huling_El_Bimbo_(Live_at_2022_The_Eraserheads_Reunion_Concert)'],['NME: Eraserheads reunion review','https://www.nme.com/reviews/eraserheads-huling-el-bimbo-reunion-review-3371816']],
+    game:'eraserheads'},
   ai:{room:2,year:'2023',title:'The AI Classmate',body:'OpenAI released ChatGPT in November 2022, and by 2023 it was in Filipino classrooms, offices, and group chats. Students used it for essays, workers for emails, and everyone argued about whether it was cheating or just a tool.',then:'Then, teachers swore they could spot an AI essay from the first paragraph.',now:'Today, AI is just another tab open next to the homework.',question:'Is AI a shortcut that makes us dumber, or a tool that makes us faster?',
     flow:[{label:'Ask anything',detail:'Homework, code, and love letters all got the chatbot treatment.'},{label:'Debate the rules',detail:'Schools scrambled to decide what counted as cheating.'},{label:'Keep the tab open',detail:'AI settled into daily work like spellcheck before it.'}],
     sources:[['Wikipedia: ChatGPT','https://en.wikipedia.org/wiki/ChatGPT']],
@@ -841,6 +868,7 @@ window.LENSES20 = {
 };/* ---------------- 2020s exhibit media (verified Commons images) ---------------- */
 window.MEDIA20={
  hidilyn:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Hidilyn%20Diaz%202015.jpg?width=600',alt:'Hidilyn Diaz in 2015',caption:'Hidilyn Diaz (2015) \u00b7 via Wikimedia Commons'},
+ eraserheads:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/Eraserheads-Credit-WEU-Event-Management-Service-HERO@2000x1270.jpg?width=600',alt:'The Eraserheads on stage at the Huling El Bimbo reunion concert in 2022',caption:'The Eraserheads at Huling El Bimbo, 2022 \u00b7 CC BY-SA 4.0 via Wikimedia Commons'},
  halalan:{src:'halalan2025.jpg',alt:'ABS-CBN Halalan 2025 logo',caption:'Halalan 2025 \u00b7 ABS-CBN coverage logo'},
  gta6:{src:'gta6.jpg',alt:'GTA 6 key artwork: Lucia and Jason in Vice City',caption:'Grand Theft Auto VI key artwork \u00b7 Rockstar Games'},
  tiktok:{src:'https://commons.wikimedia.org/wiki/Special:FilePath/TikTok%20app.jpg?width=600',alt:'TikTok app icon on a phone screen',caption:'TikTok app \u00b7 via Wikimedia Commons'},
