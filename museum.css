@@ -689,3 +689,19 @@ body.tm-lab .site-nav a{color:#aee9ff}
 .site-dust{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1;background:#04060f}
 .site-dust i{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(255,244,220,.5);animation:drift linear infinite}
 @media(prefers-reduced-motion:reduce){.site-dust{display:none}}
+
+/* ---------- time machine: full size (fills the screen when open) ---------- */
+.timemachine{padding:0}
+.tm-console{max-width:none;width:100%;height:100%;max-height:none;border-radius:0;display:flex;flex-direction:column;align-items:center;justify-content:safe center;overflow:auto}
+.tm-engage{max-width:560px}
+@media(max-height:780px){
+ .tm-orb{width:150px;height:150px}
+ .tm-ring.r2{inset:14px}
+ .tm-ring.r3{inset:27px}
+ .tm-core{inset:42px}
+ .tm-core span{font-size:1.35rem}
+ .tm-console h2{font-size:1.45rem;margin-bottom:8px}
+ .tm-ygrid button{padding:6px 0}
+ .tm-engage{padding:11px 20px;font-size:1rem}
+ .tm-lights{margin:10px 0 6px}
+}
