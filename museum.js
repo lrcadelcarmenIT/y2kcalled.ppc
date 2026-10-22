@@ -1269,3 +1269,20 @@ if(document.getElementById('nokia-screen')){
 }
 
 })();
+/* sitewide dust background: same bubbles as the Grand Hall (walk.js) */
+function buildSiteDust(){
+  var dust=document.getElementById('site-dust');
+  if(!dust||dust.dataset.done)return;
+  dust.dataset.done='1';
+  for(var i=0;i<24;i++){
+    var p=document.createElement('i');
+    p.style.left=Math.random()*100+'%';
+    p.style.bottom='-10px';
+    p.style.animationDuration=(9+Math.random()*14)+'s';
+    p.style.animationDelay=(Math.random()*14)+'s';
+    var sz=2+Math.random()*3;
+    p.style.width=p.style.height=sz+'px';
+    dust.appendChild(p);
+  }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',buildSiteDust);else buildSiteDust();

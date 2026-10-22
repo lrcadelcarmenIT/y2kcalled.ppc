@@ -684,3 +684,8 @@ body.tm-lab .site-head{background:rgba(5,7,15,.85)}
 body.tm-lab .site-nav a{color:#aee9ff}
 @media (prefers-reduced-motion: reduce){.brand-track,.nav-sway{animation:none}}
 
+
+/* ---------- sitewide background: the Grand Hall bubbles, everywhere ---------- */
+.site-dust{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1;background:#04060f}
+.site-dust i{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(255,244,220,.5);animation:drift linear infinite}
+@media(prefers-reduced-motion:reduce){.site-dust{display:none}}
