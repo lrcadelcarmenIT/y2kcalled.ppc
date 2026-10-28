@@ -26,6 +26,7 @@
 .ex-stamp{float:right;font-size:1.4rem}
 @media(max-width:640px){.ex-card .ex-body{padding:16px}.ex-card h2{font-size:1.2rem}.ex-card .ex-photo{max-height:220px}}
 </style>
+<link rel="stylesheet" href="layout.css?v=layout2">
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 
@@ -53,7 +54,7 @@
 <button type="button" id="to-top" aria-label="Back to top">↑</button>
 <button type="button" id="lang-toggle" hidden>TAGLISH</button>
 <div class="celebrate" id="celebrate" hidden><div class="celebrate-card"><button type="button" id="celebrate-close">Close</button></div></div>
-<script src="museum.js?v=mobile1"></script>
+<script src="museum.js?v=layout2"></script>
 <script>
 (function(){
 const list=document.getElementById('ex-list');
@@ -63,8 +64,8 @@ ids.forEach(id=>{
   const d=EX[id], m=MED[id];
   const card=document.createElement('article');
   card.className='ex-card';card.id='exhibit-'+id;
-  let html='<span class="ex-stamp" data-stamp="'+id+'">'+(hasStamp(id)?'🎫':'')+'</span>';
-  html+='<p class="ex-year">'+d.year+'</p><h2>'+d.title+'</h2>';
+  let html='<header class="ex-heading"><span class="ex-stamp" data-stamp="'+id+'">'+(hasStamp(id)?'🎫':'')+'</span>';
+  html+='<p class="ex-year">'+d.year+'</p><h2>'+d.title+'</h2></header>';
   if(m&&m.src)html+='<img class="ex-photo" src="'+m.src+'" alt="'+(m.alt||d.title)+'" loading="lazy">';
   html+='<div class="ex-body">';
   html+='<p class="ex-text">'+d.body+'</p>';

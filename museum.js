@@ -876,21 +876,6 @@ if(document.getElementById('stage')){syncURL(false);render();}
   toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'}));
   document.getElementById('celebrate-close').addEventListener('click',closeCelebration);
   document.getElementById('celebrate').addEventListener('click',e=>{if(e.target.id==='celebrate')closeCelebration()});
-  const coverArt=document.querySelector('.cover-art');
-  if(coverArt&&!reduceMotion){
-    let ticking=false;
-    window.addEventListener('scroll',()=>{
-      if(ticking)return;ticking=true;
-      requestAnimationFrame(()=>{
-        const r=coverArt.getBoundingClientRect();
-        if(r.bottom>0&&r.top<window.innerHeight){
-          const off=Math.max(-36,Math.min(36,(r.top+r.height/2-window.innerHeight/2)*-0.05));
-          coverArt.style.transform='translateY('+off.toFixed(1)+'px)';
-        }
-        ticking=false;
-      });
-    },{passive:true});
-  }
 })();
 
 /* ============ PASS 3: quiz, photo booth, soundboard, timeline, i18n, presence, memory wall ============ */

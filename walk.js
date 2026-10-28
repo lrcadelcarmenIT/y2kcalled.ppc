@@ -166,12 +166,15 @@ function closeModal(){document.getElementById('walk-modal').hidden=true;}
 function buildChrome(){
  stage.innerHTML='<div class="ex-bg" id="ex-bg" aria-hidden="true"><video id="ex-video" autoplay muted loop playsinline></video></div>'
  +'<div class="ex-spotlight" aria-hidden="true"></div><div class="ex-dust" id="ex-dust" aria-hidden="true"></div>'
+ +'<div class="tour-toolbar"><button class="tour-title" id="tour-title" aria-label="Open time machine"></button>'
+ +'<button class="tour-tmbtn" id="tour-tm" aria-label="Open time machine">\u{1f570}\ufe0f</button></div>'
  +'<div class="ex-view"><button class="ex-frame" id="ex-frame" aria-label="Read the plaque"></button><div class="ex-reflect" id="ex-reflect" aria-hidden="true"></div>'
- +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p><p class="ex-count" id="ex-count"></p></div></div>'
- +'<button class="tour-title" id="tour-title" aria-label="Open time machine"></button>'
+ +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p></div></div>'
+ +'<div class="tour-navigation">'
  +'<button class="tour-edge" id="tour-prev" aria-label="Previous exhibit">\u2039</button>'
+ +'<p class="ex-count" id="ex-count"></p>'
  +'<button class="tour-edge" id="tour-next" aria-label="Next exhibit">\u203a</button>'
- +'<button class="tour-tmbtn" id="tour-tm" aria-label="Open time machine">\u{1f570}\ufe0f</button>'
+ +'</div>'
  +'<div class="tour-thumbs" id="tour-thumbs"></div>';
  document.getElementById('ex-frame').addEventListener('click',openPlaque);
  document.getElementById('tour-title').addEventListener('click',function(){if(window.openTimeMachine)window.openTimeMachine();});
@@ -227,14 +230,9 @@ function buildChrome(){
   if(!raf)raf=requestAnimationFrame(apply);
  }
  function reset(){tilt(0,0);}
- // phone tilt
- window.addEventListener('deviceorientation',function(e){
-  if(e.gamma==null||e.beta==null)return;
-  tilt(e.gamma/6,-(e.beta-45)/6);
- });
- // desktop mouse
+ // Keep the exhibit still on touch screens; use subtle tilt with a mouse only.
  stage.addEventListener('mousemove',function(e){
-  if('ontouchstart' in window)return;
+  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const r=stage.getBoundingClientRect();
   const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
   tilt(px*MAX*2,-py*MAX*2);
