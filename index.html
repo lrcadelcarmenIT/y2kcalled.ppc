@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Lobby · The 2000s Called</title>
 <meta name="description" content="A Philippine pop culture virtual museum, 2000–2026. Seventeen exhibits, twenty-three games, two decades.">
-<link rel="stylesheet" href="museum.css?v=bubbles1">
+<link rel="stylesheet" href="museum.css?v=mobile1">
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 
@@ -24,7 +24,8 @@
 </div>
 <header class="mast"><div class="shell mast-row">
   <a class="mark" href="index.html">THE 2000s <b>CALLED.</b></a>
-  <nav aria-label="Main navigation">
+  <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false">Menu</button>
+  <nav id="site-menu" aria-label="Main navigation">
     <a href="index.html" id="nav-home">Lobby</a>
     <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
     <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
@@ -134,7 +135,7 @@
               <button type="button" class="sp-app" data-go="play20.html#arcade"><span class="sp-icon">🕹️</span><span class="sp-name">Bonus games</span></button>
             </div>
           </div>
-          <div class="sp-dots" id="sp-dots" aria-hidden="true"></div>
+          <div class="sp-dots" id="sp-dots" role="group" aria-label="Phone pages"></div>
           <div class="sp-hint">tap an app · swipe for more</div>
         </div>
         <div class="sp-homebar" aria-hidden="true"></div>
@@ -200,7 +201,7 @@
     <button type="button" class="action" id="celebrate-close">Keep exploring</button>
   </div>
 </div>
-<script src="wing2020s.js?v=eheads1"></script>
-<script src="museum.js?v=bubbles1"></script>
+<script src="wing2020s.js?v=mobile1"></script>
+<script src="museum.js?v=mobile1"></script>
 </body>
 </html>

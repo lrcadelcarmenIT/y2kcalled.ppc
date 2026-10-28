@@ -1,3 +1,70 @@
+/* Navigation stays expanded without JavaScript; phones get a compact menu when ready. */
+(function(){
+  const row=document.querySelector('.mast-row'),nav=document.getElementById('site-menu');
+  const toggle=document.querySelector('.nav-toggle');
+  if(!row||!nav||!toggle)return;
+  const mobile=window.matchMedia('(max-width:900px)');
+  function setOpen(open){
+    toggle.setAttribute('aria-expanded',String(open));
+    nav.classList.toggle('is-open',open);
+  }
+  row.classList.add('nav-ready');
+  toggle.addEventListener('click',()=>setOpen(toggle.getAttribute('aria-expanded')!=='true'));
+  nav.addEventListener('click',e=>{if(mobile.matches&&e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&mobile.matches&&nav.classList.contains('is-open')){
+      setOpen(false);toggle.focus();
+    }
+  });
+  document.addEventListener('pointerdown',e=>{
+    if(mobile.matches&&!row.contains(e.target))setOpen(false);
+  });
+  mobile.addEventListener('change',()=>setOpen(false));
+  const current=location.pathname.split('/').pop()||'index.html';
+  nav.querySelectorAll('a').forEach(a=>{
+    if(a.getAttribute('href')===current)a.setAttribute('aria-current','page');
+  });
+})();
+
+/* Keep the page behind dialogs still, including while the mobile keyboard is open. */
+(function(){
+  const overlays=[...document.querySelectorAll('#timemachine,#timetravel,#walk-modal,#celebrate')];
+  if(!overlays.length)return;
+  let active=null,returnFocus=document.activeElement;
+  document.addEventListener('focusin',e=>{
+    if(!overlays.some(el=>el.contains(e.target)))returnFocus=e.target;
+  });
+  const focusable=el=>[...el.querySelectorAll('button:not(:disabled),a[href],input,textarea,select,[tabindex="0"]')]
+    .filter(e=>e.getClientRects().length&&!e.closest('[hidden]'));
+  function sync(){
+    const next=overlays.filter(el=>!el.hidden).pop()||null;
+    document.documentElement.classList.toggle('modal-open',!!next);
+    document.body.classList.toggle('modal-open',!!next);
+    if(next!==active){
+      if(!active&&next&&!next.contains(document.activeElement))returnFocus=document.activeElement;
+      active=next;
+      if(active){const first=focusable(active)[0];if(first)first.focus({preventScroll:true});}
+      else if(returnFocus&&returnFocus.isConnected){returnFocus.focus({preventScroll:true});}
+    }
+  }
+  const observer=new MutationObserver(sync);
+  overlays.forEach(el=>observer.observe(el,{attributes:true,attributeFilter:['hidden']}));
+  document.addEventListener('keydown',e=>{
+    if(!active)return;
+    if(e.key==='Escape'){
+      const close=active.querySelector('.walk-x,.tm-x,#celebrate-close');
+      if(close){e.preventDefault();close.click();}
+    }
+    if(e.key==='Tab'){
+      const items=focusable(active),first=items[0],last=items[items.length-1];
+      if(!first){e.preventDefault();return;}
+      if(e.shiftKey&&(document.activeElement===first||!active.contains(document.activeElement))){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&(document.activeElement===last||!active.contains(document.activeElement))){e.preventDefault();first.focus();}
+    }
+  });
+  sync();
+})();
+
 const exhibits00 = {
   sms:{room:0,year:'2001',title:'Prepaid texting and the cost of keeping in touch',body:'By 2001, texting had developed its own language and etiquette in the Philippines. Prepaid service helped make short messages an everyday way to keep in touch.',then:'A phone and enough load could make a short message possible; the cost of each send still mattered.',now:'Messaging apps can send photos, voice, and video, but they still require a working device and connection.',question:'Who could afford to keep a conversation going?',flow:[{label:'Prepaid load',detail:'Buying load at a sari-sari store or via a scratch card was the everyday way to top up.'},{label:'Short message',detail:'A 160-character limit pushed users to invent shorthand: "tx" for text, "u" for you.'}],sources:[['Philstar, 15 May 2001','https://www.philstar.com/lifestyle/business-life/2001/05/15/85823/philippine-text-messaging-phenomenon/amp/'],['ITU, 2002','https://www.itu.int/net/wsis/tunis/newsroom/stats/mobile_internet_2002.pdf']],game:'sms'},
   friendster:{room:0,year:'2007',title:'Friendster profiles needed internet access',body:'Profiles, testimonials, and photo albums gave users ways to present themselves and keep up with friends. A 2007 report described the platform’s new photo-sharing features in the Philippines.',then:'Keeping a profile meant finding a device and internet connection, at home or elsewhere.',now:'Social profiles travel in a pocket, although connectivity and device costs still shape who participates.',question:'Where would you go to check a friend’s update?',flow:[{label:'Go online',detail:'Home dial-up, a workplace PC, or a rented hour at an internet café.'},{label:'Open profile',detail:'Friendster pages loaded slowly; testimonials and comments were the draw.'},{label:'Share with friends',detail:'Photo albums replaced the earlier "friendster layout" copy-paste culture.'}],sources:[['Philstar, 10 Apr 2007','https://www.philstar.com/business/technology/2007/04/10/393746/friendster-frenzy-lives-on']],game:'friendster'},
@@ -126,7 +193,7 @@ function showCelebration(){
 function closeCelebration(){
   const c=document.getElementById('celebrate');if(!c||c.hidden)return;
   c.hidden=true;document.body.classList.remove('no-scroll');
-  stage.focus({preventScroll:true});
+  if(stage)stage.focus({preventScroll:true});
 }
 
 /* ---------- Mini-games ---------- */
@@ -275,7 +342,7 @@ const games={
   cafe(){return{
     title:'Rent an hour for ₱60',
     intro:'You have ₱60 for one hour at the internet café. Pick which tasks to fit in. Complete three tasks.',
-    render(el,{win,lose}){
+    render(el,{win,lose},setCleanup){
       const tasks=[
         {name:'Check email',cost:15},
         {name:'Print one page',cost:10},
@@ -1277,7 +1344,9 @@ function buildSiteDust(){
 function fillDust(dust){
   if(!dust||dust.dataset.done)return;
   dust.dataset.done='1';
-  for(var i=0;i<24;i++){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const count=window.matchMedia('(max-width:640px)').matches?12:24;
+  for(var i=0;i<count;i++){
     var p=document.createElement('i');
     p.style.left=Math.random()*100+'%';
     p.style.bottom='-10px';

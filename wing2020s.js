@@ -529,10 +529,12 @@ function beep(f,d,type,g){try{const c=new (window.AudioContext||window.webkitAud
   tm=setInterval(tick,50);loop();draw();cv.focus({preventScroll:true});
  });
  cv.tabIndex=0;
- cv.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')bx=Math.max(20,bx-24);if(e.key==='ArrowRight')bx=Math.min(W-20,bx+24);if(run)draw();});
+ cv.addEventListener('keydown',e=>{if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();bx=Math.min(W-20,Math.max(20,bx+(e.key==='ArrowLeft'?-24:24)));if(run)draw();});
  let tx=null;
  cv.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
- cv.addEventListener('touchmove',e=>{if(tx===null)return;bx=Math.min(W-20,Math.max(20,bx+(e.touches[0].clientX-tx)));tx=e.touches[0].clientX;if(run)draw();e.preventDefault();},{passive:false});
+ cv.addEventListener('touchmove',e=>{if(tx===null)return;const scale=W/cv.getBoundingClientRect().width;bx=Math.min(W-20,Math.max(20,bx+(e.touches[0].clientX-tx)*scale));tx=e.touches[0].clientX;if(run)draw();e.preventDefault();},{passive:false});
+ cv.addEventListener('touchend',()=>{tx=null;},{passive:true});
+ cv.addEventListener('touchcancel',()=>{tx=null;},{passive:true});
  draw();
 })();
 
@@ -784,19 +786,27 @@ if(scr){
  tick();setInterval(tick,20000);
  const pages=document.getElementById('sp-pages'),dots=document.getElementById('sp-dots');
  const n=pages.children.length;let pg=0;
- dots.innerHTML=Array.from({length:n},(_,i)=>`<i class="${i===0?'on':''}"></i>`).join('');
+ dots.innerHTML=Array.from({length:n},(_,i)=>`<button type="button" class="sp-dot ${i===0?'on':''}" aria-label="Home screen page ${i+1}" aria-pressed="${i===0}"></button>`).join('');
  const go=p=>{pg=(p+n)%n;pages.style.transform=`translateX(-${pg*100}%)`;
-  [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===pg));};
+  [...dots.children].forEach((d,i)=>{d.classList.toggle('on',i===pg);d.setAttribute('aria-pressed',String(i===pg));});
+  [...pages.children].forEach((page,i)=>{page.inert=i!==pg;page.setAttribute('aria-hidden',String(i!==pg));});};
+ [...dots.children].forEach((d,i)=>d.addEventListener('click',()=>go(i)));
+ go(0);
  scr.querySelectorAll('.sp-app').forEach(a=>a.addEventListener('click',e=>{
   e.stopPropagation();blip(760);setTimeout(()=>{location.href=a.dataset.go;},140);}));
- let sx=null;
- scr.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
- scr.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;
-  if(Math.abs(dx)>42){blip(dx<0?520:440);go(pg+(dx<0?1:-1));}},{passive:true});
+ let gesture=null,suppressClick=false;
+ scr.addEventListener('pointerdown',e=>{if(!e.isPrimary)return;gesture={x:e.clientX,y:e.clientY,id:e.pointerId};suppressClick=false;});
+ scr.addEventListener('pointerup',e=>{
+  if(!gesture||gesture.id!==e.pointerId)return;
+  const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y;gesture=null;
+  if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)*1.5){suppressClick=true;blip(dx<0?520:440);go(pg+(dx<0?1:-1));}
+ });
+ scr.addEventListener('pointercancel',()=>{gesture=null;});
+ scr.addEventListener('click',e=>{if(suppressClick&&e.detail!==0){e.preventDefault();e.stopPropagation();}},{capture:true});
  scr.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'){e.preventDefault();go(pg+1);}
   else if(e.key==='ArrowLeft'){e.preventDefault();go(pg-1);}
-  else if(e.key==='Enter'){e.preventDefault();const a=scr.querySelector('.sp-app');if(a)a.click();}});
+  else if(e.key==='Enter'&&e.target===scr){e.preventDefault();const a=pages.children[pg].querySelector('.sp-app');if(a)a.click();}});
 }
 
 /* ---------------- Lobby decade toggle ---------------- */

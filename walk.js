@@ -189,37 +189,25 @@ function buildChrome(){
  renderExhibit();
  syncChrome();
 }
-/* ---------- swipe to change exhibits ---------- */
+/* Horizontal swipes browse exhibits; vertical gestures keep normal page scrolling. */
 (function(){
- let sx=0,sy=0,swiping=false;
- const THRESH=60;
- stage.addEventListener('touchstart',function(e){
-  const t=e.changedTouches[0];sx=t.clientX;sy=t.clientY;swiping=false;
- },{passive:true});
- stage.addEventListener('touchmove',function(e){
-  if(!sx)return;
-  const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-  if(Math.abs(dx)>20&&Math.abs(dx)>Math.abs(dy)*1.5)swiping=true;
- },{passive:true});
- stage.addEventListener('touchend',function(e){
-  if(!swiping){sx=0;return;}
-  const t=e.changedTouches[0],dx=t.clientX-sx;
-  if(dx<-THRESH){EXIDX[cur]++;renderExhibit();}
-  else if(dx>THRESH){EXIDX[cur]--;renderExhibit();}
-  sx=0;swiping=false;
- },{passive:true});
- // mouse drag for desktop
- let mdown=false,mx=0;
- stage.addEventListener('mousedown',function(e){mdown=true;mx=e.clientX;});
- window.addEventListener('mouseup',function(e){
-  if(!mdown)return;mdown=false;
-  const dx=e.clientX-mx;
-  if(dx<-THRESH){EXIDX[cur]++;renderExhibit();}
-  else if(dx>THRESH){EXIDX[cur]--;renderExhibit();}
+ let gesture=null,suppressClick=false;
+ stage.style.touchAction='pan-y';
+ stage.addEventListener('pointerdown',function(e){
+  suppressClick=false;
+  if(!e.isPrimary||e.button!==0||e.target.closest('.tour-title,.tour-edge,.tour-tmbtn,.tour-thumbs'))return;
+  gesture={x:e.clientX,y:e.clientY,id:e.pointerId};
  });
- // suppress click after a drag-swipe
+ window.addEventListener('pointerup',function(e){
+  if(!gesture||gesture.id!==e.pointerId)return;
+  const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y;gesture=null;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){
+   suppressClick=true;EXIDX[cur]+=dx<0?1:-1;renderExhibit();
+  }
+ });
+ stage.addEventListener('pointercancel',function(){gesture=null;});
  stage.addEventListener('click',function(e){
-  if(swiping){e.stopPropagation();e.preventDefault();}
+  if(suppressClick&&e.detail!==0){e.stopPropagation();e.preventDefault();}
  },true);
 })();
 
