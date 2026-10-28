@@ -6,7 +6,7 @@
 <title>The Grand Hall · The 2000s Called</title>
 <meta name="description" content="Walk through the museum: the 2000s wing, the 2020s wing, and the Then vs Now gallery. Two decades, one building.">
 <link rel="stylesheet" href="museum.css?v=mobile1">
-<link rel="stylesheet" href="layout.css?v=layout2">
+<link rel="stylesheet" href="layout.css?v=future3">
 </head>
 <body class="tm-lab">
 <div class="grain" aria-hidden="true"></div>
@@ -44,8 +44,9 @@
   <video id="tm-bgvid" autoplay muted loop playsinline aria-hidden="true"></video>
   <div class="tm-console" role="dialog" aria-modal="true" aria-label="Time machine">
     <button type="button" class="tm-x" id="tm-x" aria-label="Close">&times;</button>
-    <p class="tm-kick">Temporal Navigation Console</p>
-    <h2>TIME MACHINE</h2>
+    <header class="tm-heading"><p class="tm-kick">Temporal Navigation Console</p>
+    <h2>TIME MACHINE</h2></header>
+    <div class="tm-clock-panel">
     <div class="tm-orb" aria-hidden="true">
       <div class="tm-bezel">
         <div class="tm-face"></div>
@@ -60,16 +61,32 @@
       <div class="tm-core"><span id="tm-year">2007</span><div class="tm-hand hour" id="tm-hour"></div><div class="tm-hand minute" id="tm-minute"></div><div class="tm-pin"></div></div>
     </div>
     <p class="tm-dest" id="tm-dest">DESTINATION: THE 2000s</p>
-    <div class="tm-years">
-      <p class="tm-era">The 2000s</p>
-      <div class="tm-ygrid" id="tm-ygrid00"></div>
-      <p class="tm-era">The 2020s</p>
-      <div class="tm-ygrid" id="tm-ygrid20"></div>
     </div>
+    <div class="tm-year-panel">
+      <div class="tm-era-tabs" role="tablist" aria-label="Choose an era">
+        <button type="button" class="tm-era-tab" id="tm-tab-past" role="tab" aria-controls="tm-panel-past" aria-selected="true" data-era="past">The 2000s</button>
+        <button type="button" class="tm-era-tab" id="tm-tab-present" role="tab" aria-controls="tm-panel-present" aria-selected="false" tabindex="-1" data-era="present">The 2020s</button>
+        <button type="button" class="tm-era-tab" id="tm-tab-future" role="tab" aria-controls="tm-panel-future" aria-selected="false" tabindex="-1" data-era="future">Future</button>
+      </div>
+    <div class="tm-years">
+      <section class="tm-panel" id="tm-panel-past" role="tabpanel" aria-labelledby="tm-tab-past">
+        <div class="tm-ygrid" id="tm-ygrid00" role="group" aria-label="Years 2000 to 2010"></div>
+      </section>
+      <section class="tm-panel" id="tm-panel-present" role="tabpanel" aria-labelledby="tm-tab-present" hidden>
+        <div class="tm-ygrid" id="tm-ygrid20" role="group" aria-label="Years 2020 to 2026"></div>
+      </section>
+      <section class="tm-panel" id="tm-panel-future" role="tabpanel" aria-labelledby="tm-tab-future" hidden>
+        <div class="tm-ygrid" id="tm-ygrid-future" role="group" aria-label="Predictions for 2027 to 2040"></div>
+        <p class="tm-prediction-note">Predictions · possibilities, not confirmed events.</p>
+      </section>
+    </div>
+    </div>
+    <footer class="tm-footer">
     <button type="button" class="tm-engage" id="tm-engage"><span>&#9889;</span> ENGAGE TIME TRAVEL</button>
     <div class="tm-lights" id="tm-lights" aria-hidden="true"><span></span><span></span><span></span></div>
     <p class="tm-status" id="tm-status">Select your destination year.</p>
     <button type="button" class="tm-gallery" data-go="gallery">Or browse the Then vs Now gallery &rarr;</button>
+    </footer>
   </div>
 </div>
 <div class="timetravel" id="timetravel" hidden>
@@ -113,7 +130,8 @@
 <script src="wing2020s.js?v=mobile1"></script>
 <script src="museum.js?v=layout2"></script>
 <script>document.getElementById('marquee-in').textContent='THE GRAND HALL · WALK THE MUSEUM · TWO DECADES, ONE BUILDING · '.repeat(6);</script>
-<script src="walk.js?v=layout2"></script>
+<script src="future.js?v=future3"></script>
+<script src="walk.js?v=future3"></script>
 <script>
 </script>
 </body>

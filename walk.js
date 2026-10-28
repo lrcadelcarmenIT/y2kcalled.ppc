@@ -6,12 +6,13 @@ const stage=document.querySelector('.walk-stage');
 
 /* ---------- data (from museum.js / wing2020s.js) ---------- */
 const EX00=window.EXHIBITS00||{},EX20=window.EXHIBITS20||{};
+const FUTURE=window.FUTURE_PREDICTIONS||{};
 const MED00=window.MEDIA00||{},MED20=window.MEDIA20||{};
 function mediaFor(id){return EX20[id]?(MED20[id]||null):(MED00[id]||null);}
 const EMOJI00={y2k:'\u{1f4bb}',sms:'\u{1f4ac}',friendster:'\u{1f465}',ofw:'\u2708\ufe0f',meteor:'\u{1f4fa}',boxing:'\u{1f94a}',cafe:'\u{1f5a5}\ufe0f',load:'\u{1f4b8}',cameraphone:'\u{1f933}',socialgames:'\u{1f69c}',smartphone:'\u{1f4f1}'};
 const EMOJI20={tiktok:'\u{1f4f1}',hidilyn:'\u{1f3cb}\u{fe0f}',ai:'\u{1f916}',bini:'\u{1f33a}',halalan:'\u{1f5f3}\u{fe0f}',gta6:'\u{1f3ae}',eraserheads:'\u{1f3b8}'};
-function exData(id){return EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
-function em(id){const r=exData(id);return r.dec==='2020s'?(EMOJI20[id]||'\u{1f5bf}'):(EMOJI00[id]||'\u{1f5bf}');}
+function exData(id){return FUTURE[id]?{d:FUTURE[id],dec:'Future · prediction'}:EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
+function em(id){const r=exData(id);return r.d.emoji||(r.dec==='2020s'?(EMOJI20[id]||'\u{1f5bf}'):(EMOJI00[id]||'\u{1f5bf}'));}
 function thenNowHTML(d){
  if(d.thenNow)return '<b>Then vs now:</b> '+d.thenNow;
  if(d.then||d.now)return '<b>Then:</b> '+(d.then||'')+'<br><b>Now:</b> '+(d.now||'');
@@ -25,19 +26,21 @@ function sourceHTML(d){
 /* ---------- exhibit lists ---------- */
 const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','friendster','boxing','socialgames','smartphone'];
 const HALL20=['tiktok','hidilyn','eraserheads','ai','bini','halalan','gta6'];
+const HALLFUTURE=Object.keys(FUTURE);
 const COMPARE=[
  {t:'Friendster \u2194 TikTok',a:'friendster',b:'tiktok',n:'From top 8 to For You Page.'},
  {t:'Cameraphone \u2194 Vlog',a:'cameraphone',b:'vlog',n:'From pixels to personalities.'},
  {t:'Smartphone \u2194 AI',a:'smartphone',b:'ai',n:'From apps to assistants.'},
  {t:'Boxing \u2194 Gold',a:'boxing',b:'hidilyn',n:'From the ring to the podium.'}
 ];
-const TITLES={hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall'};
-const EXIDX={hall00:0,hall20:0,gallery:0};
+const TITLES={hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall',hallFuture:'Future'};
+const EXIDX={hall00:0,hall20:0,gallery:0,hallFuture:0};
 let cur='hall00';
 
 function sceneIds(id){
  if(id==='hall00')return HALL00;
  if(id==='hall20')return HALL20;
+ if(id==='hallFuture')return HALLFUTURE;
  if(id==='gallery')return COMPARE.map(function(c,i){return 'cmp'+i;});
  return [];
 }
@@ -68,7 +71,7 @@ function renderExhibit(){
   emoji=em(c.a);
  }else{
   const r=exData(key),d=r.d;
-  titleText=d.title;yearText=d.year;
+  titleText=d.title;yearText=d.prediction?'PREDICTION · '+d.year:d.year;
   const m=mediaFor(key);
   photoUrl=(m&&m.src)||null;
   bgUrl=photoUrl;
@@ -143,7 +146,14 @@ function openPlaque(){
 
  const key=stage.dataset.exkey;
  const mbox=document.getElementById('walk-mbox');
- if(cur==='gallery'){
+ if(cur==='hallFuture'){
+  const d=FUTURE[key];
+  mbox.innerHTML='<button class="walk-x" aria-label="Close">\u00d7</button>'
+  +'<p class="walk-kick">FUTURE · '+d.year+' · PREDICTION</p><h3>'+d.emoji+' '+d.title+'</h3>'
+  +'<p class="prediction-note">'+d.note+'</p><p>'+d.body+'</p>'
+  +'<p class="walk-tn"><b>Think about it:</b> '+d.question+'</p>'
+  +'<a class="source-link" href="exhibits-future.html#exhibit-'+key+'">Explore the Future exhibit hall</a>';
+ }else if(cur==='gallery'){
   const c=COMPARE[parseInt(key.replace('cmp',''),10)];
   const a=exData(c.a),b=exData(c.b);
   mbox.innerHTML='<button class="walk-x" aria-label="Close">\u00d7</button>'
@@ -266,7 +276,7 @@ buildChrome();
 window.TOUR_API={
  gotoScene:gotoScene,
  yawForYear:function(year,hall){
-  const ids=hall==='hall00'?HALL00:HALL20;
+  const ids=sceneIds(hall);
   let best=0,bd=9999;
   ids.forEach(function(id,i){
    const y=parseInt(exData(id).d.year,10);
@@ -280,10 +290,14 @@ window.TOUR_API={
 })();
 
 /* ---------- Time machine console ---------- */
-const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
-let tmIdx=7, tmBusy=false, arriveYaw=null;
+const TM_YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026,...Array.from({length:14},(_,i)=>2027+i)];
+const requestedYear=Number(new URLSearchParams(location.search).get('year'));
+let tmIdx=TM_YEARS.includes(requestedYear)?TM_YEARS.indexOf(requestedYear):7, tmBusy=false, arriveYaw=null;
+const TM_LAST_YEAR={past:2007,present:2024,future:2027};
+function tmEra(year=tmYear()){return year<=2010?'past':year<=2026?'present':'future';}
+TM_LAST_YEAR[tmEra(TM_YEARS[tmIdx])]=TM_YEARS[tmIdx];
 function tmYear(){return TM_YEARS[tmIdx];}
-function tmHall(){return tmYear()<=2010?'hall00':'hall20';}
+function tmHall(){return tmYear()<=2010?'hall00':tmYear()<=2026?'hall20':'hallFuture';}
 const TM_KEY={2000:'y2k',2001:'sms',2002:'ofw',2003:'meteor',2004:'cameraphone',2005:'load',2006:'cafe',2007:'friendster',2008:'boxing',2009:'socialgames',2010:'smartphone',2020:'tiktok',2021:'hidilyn',2023:'ai',2024:'bini',2025:'halalan',2026:'gta6'};
 /* ---------- time machine sounds (synthesized, no files) ---------- */
 let tmAC=null;
@@ -350,15 +364,21 @@ function tmPaint(){
   const bgv=document.getElementById('tm-bgvid');
   if(bgv){const src='vid/warp.mp4';if(!bgv.src.endsWith(src))bgv.src=src;}
   document.getElementById('tm-year').textContent=tmYear();
-  document.getElementById('tm-dest').textContent='DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
+  document.getElementById('tm-dest').textContent=tmYear()>2026?'DESTINATION: FUTURE · PREDICTIONS':'DESTINATION: THE '+(tmYear()<=2010?'2000s':'2020s');
   document.getElementById('tm-status').textContent='Select your destination year.';
   document.querySelectorAll('#timemachine .tm-ygrid button').forEach(function(b){
-    b.classList.toggle('on',parseInt(b.dataset.y,10)===tmYear());
+    const selected=parseInt(b.dataset.y,10)===tmYear();
+    b.classList.toggle('on',selected);b.setAttribute('aria-pressed',String(selected));
+  });
+  document.querySelectorAll('.tm-era-tab').forEach(tab=>{
+    const selected=tab.dataset.era===tmEra();
+    tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;
+    document.getElementById(tab.getAttribute('aria-controls')).hidden=!selected;
   });
 }
 function tmBuildYears(){
-  var g00=document.getElementById('tm-ygrid00'),g20=document.getElementById('tm-ygrid20');
-  g00.innerHTML='';g20.innerHTML='';
+  const grids={past:document.getElementById('tm-ygrid00'),present:document.getElementById('tm-ygrid20'),future:document.getElementById('tm-ygrid-future')};
+  Object.values(grids).forEach(g=>g.innerHTML='');
   TM_YEARS.forEach(function(y){
     var b=document.createElement('button');
     b.type='button';b.textContent=y;b.dataset.y=y;
@@ -366,13 +386,30 @@ function tmBuildYears(){
     b.addEventListener('click',function(){
       if(tmBusy)return;
       tmIdx=TM_YEARS.indexOf(y);
+      TM_LAST_YEAR[tmEra(y)]=y;
       tmPaint();
       sndSelect();
     });
-    (y<=2010?g00:g20).appendChild(b);
+    grids[tmEra(y)].appendChild(b);
   });
   tmPaint();
 }
+const eraTabs=[...document.querySelectorAll('.tm-era-tab')];
+function selectEra(tab){
+  if(tmBusy)return;
+  tmIdx=TM_YEARS.indexOf(TM_LAST_YEAR[tab.dataset.era]);tmPaint();sndSelect();
+}
+eraTabs.forEach((tab,i)=>{
+  tab.addEventListener('click',()=>selectEra(tab));
+  tab.addEventListener('keydown',e=>{
+    let next;
+    if(e.key==='ArrowRight')next=(i+1)%eraTabs.length;
+    else if(e.key==='ArrowLeft')next=(i+eraTabs.length-1)%eraTabs.length;
+    else if(e.key==='Home')next=0;
+    else if(e.key==='End')next=eraTabs.length-1;
+    if(next!==undefined){e.preventDefault();if(tmBusy)return;selectEra(eraTabs[next]);eraTabs[next].focus({preventScroll:true});}
+  });
+});
 function yawForYear(year,hall){return window.TOUR_API.yawForYear(year,hall);}
 function openTimeMachine(){
   if(tmBusy)return;
@@ -395,7 +432,7 @@ function closeTimeMachine(){
 function timeTravel(key){
   // gallery shortcut bypasses the console
   sndJump();
-  document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':'THE GALLERY')+'...';
+  document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':key==='hallFuture'?'THE FUTURE':'THE GALLERY')+'...';
   document.getElementById('timetravel').hidden=false;
   warpEase(ttVid(),1150,2.8,.15);
   setTimeout(()=>{
