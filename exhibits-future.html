@@ -6,7 +6,7 @@
 <title>Future · Exhibit Halls · The 2000s Called</title>
 <meta name="description" content="Explore possible Filipino futures from 2027 to 2040. These exhibits are predictions, not confirmed events.">
 <link rel="stylesheet" href="museum.css?v=mobile1">
-<link rel="stylesheet" href="layout.css?v=future3">
+<link rel="stylesheet" href="layout.css?v=photos4">
 </head>
 <body class="future">
 <div class="site-dust" id="site-dust" aria-hidden="true"></div>
@@ -43,7 +43,7 @@
 <button type="button" id="to-top" aria-label="Back to top">↑</button>
 <button type="button" id="lang-toggle" hidden>TAGLISH</button>
 <div class="celebrate" id="celebrate" hidden><div class="celebrate-card"><button type="button" id="celebrate-close">Close</button></div></div>
-<script src="future.js?v=future3"></script>
+<script src="future.js?v=photos4"></script>
 <script src="museum.js?v=layout2"></script>
 <script>
 (function(){
@@ -52,7 +52,7 @@
     const card=document.createElement('article');
     card.className='ex-card';card.id='exhibit-'+id;
     card.innerHTML='<header class="ex-heading"><p class="ex-year">'+d.year+' · PREDICTION</p><h2>'+d.title+'</h2></header>'
-      +'<div class="future-visual" aria-hidden="true"><span>'+d.emoji+'</span><b>'+d.year+'</b></div>'
+      +'<figure class="future-photo"><img class="ex-photo" src="'+d.image.src+'" alt="'+d.image.alt+'" width="'+d.image.width+'" height="'+d.image.height+'" loading="lazy" decoding="async"><figcaption>'+d.image.caption+'</figcaption></figure>'
       +'<div class="ex-body"><p class="ex-text">'+d.body+'</p>'
       +'<p class="ex-tn"><b>Think about it:</b> '+d.question+'</p>'
       +'<p class="ex-src prediction-note">'+d.note+'</p>'

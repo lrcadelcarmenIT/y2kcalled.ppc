@@ -8,7 +8,7 @@ const stage=document.querySelector('.walk-stage');
 const EX00=window.EXHIBITS00||{},EX20=window.EXHIBITS20||{};
 const FUTURE=window.FUTURE_PREDICTIONS||{};
 const MED00=window.MEDIA00||{},MED20=window.MEDIA20||{};
-function mediaFor(id){return EX20[id]?(MED20[id]||null):(MED00[id]||null);}
+function mediaFor(id){return FUTURE[id]?(FUTURE[id].image||null):EX20[id]?(MED20[id]||null):(MED00[id]||null);}
 const EMOJI00={y2k:'\u{1f4bb}',sms:'\u{1f4ac}',friendster:'\u{1f465}',ofw:'\u2708\ufe0f',meteor:'\u{1f4fa}',boxing:'\u{1f94a}',cafe:'\u{1f5a5}\ufe0f',load:'\u{1f4b8}',cameraphone:'\u{1f933}',socialgames:'\u{1f69c}',smartphone:'\u{1f4f1}'};
 const EMOJI20={tiktok:'\u{1f4f1}',hidilyn:'\u{1f3cb}\u{fe0f}',ai:'\u{1f916}',bini:'\u{1f33a}',halalan:'\u{1f5f3}\u{fe0f}',gta6:'\u{1f3ae}',eraserheads:'\u{1f3b8}'};
 function exData(id){return FUTURE[id]?{d:FUTURE[id],dec:'Future · prediction'}:EX20[id]?{d:EX20[id],dec:'2020s'}:{d:EX00[id],dec:'2000s'};}
@@ -93,7 +93,9 @@ function renderExhibit(){
  const frame=document.getElementById('ex-frame');
  const reflect=document.getElementById('ex-reflect');
  if(photoUrl){
-  frame.innerHTML='<img src="'+photoUrl+'" alt="">';
+  const img=document.createElement('img');
+  img.src=photoUrl;img.alt=FUTURE[key]&&FUTURE[key].image?FUTURE[key].image.alt:'';
+  img.decoding='async';frame.replaceChildren(img);
   frame.classList.remove('no-photo');
   reflect.innerHTML='<img src="'+photoUrl+'" alt="">';
  }else{
@@ -122,6 +124,9 @@ function renderExhibit(){
  }
  document.getElementById('ex-year').textContent=yearText;
  document.getElementById('ex-topic').textContent=titleText;
+ const imageCredit=document.getElementById('ex-image-credit');
+ imageCredit.hidden=!FUTURE[key];
+ imageCredit.textContent=FUTURE[key]?'AI-generated concept illustration':'';
  const ids=sceneIds(cur);
  document.getElementById('ex-count').textContent=(EXIDX[cur]+1)+' / '+ids.length;
  stage.dataset.exkey=key;
@@ -179,7 +184,7 @@ function buildChrome(){
  +'<div class="tour-toolbar"><button class="tour-title" id="tour-title" aria-label="Open time machine"></button>'
  +'<button class="tour-tmbtn" id="tour-tm" aria-label="Open time machine">\u{1f570}\ufe0f</button></div>'
  +'<div class="ex-view"><button class="ex-frame" id="ex-frame" aria-label="Read the plaque"></button><div class="ex-reflect" id="ex-reflect" aria-hidden="true"></div>'
- +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p></div></div>'
+ +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p><p class="ex-image-credit" id="ex-image-credit" hidden></p></div></div>'
  +'<div class="tour-navigation">'
  +'<button class="tour-edge" id="tour-prev" aria-label="Previous exhibit">\u2039</button>'
  +'<p class="ex-count" id="ex-count"></p>'

@@ -1,3 +1,19 @@
+const FUTURE_IMAGE_DESCRIPTIONS={
+  "2027": "AI-generated concept: Filipino friends creating a short video with an AI-assisted editing tool.",
+  "2028": "AI-generated concept: Filipino and Southeast Asian performers sharing a concert stage.",
+  "2029": "AI-generated concept: A neighborhood sari-sari store using digital payments and inventory tools.",
+  "2030": "AI-generated concept: Commuters boarding an electric minibus at a shaded Philippine street stop.",
+  "2031": "AI-generated concept: Friends conversing at an outdoor cafe with discreet translation earbuds.",
+  "2032": "AI-generated concept: Friends watching an interactive concert at home while a distant friend joins online.",
+  "2033": "AI-generated concept: A teacher guiding Filipino students using tablets and a hands-on learning project.",
+  "2034": "AI-generated concept: A neighborhood technician demonstrating a repairable phone at a workbench.",
+  "2035": "AI-generated concept: Neighbors gathering in a shaded, tree-filled Philippine community pavilion.",
+  "2036": "AI-generated concept: A Filipino barkada playing a shared game across phones and a communal screen.",
+  "2037": "AI-generated concept: Filipino filmmakers and animators collaborating on a locally inspired story.",
+  "2038": "AI-generated concept: Archivists preserving old phones, games, and digital memories in a museum.",
+  "2039": "AI-generated concept: Neighbors sharing a solar-powered charging station and a community repair workbench.",
+  "2040": "AI-generated concept: A multigenerational Filipino community sharing a meal with technology set aside."
+};
 /* Speculative museum stories, not scheduled events or claims about what will happen. */
 window.FUTURE_PREDICTIONS = Object.fromEntries([
   [2027,'AI joins the barkada edit','🎬','Short videos could become easier to make with AI-assisted subtitles, editing, and music tools. More Filipino creators might publish in regional languages while keeping their own humor and point of view.','Who gets credit when a video is made with AI?'],
@@ -17,5 +33,6 @@ window.FUTURE_PREDICTIONS = Object.fromEntries([
 ].map(([year,title,emoji,body,question])=>['future'+year,{
   year:String(year),title,emoji,body,question,
   prediction:true,
+  image:{src:'assets/future/'+year+'.webp',alt:FUTURE_IMAGE_DESCRIPTIONS[year],width:1020,height:680,caption:'AI-generated concept illustration · '+year},
   note:'Prediction · an imagined possibility, not a confirmed event or promise.'
 }]));
