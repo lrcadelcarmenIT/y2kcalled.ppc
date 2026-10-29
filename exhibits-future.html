@@ -7,6 +7,7 @@
 <meta name="description" content="Explore possible Filipino futures from 2027 to 2040. These exhibits are predictions, not confirmed events.">
 <link rel="stylesheet" href="museum.css?v=mobile1">
 <link rel="stylesheet" href="layout.css?v=photos4">
+<link rel="stylesheet" href="enhance.css?v=polish2">
 </head>
 <body class="future">
 <div class="site-dust" id="site-dust" aria-hidden="true"></div>
@@ -17,13 +18,15 @@
   <a class="mark" href="index.html">THE 2000s <b>CALLED.</b></a>
   <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false">Menu</button>
   <nav id="site-menu" aria-label="Main navigation">
-    <a href="index.html">Lobby</a>
-    <a href="exhibits.html">2000s Halls</a>
-    <a href="exhibits20.html">2020s Halls</a>
+    <a href="index.html" id="nav-home">Lobby</a>
+    <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
     <a href="exhibits-future.html" id="nav-future" aria-current="page">Future</a>
-    <a href="walk.html">Grand Hall</a>
-    <a href="guestbook.html">Guestbook</a>
-    <span class="badge off" id="stamp-badge"><span class="dot"></span>STAMPS <b id="stamp-count">0/11</b></span>
+    <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
+    <a href="walk.html" id="nav-walk">Grand Hall</a>
+    <a href="guestbook.html" id="nav-gb">Guestbook</a>
+    <details class="museum-extras"><summary>Museum tools</summary><div class="museum-extras-panel">
+      <span class="badge off" id="stamp-badge"><span class="dot"></span>STAMPS <b id="stamp-count">0/11</b></span>
+    </div></details>
   </nav>
 </div></header>
 <main id="top">
@@ -44,7 +47,7 @@
 <button type="button" id="lang-toggle" hidden>TAGLISH</button>
 <div class="celebrate" id="celebrate" hidden><div class="celebrate-card"><button type="button" id="celebrate-close">Close</button></div></div>
 <script src="future.js?v=photos4"></script>
-<script src="museum.js?v=layout2"></script>
+<script src="museum.js?v=polish2"></script>
 <script>
 (function(){
   const list=document.getElementById('future-exhibits');
@@ -62,5 +65,6 @@
   if(location.hash){const target=document.getElementById(location.hash.slice(1));if(target)requestAnimationFrame(()=>target.scrollIntoView({behavior:'instant'}));}
 })();
 </script>
+<script src="enhance.js?v=polish1"></script>
 </body>
 </html>

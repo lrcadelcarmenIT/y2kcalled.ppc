@@ -661,21 +661,21 @@ function env(v,t,a,peak,dur){
 }
 function lay(notes){
  /* notes: [{f,at,d,type,g,slide}] layered into one gesture */
- try{const c=ac20();if(c.state==='suspended')c.resume();const t0=c.currentTime+.03;
+ try{const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();const t0=c.currentTime+.03;
  notes.forEach(n=>{
   const t=t0+(n.at||0),o=c.createOscillator(),v=c.createGain();
   o.type=n.type||'sine';o.frequency.setValueAtTime(n.f,t);
   if(n.slide)o.frequency.exponentialRampToValueAtTime(n.slide,t+(n.d||.15));
   env(v,t,.012,n.g||.14,(n.d||.15)+.05);
-  o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+(n.d||.15)+.1);
+  o.connect(v);v.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+(n.d||.15)+.1);
  });}catch(e){}
 }
 function thump(at,f,dur,g){
- try{const c=ac20();if(c.state==='suspended')c.resume();const t=c.currentTime+.03+(at||0);
+ try{const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();const t=c.currentTime+.03+(at||0);
  const o=c.createOscillator(),v=c.createGain();o.type='sine';
  o.frequency.setValueAtTime(f||120,t);o.frequency.exponentialRampToValueAtTime(40,t+(dur||.18));
  env(v,t,.008,g||.22,(dur||.18)+.05);
- o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+(dur||.18)+.1);}catch(e){}
+ o.connect(v);v.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+(dur||.18)+.1);}catch(e){}
 }
 const note=m=>{const n=document.getElementById('sb-note');if(n)n.textContent=m;};
 const on=(id,fn)=>{const b=document.getElementById(id);if(b)b.addEventListener('click',fn);};

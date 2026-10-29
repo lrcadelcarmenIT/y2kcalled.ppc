@@ -7,6 +7,7 @@
 <meta name="description" content="A Philippine pop culture virtual museum, 2000–2010. Eleven exhibits, fourteen games, one decade.">
 <link rel="stylesheet" href="museum.css?v=mobile1">
 <link rel="stylesheet" href="layout.css?v=photos4">
+<link rel="stylesheet" href="enhance.css?v=polish2">
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 
@@ -24,12 +25,15 @@
   <nav id="site-menu" aria-label="Main navigation">
     <a href="index.html" id="nav-home">Lobby</a>
     <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
+    <a href="exhibits-future.html" id="nav-future">Future</a>
     <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
-    <a href="guestbook.html" id="nav-gb">Guestbook</a>
-    <button type="button" class="badge off" id="lcd-toggle" aria-pressed="false" title="Turn the whole museum into a Nokia screen">NOKIA MODE</button>
-    <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
-    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/9</b></span>
-      <a href="exhibits-future.html" id="nav-future">Future</a>
+    <a href="walk.html" id="nav-walk">Grand Hall</a>
+    <a href="guestbook.html" id="nav-gb" aria-current="page">Guestbook</a>
+    <details class="museum-extras"><summary>Museum tools</summary><div class="museum-extras-panel">
+      <button type="button" class="badge off" id="lcd-toggle" aria-pressed="false" title="Turn the whole museum into a Nokia screen">NOKIA MODE</button>
+      <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
+      <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/9</b></span>
+    </div></details>
   </nav>
 </div></header>
 
@@ -83,6 +87,7 @@
     <button type="button" class="action" id="celebrate-close">Keep exploring</button>
   </div>
 </div>
-<script src="museum.js?v=layout2"></script>
+<script src="museum.js?v=polish2"></script>
+<script src="enhance.js?v=polish1"></script>
 </body>
 </html>

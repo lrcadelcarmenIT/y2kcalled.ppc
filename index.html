@@ -7,6 +7,7 @@
 <meta name="description" content="A Philippine pop culture virtual museum, 2000–2026. Seventeen exhibits, twenty-three games, two decades.">
 <link rel="stylesheet" href="museum.css?v=mobile1">
 <link rel="stylesheet" href="layout.css?v=photos4">
+<link rel="stylesheet" href="enhance.css?v=polish2">
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 
@@ -27,29 +28,33 @@
   <a class="mark" href="index.html">THE 2000s <b>CALLED.</b></a>
   <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false">Menu</button>
   <nav id="site-menu" aria-label="Main navigation">
-    <a href="index.html" id="nav-home">Lobby</a>
+    <a href="index.html" id="nav-home" aria-current="page">Lobby</a>
     <a href="exhibits.html" id="nav-archive">Exhibit Halls</a>
+    <a href="exhibits-future.html" id="nav-future">Future</a>
     <a href="play.html" id="nav-play">Arcade &amp; Playground</a>
+    <a href="walk.html" id="nav-walk">Grand Hall</a>
     <a href="guestbook.html" id="nav-gb">Guestbook</a>
-    <span class="decade-toggle" role="group" aria-label="Choose decade">
-      <button type="button" class="dec-opt on" data-decade="2000s" aria-pressed="true">2000s</button>
-      <button type="button" class="dec-opt" data-decade="2020s" aria-pressed="false">2020s</button>
-    </span>
-    <button type="button" class="badge off" id="lcd-toggle" aria-pressed="false" title="Turn the whole museum into a Nokia screen">NOKIA MODE</button>
-    <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
-    <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/17</b></span>
-      <a href="exhibits-future.html" id="nav-future">Future</a>
+    <details class="museum-extras"><summary>Museum tools</summary><div class="museum-extras-panel">
+      <button type="button" class="badge off" id="lcd-toggle" aria-pressed="false" title="Turn the whole museum into a Nokia screen">NOKIA MODE</button>
+      <button type="button" class="badge off" id="lang-toggle" aria-pressed="false" title="Filipino / English">TAGLISH</button>
+      <span class="badge off" id="stamp-badge" aria-live="polite"><span class="dot"></span>STAMPS <b id="stamp-count">0/17</b></span>
+    </div></details>
   </nav>
 </div></header>
 
 <main id="top">
   <section class="intro lobby-hero" id="choose" aria-labelledby="page-title"><div class="blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div><div class="shell">
+    <div class="lobby-era"><span class="lobby-era-label">CHOOSE YOUR ERA</span><span class="decade-toggle" role="group" aria-label="Choose decade">
+      <button type="button" class="dec-opt on" data-decade="2000s" aria-pressed="true">2000s</button>
+      <button type="button" class="dec-opt" data-decade="2020s" aria-pressed="false">2020s</button>
+    <a class="future-era" href="exhibits-future.html">Future ↗</a></span></div>
     <div class="intro-grid decade-pane" data-pane="2000s">
       <div class="intro-copy">
         <p class="eyebrow">A PHILIPPINE POP CULTURE MUSEUM · 2000–2010</p>
         <h1 id="page-title">TEXTS, TV &amp;<br><em>TAMBAYAN.</em></h1>
         <p class="lead">Eleven exhibits, fourteen games, one decade. Pick a wing on the phone and step back in.</p>
         <div class="hero-ticket"><span>ADMIT ONE</span><strong>03 WINGS · 11 EXHIBITS · 14 GAMES</strong><span>PH · 2000–2010</span></div>
+        <div class="hero-actions"><a class="museum-primary" href="walk.html?year=2000">Enter the museum <span aria-hidden="true">→</span></a><a class="museum-secondary" href="exhibits-future.html">Explore the future <span aria-hidden="true">↗</span></a></div>
       </div>
       <div class="cover-art" aria-label="Period images from the museum">
         <figure class="cover-photo main-photo"><img src="phones-2005.jpg" alt="Three mobile handsets photographed in 2005" width="720" height="515"><figcaption>01 / A HANDSET IN THE 2000s <span>2005</span></figcaption></figure>
@@ -63,6 +68,7 @@
         <h1>SCROLLS, STREAMS &amp;<br><em>SIDE HUSTLES.</em></h1>
         <p class="lead">Six exhibits, nine games, one present. Pick a wing on the phone and step into now.</p>
         <div class="hero-ticket"><span>ADMIT ONE</span><strong>03 WINGS · 6 EXHIBITS · 9 GAMES</strong><span>PH · 2020–2026</span></div>
+        <div class="hero-actions"><a class="museum-primary" href="walk.html?year=2020">Enter the museum <span aria-hidden="true">→</span></a><a class="museum-secondary" href="exhibits-future.html">Explore the future <span aria-hidden="true">↗</span></a></div>
       </div>
       <div class="cover-art" aria-label="Period images from the museum">
         <figure class="cover-photo main-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Smartphone.jpg?width=720" alt="A modern smartphone held in a hand" width="720" height="515"><figcaption>01 / THE POCKET STUDIO <span>2024</span></figcaption></figure>
@@ -203,7 +209,8 @@
     <button type="button" class="action" id="celebrate-close">Keep exploring</button>
   </div>
 </div>
-<script src="wing2020s.js?v=mobile1"></script>
-<script src="museum.js?v=layout2"></script>
+<script src="wing2020s.js?v=polish2"></script>
+<script src="museum.js?v=polish2"></script>
+<script src="enhance.js?v=polish1"></script>
 </body>
 </html>
