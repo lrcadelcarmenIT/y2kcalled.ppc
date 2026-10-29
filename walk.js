@@ -438,7 +438,9 @@ function timeTravel(key){
   // gallery shortcut bypasses the console
   sndJump();
   document.getElementById('tt-label').textContent='TRAVELING TO '+(key==='hall00'?'THE 2000s':key==='hall20'?'THE 2020s':key==='hallFuture'?'THE FUTURE':'THE GALLERY')+'...';
-  document.getElementById('timetravel').hidden=false;
+  const travel=document.getElementById('timetravel');
+  travel.classList.toggle('travel-future',key==='hallFuture');
+  travel.hidden=false;
   warpEase(ttVid(),1150,2.8,.15);
   setTimeout(()=>{
     document.getElementById('timetravel').hidden=true;
@@ -472,7 +474,9 @@ function tmEngage(){
         lights.classList.remove('charging');
         sndJump();
         document.getElementById('tt-label').textContent='TRAVELING TO '+yr+'...';
-        document.getElementById('timetravel').hidden=false;
+        const travel=document.getElementById('timetravel');
+        travel.classList.toggle('travel-future',hall==='hallFuture');
+        travel.hidden=false;
         warpEase(ttVid(),1250,3.0,.15);
         setTimeout(()=>{
           document.getElementById('timetravel').hidden=true;

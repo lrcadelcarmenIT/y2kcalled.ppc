@@ -8,6 +8,12 @@
 <link rel="stylesheet" href="museum.css?v=mobile1">
 <link rel="stylesheet" href="layout.css?v=photos4">
 <link rel="stylesheet" href="enhance.css?v=polish2">
+<style>
+/* Only Future travel advances the clock; other destinations retain the rewind. */
+#timetravel.travel-future .tm-hand,
+#timetravel.travel-future .tm-sweep,
+#timetravel.travel-future .tm-ring{animation-direction:normal}
+</style>
 </head>
 <body class="tm-lab">
 <div class="grain" aria-hidden="true"></div>
@@ -132,7 +138,7 @@
 <script src="museum.js?v=polish2"></script>
 <script>document.getElementById('marquee-in').textContent='THE GRAND HALL · WALK THE MUSEUM · TWO DECADES, ONE BUILDING · '.repeat(6);</script>
 <script src="future.js?v=photos4"></script>
-<script src="walk.js?v=photos4"></script>
+<script src="walk.js?v=futureclock1"></script>
 <script>
 </script>
 <script src="enhance.js?v=polish1"></script>
