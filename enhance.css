@@ -204,3 +204,10 @@ body.future .soundboard #sb-note{min-height:32px;font-size:.75rem;color:#b7cde0;
  .sb-stop{min-width:65px;padding-inline:9px}
 }
 @media(prefers-reduced-motion:reduce){.sb-pad{transition:none}}
+
+/* Recording attribution stays available beside the real audio clips. */
+.sb-credits{margin-top:18px;padding-top:12px;border-top:1px solid #344e66;color:#92aec6;font-size:.7rem;line-height:1.6}
+.sb-credits summary{cursor:pointer;min-height:28px;display:list-item}
+.sb-credits ul{margin:8px 0 0;padding-left:18px}
+.sb-credits li{margin:6px 0;overflow-wrap:anywhere}
+.sb-credits a{color:#b8dff4}
