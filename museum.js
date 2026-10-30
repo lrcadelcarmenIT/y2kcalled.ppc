@@ -1109,36 +1109,37 @@ function tone(f,t,d,type,g){
   v.gain.exponentialRampToValueAtTime(0.0001,t+d);
   o.connect(v);v.connect(c.destination);o.start(t);o.stop(t+d+.05);
 }
+const onSound=(id,fn,options)=>window.MuseumSoundboard?.register(id,fn,options);
 function sbTone(f,t,d,type,g){
-  const c=window.MuseumSoundboard.context,o=c.createOscillator(),v=c.createGain();
+  const c=window.MuseumSoundboard.context,o=window.MuseumSoundboard.track(c.createOscillator()),v=window.MuseumSoundboard.track(c.createGain());
   o.type=type||'sine';o.frequency.value=f;
   v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(g||.18,t+.015);
   v.gain.exponentialRampToValueAtTime(.0001,t+d);
   o.connect(v);v.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+d+.05);
 }
 function sbNote(m){$('#sb-note').textContent=m;}
-if(document.getElementById('sb-nokia'))document.getElementById('sb-nokia').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-nokia',()=>{
+  const c=window.MuseumSoundboard.context;
   const N=[[659.25,.16],[587.33,.16],[369.99,.32],[415.30,.32],[554.37,.16],[493.88,.16],[293.66,.32],[329.63,.32],[493.88,.16],[440,.16],[277.18,.32],[329.63,.32],[440,.8]];
   let t=c.currentTime+.05;
   N.forEach(n=>{sbTone(n[0],t,n[1],'square',.07);t+=n[1]+.02;});
   sbNote(LANG==='tl'?'Gran Vals, ang Nokia tune':'Gran Vals, the Nokia tune');
 });
-if(document.getElementById('sb-static'))document.getElementById('sb-static').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-static',()=>{
+  const c=window.MuseumSoundboard.context;
   const len=c.sampleRate*1.4,buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
   for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
-  const src=c.createBufferSource();src.buffer=buf;
-  const f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;f.Q.value=.6;
-  const g=c.createGain();g.gain.setValueAtTime(.22,c.currentTime);
+  const src=window.MuseumSoundboard.track(c.createBufferSource());src.buffer=buf;
+  const f=window.MuseumSoundboard.track(c.createBiquadFilter());f.type='bandpass';f.frequency.value=1800;f.Q.value=.6;
+  const g=window.MuseumSoundboard.track(c.createGain());g.gain.setValueAtTime(.22,c.currentTime);
   g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+1.4);
   src.connect(f);f.connect(g);g.connect(window.MuseumSoundboard.output);src.start();
   sbNote(LANG==='tl'?'TV static, hintay ng palabas':'TV static, waiting for the show');
 });
-if(document.getElementById('sb-dial'))document.getElementById('sb-dial').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();const t=c.currentTime+.04;
+onSound('sb-dial',()=>{
+  const c=window.MuseumSoundboard.context;const t=c.currentTime+.04;
   function beep(f,at,dur,vol=.07,type='sine',end){
-    const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f,at);
+    const o=window.MuseumSoundboard.track(c.createOscillator()),g=window.MuseumSoundboard.track(c.createGain());o.type=type;o.frequency.setValueAtTime(f,at);
     if(end)o.frequency.exponentialRampToValueAtTime(end,at+dur);
     g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(vol,at+.008);g.gain.exponentialRampToValueAtTime(.0001,at+dur);
     o.connect(g);g.connect(window.MuseumSoundboard.output);o.start(at);o.stop(at+dur+.02);
@@ -1147,73 +1148,73 @@ if(document.getElementById('sb-dial'))document.getElementById('sb-dial').addEven
   [[697,1209],[770,1336],[852,1477],[941,1336],[697,1477],[852,1209],[770,1209]].forEach((pair,i)=>pair.forEach(f=>beep(f,t+.6+i*.12,.075,.045)));
   beep(2100,t+1.6,.7,.08);beep(1800,t+2.35,.5,.055,'sine',1200);
   for(let i=0;i<18;i++)beep(i%2?1200:2400,t+2.9+i*.06,.055,.055,'square');
-  const n=c.createBufferSource(),buf=c.createBuffer(1,Math.ceil(c.sampleRate*1.5),c.sampleRate),data=buf.getChannelData(0);
+  const n=window.MuseumSoundboard.track(c.createBufferSource()),buf=c.createBuffer(1,Math.ceil(c.sampleRate*1.5),c.sampleRate),data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;n.buffer=buf;
-  const f=c.createBiquadFilter();f.type='bandpass';f.frequency.setValueAtTime(1600,t+4);f.frequency.linearRampToValueAtTime(3000,t+5.4);f.Q.value=.9;
-  const g=c.createGain();g.gain.setValueAtTime(.0001,t+4);g.gain.linearRampToValueAtTime(.15,t+4.15);g.gain.exponentialRampToValueAtTime(.0001,t+5.5);
+  const f=window.MuseumSoundboard.track(c.createBiquadFilter());f.type='bandpass';f.frequency.setValueAtTime(1600,t+4);f.frequency.linearRampToValueAtTime(3000,t+5.4);f.Q.value=.9;
+  const g=window.MuseumSoundboard.track(c.createGain());g.gain.setValueAtTime(.0001,t+4);g.gain.linearRampToValueAtTime(.15,t+4.15);g.gain.exponentialRampToValueAtTime(.0001,t+5.5);
   n.connect(f);f.connect(g);g.connect(window.MuseumSoundboard.output);n.start(t+4);beep(2400,t+4,.9,.03);
   sbNote('56k handshake: dialing, negotiating, connecting.');
 });
-if(document.getElementById('sb-sms'))document.getElementById('sb-sms').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();let t=c.currentTime+.04;
+onSound('sb-sms',()=>{
+  const c=window.MuseumSoundboard.context;let t=c.currentTime+.04;
   [.07,.07,.07,.18,.18,.07,.07,.07].forEach(d=>{
-    const o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.value=1760;
+    const o=window.MuseumSoundboard.track(c.createOscillator()),g=window.MuseumSoundboard.track(c.createGain());o.type='square';o.frequency.value=1760;
     g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.045,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+d);
     o.connect(g);g.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+d+.01);t+=d+.07;
   });
   sbNote(LANG==='tl'?'May text ka!':'You’ve got text!');
 });
 
-if(document.getElementById('sb-ring'))document.getElementById('sb-ring').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-ring',()=>{
+  const c=window.MuseumSoundboard.context;
   const t0=c.currentTime+.05;
-  const o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),lfo=c.createOscillator(),lg=c.createGain();
+  const o=window.MuseumSoundboard.track(c.createOscillator()),o2=window.MuseumSoundboard.track(c.createOscillator()),g=window.MuseumSoundboard.track(c.createGain()),lfo=window.MuseumSoundboard.track(c.createOscillator()),lg=window.MuseumSoundboard.track(c.createGain());
   o.frequency.value=440;o2.frequency.value=480;lfo.frequency.value=20;lg.gain.value=.09;g.gain.value=.14;
   lfo.connect(lg);o.connect(g);o2.connect(g);lg.connect(g.gain);g.connect(window.MuseumSoundboard.output);
   o.start(t0);o2.start(t0);lfo.start(t0);
   const stop=t0+1.6;o.stop(stop);o2.stop(stop);lfo.stop(stop);
   sbNote(LANG==='tl'?'May tumatawag sa landline!':'Landline ringing!');
 });
-if(document.getElementById('sb-busy'))document.getElementById('sb-busy').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-busy',()=>{
+  const c=window.MuseumSoundboard.context;
   const t=c.currentTime+.05;
   for(let i=0;i<4;i++){sbTone(480,t+i*.5,.25,'sine',.13);sbTone(620,t+i*.5,.25,'sine',.13);}
   sbNote(LANG==='tl'?'Busy. Ibaba mo muna.':'Busy signal. Try again later.');
 });
-if(document.getElementById('sb-shutter'))document.getElementById('sb-shutter').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-shutter',()=>{
+  const c=window.MuseumSoundboard.context;
   const t=c.currentTime+.05;
   const burst=(at,dur,vol,type,ff)=>{const len=Math.floor(c.sampleRate*dur),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
     for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
-    const src=c.createBufferSource();src.buffer=buf;
-    const f=c.createBiquadFilter();f.type=type;f.frequency.value=ff;
-    const g=c.createGain();g.gain.value=vol;
+    const src=window.MuseumSoundboard.track(c.createBufferSource());src.buffer=buf;
+    const f=window.MuseumSoundboard.track(c.createBiquadFilter());f.type=type;f.frequency.value=ff;
+    const g=window.MuseumSoundboard.track(c.createGain());g.gain.value=vol;
     src.connect(f);f.connect(g);g.connect(window.MuseumSoundboard.output);src.start(at);};
   burst(t,.03,.6,'highpass',3200);
   burst(t+.14,.09,.7,'lowpass',700);sbTone(140,t+.14,.09,'sine',.25);
   sbNote(LANG==='tl'?'Kunan!':'Digicam shutter.');
 });
-if(document.getElementById('sb-pager'))document.getElementById('sb-pager').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-pager',()=>{
+  const c=window.MuseumSoundboard.context;
   const t=c.currentTime+.05;
   for(let i=0;i<4;i++)sbTone(1568,t+i*.19,.09,'square',.07);
   sbNote(LANG==='tl'?'May beep ang pager mo!':'Pager beeping!');
 });
-if(document.getElementById('sb-windows'))document.getElementById('sb-windows').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+onSound('sb-windows',()=>{
+  const c=window.MuseumSoundboard.context;
   const t0=c.currentTime+.05;
-  const dl=c.createDelay(1);dl.delayTime.value=.32;
-  const fb=c.createGain();fb.gain.value=.38;
-  const wet=c.createGain();wet.gain.value=.35;
+  const dl=window.MuseumSoundboard.track(c.createDelay(1));dl.delayTime.value=.32;
+  const fb=window.MuseumSoundboard.track(c.createGain());fb.gain.value=.38;
+  const wet=window.MuseumSoundboard.track(c.createGain());wet.gain.value=.35;
   dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(window.MuseumSoundboard.output);
   const nlen=Math.floor(c.sampleRate*1.2),nbuf=c.createBuffer(1,nlen,c.sampleRate),nd=nbuf.getChannelData(0);
   for(let i=0;i<nlen;i++)nd[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/nlen);
-  const nsrc=c.createBufferSource();nsrc.buffer=nbuf;
-  const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=2800;bp.Q.value=.8;
-  const ng=c.createGain();ng.gain.value=.12;
+  const nsrc=window.MuseumSoundboard.track(c.createBufferSource());nsrc.buffer=nbuf;
+  const bp=window.MuseumSoundboard.track(c.createBiquadFilter());bp.type='bandpass';bp.frequency.value=2800;bp.Q.value=.8;
+  const ng=window.MuseumSoundboard.track(c.createGain());ng.gain.value=.12;
   nsrc.connect(bp);bp.connect(ng);ng.connect(window.MuseumSoundboard.output);ng.connect(dl);nsrc.start(t0);
   [146.83,220,293.66,369.99,440].forEach((f,i)=>{
-    const o=c.createOscillator(),g=c.createGain();
+    const o=window.MuseumSoundboard.track(c.createOscillator()),g=window.MuseumSoundboard.track(c.createGain());
     o.type='sine';o.frequency.value=f*1.002;
     g.gain.setValueAtTime(.0001,t0+.3);
     g.gain.linearRampToValueAtTime(.045,t0+1.2+i*.1);
@@ -1221,7 +1222,7 @@ if(document.getElementById('sb-windows'))document.getElementById('sb-windows').a
     o.connect(g);g.connect(window.MuseumSoundboard.output);o.start(t0+.3);o.stop(t0+4);
   });
   const pluck=(f,at,dur,vol)=>{
-    const o=c.createOscillator(),g=c.createGain();
+    const o=window.MuseumSoundboard.track(c.createOscillator()),g=window.MuseumSoundboard.track(c.createGain());
     o.type='triangle';o.frequency.value=f;
     g.gain.setValueAtTime(.0001,at);
     g.gain.linearRampToValueAtTime(vol,at+.02);
@@ -1234,9 +1235,9 @@ if(document.getElementById('sb-windows'))document.getElementById('sb-windows').a
   pluck(880,t0+1.65,.4,.14);
   pluck(987.77,t0+2.0,1.8,.16);
   sbNote('Windows startup');
-});
-if(document.getElementById('sb-videoke'))document.getElementById('sb-videoke').addEventListener('click',()=>{
-  const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();
+},{tail:1.25});
+onSound('sb-videoke',()=>{
+  const c=window.MuseumSoundboard.context;
   const t=c.currentTime+.05;
   sbTone(660,t,.12,'square',.09);sbTone(660,t+.2,.12,'square',.09);sbTone(660,t+.4,.12,'square',.09);sbTone(880,t+.6,.32,'square',.09);
   sbNote(LANG==='tl'?'Kanta na!':'Videoke countdown. Sing!');

@@ -185,7 +185,7 @@ body.future .pg-card.soundboard{border-color:#52616a;padding:26px}
 .sb-stop{min-height:40px;min-width:76px;padding:8px 12px;border:1px solid #58768d;border-radius:8px;background:#1b3045;color:#edf5fc;font-size:.74rem;font-weight:700;line-height:1.4}
 .sb-stop:disabled{opacity:.4;cursor:default}
 body .pg-card.soundboard .pg-row.sb-pads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
-.sb-pad{display:flex;flex-direction:column;min-width:0;position:relative;border:1px solid #344e66;border-radius:10px;background:#112237;transition:background .15s,border-color .15s}
+.sb-pad{cursor:pointer;display:flex;flex-direction:column;min-width:0;position:relative;border:1px solid #344e66;border-radius:10px;background:#112237;transition:background .15s,border-color .15s}
 .sb-pad-meta{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:12px 12px 0;color:#92aec6;font: .52rem 'Space Mono',monospace;letter-spacing:.04em;line-height:1.5;pointer-events:none}
 body.future .soundboard .sb-pad .action{width:100%;height:auto;flex:0 0 auto;min-height:54px;padding:7px 12px 14px;border:0;border-radius:10px;background:transparent;color:#e1edf8;text-align:left;justify-content:flex-start;font-size:.82rem;line-height:1.45;font-weight:700;box-shadow:none;white-space:normal}
 .sb-pad.is-playing{border-color:#f4c65b;background:#302c1e}

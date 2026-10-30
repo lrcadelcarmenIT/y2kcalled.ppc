@@ -652,8 +652,6 @@ function beep(f,d,type,g){try{const c=new (window.AudioContext||window.webkitAud
 /* ---------------- 2020s soundboard (layered synthesis) ---------------- */
 window.addEventListener('DOMContentLoaded',()=>{
 'use strict';
-let AC20=null;
-const ac20=()=>AC20||(AC20=new (window.AudioContext||window.webkitAudioContext)());
 function env(v,t,a,peak,dur){
  v.gain.setValueAtTime(.0001,t);
  v.gain.exponentialRampToValueAtTime(peak,t+a);
@@ -661,24 +659,24 @@ function env(v,t,a,peak,dur){
 }
 function lay(notes){
  /* notes: [{f,at,d,type,g,slide}] layered into one gesture */
- try{const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();const t0=c.currentTime+.03;
+ const c=window.MuseumSoundboard.context;const t0=c.currentTime+.03;
  notes.forEach(n=>{
-  const t=t0+(n.at||0),o=c.createOscillator(),v=c.createGain();
+  const t=t0+(n.at||0),o=window.MuseumSoundboard.track(c.createOscillator()),v=window.MuseumSoundboard.track(c.createGain());
   o.type=n.type||'sine';o.frequency.setValueAtTime(n.f,t);
   if(n.slide)o.frequency.exponentialRampToValueAtTime(n.slide,t+(n.d||.15));
   env(v,t,.012,n.g||.14,(n.d||.15)+.05);
   o.connect(v);v.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+(n.d||.15)+.1);
- });}catch(e){}
+ });
 }
 function thump(at,f,dur,g){
- try{const c=window.MuseumSoundboard.context;if(c.state==='suspended')c.resume();const t=c.currentTime+.03+(at||0);
- const o=c.createOscillator(),v=c.createGain();o.type='sine';
+ const c=window.MuseumSoundboard.context;const t=c.currentTime+.03+(at||0);
+ const o=window.MuseumSoundboard.track(c.createOscillator()),v=window.MuseumSoundboard.track(c.createGain());o.type='sine';
  o.frequency.setValueAtTime(f||120,t);o.frequency.exponentialRampToValueAtTime(40,t+(dur||.18));
  env(v,t,.008,g||.22,(dur||.18)+.05);
- o.connect(v);v.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+(dur||.18)+.1);}catch(e){}
+ o.connect(v);v.connect(window.MuseumSoundboard.output);o.start(t);o.stop(t+(dur||.18)+.1);
 }
 const note=m=>{const n=document.getElementById('sb-note');if(n)n.textContent=m;};
-const on=(id,fn)=>{const b=document.getElementById(id);if(b)b.addEventListener('click',fn);};
+const on=(id,fn)=>window.MuseumSoundboard?.register(id,fn);
 
 on('sb20-gcash',()=>{ /* payment received: bright ascending sparkle */
  lay([{f:987.77,d:.16},{f:1975.5,d:.16,g:.05},{f:1318.5,at:.13,d:.3},{f:2637,at:.13,d:.3,g:.05},{f:1568,at:.26,d:.42},{f:3136,at:.26,d:.42,g:.04}]);

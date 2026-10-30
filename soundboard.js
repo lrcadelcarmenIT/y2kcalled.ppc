@@ -1,4 +1,4 @@
-/* One audio bus for both decades: live metering, volume and click-free voice switching. */
+/* Shared player with gesture-safe startup and disposable audio voices. */
 (() => {
   'use strict';
   const title = document.getElementById('sb-title');
@@ -8,16 +8,16 @@
   board.classList.add('soundboard');
   const buttons = [...board.querySelectorAll('button[id^="sb-"] ,button[id^="sb20-"]')];
   const sounds = {
-    'sb-nokia': ['01', 'PHONE', 4.3], 'sb-static': ['02', 'TELEVISION', 1.7],
-    'sb-dial': ['03', 'INTERNET', 6.2], 'sb-sms': ['04', 'MESSAGES', 1.8],
-    'sb-ring': ['05', 'TELEPHONE', 1.9], 'sb-busy': ['06', 'TELEPHONE', 2.2],
-    'sb-shutter': ['07', 'CAMERA', .6], 'sb-pager': ['08', 'PAGER', 1],
-    'sb-windows': ['09', 'DESKTOP', 5], 'sb-videoke': ['10', 'VIDEOKE', 1.2],
-    'sb20-gcash': ['01', 'PAYMENTS', 1.1], 'sb20-tiktok': ['02', 'SOCIAL', .5],
-    'sb20-shopee': ['03', 'SHOPPING', .9], 'sb20-ml': ['04', 'GAMING', 1.5],
-    'sb20-msg': ['05', 'MESSAGES', .4], 'sb20-tritone': ['06', 'PHONE', 1.5],
-    'sb20-grab': ['07', 'TRANSPORT', 1], 'sb20-zoom': ['08', 'VIDEO CALLS', 1],
-    'sb20-discord': ['09', 'VOICE CHAT', .5], 'sb20-cashin': ['10', 'PAYMENTS', 1]
+    'sb-nokia': ['01', 'PHONE'], 'sb-static': ['02', 'TELEVISION'],
+    'sb-dial': ['03', 'INTERNET'], 'sb-sms': ['04', 'MESSAGES'],
+    'sb-ring': ['05', 'TELEPHONE'], 'sb-busy': ['06', 'TELEPHONE'],
+    'sb-shutter': ['07', 'CAMERA'], 'sb-pager': ['08', 'PAGER'],
+    'sb-windows': ['09', 'DESKTOP'], 'sb-videoke': ['10', 'VIDEOKE'],
+    'sb20-gcash': ['01', 'PAYMENTS'], 'sb20-tiktok': ['02', 'SOCIAL'],
+    'sb20-shopee': ['03', 'SHOPPING'], 'sb20-ml': ['04', 'GAMING'],
+    'sb20-msg': ['05', 'MESSAGES'], 'sb20-tritone': ['06', 'PHONE'],
+    'sb20-grab': ['07', 'TRANSPORT'], 'sb20-zoom': ['08', 'VIDEO CALLS'],
+    'sb20-discord': ['09', 'VOICE CHAT'], 'sb20-cashin': ['10', 'PAYMENTS']
   };
   const panel = document.createElement('div');
   panel.className = 'sb-player';
@@ -56,50 +56,83 @@
   const canvas = panel.querySelector('canvas');
   const draw = canvas.getContext('2d');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let context, master, analyser, bus, active, started = 0, duration = 0, frame = 0;
-  const retired = new Set();
-  try { volume.value = String(Math.max(0, Math.min(100, Number(localStorage.getItem('museum-sound-volume') ?? 65)))); } catch (_) {}
-  output.value = `${volume.value}%`;
+  const generators = new Map();
+  const retiring = new Set();
+  let context, master, analyser, input, active, voice;
+  let request = 0, started = 0, frame = 0, startupTimer = 0;
+  try {
+    const saved = localStorage.getItem('museum-sound-volume');
+    if (saved !== null && Number.isFinite(Number(saved))) volume.value = String(Math.max(0, Math.min(100, Number(saved))));
+  } catch (_) {}
+  function updateVolume() {
+    output.value = `${volume.value}%`;
+    volume.setAttribute('aria-valuetext', Number(volume.value) ? `${volume.value} percent` : 'Muted');
+  }
+  updateVolume();
   function init() {
-    if (context) return;
+    if (context && context.state !== 'closed') return;
     const Audio = window.AudioContext || window.webkitAudioContext;
     if (!Audio) throw new Error('Web Audio is unavailable');
+    // Use a media playback session on iOS when the browser supports it.
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (_) {}
     context = new Audio();
+    const current = context;
     const compressor = context.createDynamicsCompressor();
     compressor.threshold.value = -14;
     compressor.knee.value = 18;
     compressor.ratio.value = 4;
     compressor.attack.value = .005;
     compressor.release.value = .18;
-    const filter = context.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 9000;
+    input = context.createBiquadFilter();
+    input.type = 'lowpass';
+    input.frequency.value = 9000;
     master = context.createGain();
     master.gain.value = Number(volume.value) / 100;
     analyser = context.createAnalyser();
     analyser.fftSize = 128;
-    filter.connect(compressor);
+    input.connect(compressor);
     compressor.connect(master);
     master.connect(analyser);
     analyser.connect(context.destination);
-    context.addEventListener('statechange', () => {
-      if (context.state === 'suspended' && active) stop('Playback paused. Tap a sound to resume.');
+    current.addEventListener('statechange', () => {
+      if (context !== current) return;
+      if (current.state === 'closed' || (voice && current.state !== 'running')) {
+        stop('Playback paused. Tap a sound to resume.');
+      }
     });
-    window.MuseumSoundboard._input = filter;
   }
-  function stop(message = 'Stopped. Pick another sound.') {
+  function dispose(old, immediate = false) {
+    if (old.disposed) return;
+    old.disposed = true;
+    clearTimeout(old.finishTimer);
+    const at = context.currentTime;
+    // A suspended audio clock cannot advance through a fade or a future stop.
+    const instant = immediate || context.state !== 'running';
+    if (!instant) {
+      old.bus.gain.cancelScheduledValues(at);
+      old.bus.gain.setTargetAtTime(0, at, .006);
+    }
+    for (const source of old.sources) {
+      try { source.stop(instant ? at : at + .025); } catch (_) {}
+    }
+    const disconnect = () => {
+      for (const node of old.nodes) { try { node.disconnect(); } catch (_) {} }
+      old.nodes.clear();
+      old.sources.clear();
+      retiring.delete(old);
+    };
+    if (instant) disconnect();
+    else {
+      retiring.add(old);
+      old.cleanupTimer = setTimeout(disconnect, 35);
+    }
+  }
+  function stop(message = 'Stopped. Pick another sound.', immediate = false) {
+    request++;
+    clearTimeout(startupTimer);
     if (frame) cancelAnimationFrame(frame);
     frame = 0;
-    if (bus) {
-      const old = bus;
-      const end = context.currentTime + .025;
-      old.gain.cancelScheduledValues(context.currentTime);
-      old.gain.setTargetAtTime(0, context.currentTime, .006);
-      // Disconnect only the old voice; the next pad gets its own clean bus.
-      const cleanup = setTimeout(() => { old.disconnect(); retired.delete(cleanup); }, Math.max(30, (end-context.currentTime)*1000));
-      retired.add(cleanup);
-      bus = null;
-    }
+    if (voice) { dispose(voice, immediate); voice = null; }
     if (active) {
       active.setAttribute('aria-pressed', 'false');
       active.closest('.sb-pad').classList.remove('is-playing');
@@ -112,68 +145,128 @@
     paintIdle();
   }
   function paintIdle() {
+    if (!draw) return;
     draw.clearRect(0, 0, canvas.width, canvas.height);
     draw.fillStyle = '#39576c';
-    for (let i=0;i<48;i++) draw.fillRect(i*12.5+2, 30, 6, 4);
+    for (let i = 0; i < 48; i++) draw.fillRect(i * 12.5 + 2, 30, 6, 4);
   }
   const frequency = new Uint8Array(64);
   function tick() {
-    if (!active) return;
-    const elapsed = context.currentTime-started;
-    if (elapsed >= duration) { stop('Ready. Play another memory.'); return; }
-    timer.textContent = `0:${String(Math.floor(elapsed)).padStart(2,'0')}`;
-    if (!reduceMotion) {
+    if (!voice) return;
+    const elapsed = Math.floor(context.currentTime - started);
+    timer.textContent = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, '0')}`;
+    if (draw && !reduceMotion) {
       analyser.getByteFrequencyData(frequency);
-      draw.clearRect(0,0,canvas.width,canvas.height);
-      for (let i=0;i<48;i++) {
-        const level=Math.max(4,frequency[i]/255*58);
-        draw.fillStyle=i<24?'#7cc7ee':'#f4c65b';
-        draw.fillRect(i*12.5+2,(64-level)/2,6,level);
+      draw.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 48; i++) {
+        const level = Math.max(4, frequency[i] / 255 * 58);
+        draw.fillStyle = i < 24 ? '#7cc7ee' : '#f4c65b';
+        draw.fillRect(i * 12.5 + 2, (64 - level) / 2, 6, level);
       }
     }
     frame = requestAnimationFrame(tick);
   }
+  function finishWhenSilent(current) {
+    if (!current.ready || current.disposed || current.sources.size) return;
+    // Let the Windows chime's feedback delay decay after its last source ends.
+    current.finishTimer = setTimeout(() => {
+      if (voice === current) stop('Ready. Play another memory.');
+    }, current.tail * 1000);
+  }
   window.MuseumSoundboard = {
+    register(id, generate, options = {}) {
+      if (buttons.some(button => button.id === id)) generators.set(id, { generate, tail: options.tail ?? .08 });
+    },
     get context() { init(); return context; },
-    get output() { return bus || this._input; }
+    get output() {
+      if (!voice) throw new Error('No active sound');
+      return voice.bus;
+    },
+    track(node) {
+      const current = voice;
+      if (!current) throw new Error('No active sound');
+      current.nodes.add(node);
+      if (typeof node.start === 'function' && typeof node.stop === 'function') {
+        current.sources.add(node);
+        node.addEventListener('ended', () => {
+          current.sources.delete(node);
+          finishWhenSilent(current);
+        }, { once: true });
+      }
+      return node;
+    }
   };
-  // Capture before the original synthesizers run so every layer uses this voice bus.
-  pads.addEventListener('click', event => {
-    const button = event.target.closest('button');
-    if (!button || !sounds[button.id]) return;
-    if (button === active) { event.stopImmediatePropagation(); stop(); return; }
+  function play(button) {
+    if (button === active) { stop(); return; }
+    stop();
+    const generator = generators.get(button.id);
+    if (!generator) { now.textContent = 'This sound could not load. Refresh and try again.'; return; }
+    const token = request;
+    active = button;
+    button.setAttribute('aria-pressed', 'true');
+    button.closest('.sb-pad').classList.add('is-playing');
+    stopButton.disabled = false;
+    now.textContent = `Starting: ${button.textContent}`;
+    const begin = () => {
+      if (request !== token) return;
+      clearTimeout(startupTimer);
+      if (context.state !== 'running') { stop('Tap a sound to enable audio.'); return; }
+      try {
+        const bus = context.createGain();
+        bus.gain.value = .85;
+        bus.connect(input);
+        voice = { bus, nodes: new Set([bus]), sources: new Set(), tail: generator.tail, ready: false, disposed: false };
+        started = context.currentTime;
+        generator.generate();
+        voice.ready = true;
+        board.classList.add('is-playing');
+        now.textContent = `Now playing: ${button.textContent}${Number(volume.value) ? '' : ' (muted)'}`;
+        finishWhenSilent(voice);
+        tick();
+      } catch (_) { stop('Audio could not play. Tap a sound to retry.'); }
+    };
     try {
       init();
-      stop();
-      if (context.state === 'suspended') context.resume().catch(() => stop('Audio could not start. Tap a sound to retry.'));
-      bus = context.createGain();
-      bus.gain.value = .85;
-      bus.connect(window.MuseumSoundboard._input);
-      active = button;
-      active.setAttribute('aria-pressed', 'true');
-      active.closest('.sb-pad').classList.add('is-playing');
-      board.classList.add('is-playing');
-      stopButton.disabled = false;
-      now.textContent = `Now playing: ${button.textContent}`;
-      started = context.currentTime;
-      duration = sounds[button.id][2];
-      tick();
-    } catch (_) {
-      event.stopImmediatePropagation();
-      stop('Audio is unavailable in this browser.');
-    }
-  }, true);
+      if (context.state === 'running') begin();
+      else {
+        // Resume in the user gesture and schedule only the latest selection.
+        startupTimer = setTimeout(() => {
+          if (request === token) stop('Tap a sound to enable audio.');
+        }, 3000);
+        context.resume().then(begin).catch(() => {
+          if (request === token) stop('Audio could not start. Tap a sound to retry.');
+        });
+      }
+    } catch (_) { if (request === token) stop('Audio is unavailable in this browser.'); }
+  }
+  pads.addEventListener('click', event => {
+    const pad = event.target.closest('.sb-pad');
+    const button = pad && pad.querySelector('button');
+    if (!button || !sounds[button.id]) return;
+    button.focus({ preventScroll: true });
+    play(button);
+  });
   volume.addEventListener('input', () => {
-    output.value = `${volume.value}%`;
-    if (master) master.gain.setTargetAtTime(Number(volume.value)/100, context.currentTime, .015);
-    try { localStorage.setItem('museum-sound-volume',volume.value); } catch (_) {}
+    updateVolume();
+    if (master && context.state !== 'closed') master.gain.setTargetAtTime(Number(volume.value) / 100, context.currentTime, .015);
+    if (voice) now.textContent = `Now playing: ${active.textContent}${Number(volume.value) ? '' : ' (muted)'}`;
+    try { localStorage.setItem('museum-sound-volume', volume.value); } catch (_) {}
   });
   stopButton.addEventListener('click', () => stop());
-  board.addEventListener('keydown', event => { if(event.key==='Escape') { event.preventDefault(); stop(); } });
+  board.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { event.preventDefault(); stop(); }
+  });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   window.addEventListener('pagehide', () => {
-    stop();
-    if (context && context.state === 'running') context.suspend();
+    stop('Stopped. Pick another sound.', true);
+    for (const old of retiring) {
+      clearTimeout(old.cleanupTimer);
+      for (const node of old.nodes) { try { node.disconnect(); } catch (_) {} }
+      old.nodes.clear();
+      old.sources.clear();
+    }
+    retiring.clear();
+    if (context && context.state === 'running') context.suspend().catch(() => {});
   });
   paintIdle();
 })();
