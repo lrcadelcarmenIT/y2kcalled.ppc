@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lrcadelcarmenIT.github.io/y2kcalled.ppc/sitemap.xml

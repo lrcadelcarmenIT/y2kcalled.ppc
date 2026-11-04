@@ -94,7 +94,7 @@ function renderExhibit(){
  const reflect=document.getElementById('ex-reflect');
  if(photoUrl){
   const img=document.createElement('img');
-  img.src=photoUrl;img.alt=FUTURE[key]&&FUTURE[key].image?FUTURE[key].image.alt:'';
+  img.src=photoUrl;img.alt=(FUTURE[key]&&FUTURE[key].image&&FUTURE[key].image.alt)||(titleText+' '+yearText);
   img.decoding='async';frame.replaceChildren(img);
   frame.classList.remove('no-photo');
   reflect.innerHTML='<img src="'+photoUrl+'" alt="">';
