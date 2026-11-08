@@ -20,10 +20,12 @@
 <link rel="stylesheet" href="enhance.css?v=noglow">
 <style>
 /* Time machine warp intro: full-screen overlay, transform/opacity only.
-   Smooth edition: slower 4.5s warp (about 250ms per year, each year readable), easeInOut motion,
+   Nokia boot-up first (~1.5s): a CSS-drawn 3310 powers on (NOKIA +
+   "Connecting People"), then the warp. Smooth edition: slower 4.5s warp
+   (about 250ms per year, each year readable), easeInOut motion,
    the real exhibit name under each passing year, timeline bar gliding
-   continuously from elapsed time, and a 1.2s poster hold. No subtle
-   textures — every change must read at a glance on a phone. */
+   continuously from elapsed time, and a 1.2s poster hold. Total ~7.7s.
+   No subtle textures — every change must read at a glance on a phone. */
 .tm-intro{position:fixed;inset:0;z-index:9999;background:#04060f;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;transition:opacity .5s ease,transform .5s ease;will-change:transform,opacity;}
 .tm-intro.tm-intro-leaving{opacity:0;transform:scale(1.07);pointer-events:none;}
 .tm-intro-lock{overflow:hidden;}
@@ -72,6 +74,26 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    (~5.6%) while the years flew past, only catching up to 100% once the
    changes stopped at the title hold. Instant width sets cannot lag. */
 .tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
+/* Nokia boot-up: a CSS-drawn 3310 powers on for ~1.5s before the warp.
+   Same look as the Lobby Nokia (light body, dark border, LCD green screen).
+   Text/CSS only, no images. The screen starts dark, lights up with the
+   NOKIA logo and "Connecting People", then the phone scales and fades
+   away into the warp. */
+.tm-boot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .4s ease,transform .4s ease;z-index:5;}
+.tm-boot.tm-boot-off{opacity:0;transform:scale(1.18);}
+.tm-boot-phone{width:min(300px,74vw);background:linear-gradient(160deg,#f2f5fa 0,#c6d0df 60%,#9fabc2 100%);border:3px solid #0e1a2e;border-radius:34px;padding:18px 16px 22px;box-shadow:7px 7px 0 #0e1a2e;}
+.tm-boot-brand{text-align:center;color:#2c4a6e;font-family:'Archivo Black',Impact,sans-serif;letter-spacing:.35em;font-size:.85rem;margin-bottom:12px;}
+.tm-boot-screen{background:#20261a;border:3px solid #0e1a2e;border-radius:8px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-family:'Space Mono',monospace;transition:background .5s ease;}
+.tm-boot-screen.tm-on{background:#b5cc7a;}
+.tm-boot-logo{font-size:28px;font-weight:700;letter-spacing:.3em;color:#1e2b12;opacity:0;transition:opacity .4s ease;}
+.tm-boot-tag{font-size:12px;letter-spacing:.12em;color:#1e2b12;opacity:0;transition:opacity .4s ease .15s;}
+.tm-boot-screen.tm-on .tm-boot-logo,.tm-boot-screen.tm-on .tm-boot-tag{opacity:1;}
+.tm-boot-keys{display:flex;justify-content:center;gap:8px;margin-top:14px;}
+.tm-boot-keys span{width:34px;height:12px;border-radius:6px;background:#0e1a2e;opacity:.55;}
+.tm-boot-speaker{display:flex;justify-content:center;gap:4px;margin-top:12px;}
+.tm-boot-speaker span{width:5px;height:5px;border-radius:50%;background:#0e1a2e;opacity:.5;}
+/* While booting, the warp stage stays hidden behind the phone. */
+.tm-intro.tm-booting .tm-center,.tm-intro.tm-booting .tm-timeline,.tm-intro.tm-booting .tm-warp,.tm-intro.tm-booting .tm-warp-purple,.tm-intro.tm-booting .tm-photo{opacity:0!important;}
 /* 2020s smartphone moved into the hero (under the title): room below it so
    it does not touch the pictures. The lobby-menu phone-wrap now holds only
    the wing cards, so it is a single column at every width. */
@@ -80,7 +102,18 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 </style>
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
-<div class="tm-intro" id="tm-intro" aria-hidden="true">
+<div class="tm-intro tm-booting" id="tm-intro" aria-hidden="true">
+  <div class="tm-boot" id="tm-boot" aria-hidden="true">
+    <div class="tm-boot-phone">
+      <div class="tm-boot-brand">NOKIA</div>
+      <div class="tm-boot-screen" id="tm-boot-screen">
+        <div class="tm-boot-logo">NOKIA</div>
+        <div class="tm-boot-tag">Connecting People</div>
+      </div>
+      <div class="tm-boot-keys" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="tm-boot-speaker" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
   <div class="tm-photo" id="tm-photo" aria-hidden="true"></div>
   <div class="tm-photo" id="tm-photo-b" aria-hidden="true"></div>
   <div class="tm-dim" aria-hidden="true"></div>
@@ -121,6 +154,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   var flashEl=document.getElementById('tm-flash');
   var tlFill=document.getElementById('tm-timeline-fill');
   var tlNow=document.getElementById('tm-timeline-now');
+  var bootEl=document.getElementById('tm-boot');
+  var bootScreen=document.getElementById('tm-boot-screen');
   var YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
   /* Real exhibit photos, from MEDIA00 (museum.js) and MEDIA20 (wing2020s.js). */
   var PHOTOS={
@@ -166,8 +201,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     2025:'The Halalan Shake-up',
     2026:'The Wait for GTA 6'
   };
-  var YEAR_MS=4500, SETTLE_MS=1200, FADE_MS=500;
-  var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0, lastFrameTs=0, revealed=false, photoActive=0, burstDone=false;
+  var BOOT_MS=1500, BOOT_ON_MS=350, YEAR_MS=4500, SETTLE_MS=1200, FADE_MS=500;
+  var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0, lastFrameTs=0, revealed=false, photoActive=0, burstDone=false, bootOn=false, bootGone=false, bootHidden=false;
   var angle=0, angleP=0, failed={};
   function removeNode(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }
   function startLeaving(){
@@ -221,8 +256,23 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     if(!startTs) startTs=now;
     var dt=lastFrameTs? now-lastFrameTs : 16; lastFrameTs=now;
     var t=now-startTs;
-    if(t<YEAR_MS){
-      var p=t/YEAR_MS, e=easeInOutSine(p);
+    if(t<BOOT_MS){
+      /* Boot phase: the Nokia powers on. The screen lights up ~350ms in,
+         the phone scales and fades away in the last 400ms. The warp has
+         not started yet: no year, no photo, no timeline movement. */
+      if(t>=BOOT_ON_MS && !bootOn){ bootOn=true; bootScreen.classList.add('tm-on'); }
+      if(t>=BOOT_MS-400 && !bootGone){ bootGone=true; bootEl.classList.add('tm-boot-off'); }
+      rafId=requestAnimationFrame(frame);
+      return;
+    }
+    var wt=t-BOOT_MS;
+    if(!bootHidden){
+      bootHidden=true;
+      overlay.classList.remove('tm-booting');
+      bootEl.style.display='none';
+    }
+    if(wt<YEAR_MS){
+      var p=wt/YEAR_MS, e=easeInOutSine(p);
       /* Timeline fill glides continuously from elapsed time, not in steps
          per year: it must track the warp smoothly on every frame. */
       tlFill.style.width=(e*100).toFixed(1)+'%';
@@ -260,7 +310,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       warpEl.style.opacity=(0.3+0.65*e).toFixed(2);
       warpP.style.opacity=(0.15+0.45*e).toFixed(2);
       rafId=requestAnimationFrame(frame);
-    } else if(t<YEAR_MS+SETTLE_MS){
+    } else if(wt<YEAR_MS+SETTLE_MS){
       /* Pin the timeline at full for the poster hold, even if the final warp
          frame was dropped: the bar must read 100% at the title hold. */
       tlFill.style.width='100%';
@@ -281,7 +331,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       curP.style.opacity='0.45';
       othP.style.opacity='0';
       rafId=requestAnimationFrame(frame);
-    } else if(t<YEAR_MS+SETTLE_MS+FADE_MS){
+    } else if(wt<YEAR_MS+SETTLE_MS+FADE_MS){
       startLeaving();
       rafId=requestAnimationFrame(frame);
     } else {
