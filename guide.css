@@ -1,4 +1,9 @@
-/* Guide page: PSP handheld console holding the museum guide list.
+/* Guide page: the museum guide list coded into a photo of a PSP.
+   The photo is the frame; the screen is an overlay positioned over the
+   photo's LCD (measured from the photo: left 20.87%, top 8.12%,
+   width 57.53%, height 79.87% of the 1200x493 frame).
+   Screen text scales with the frame via cqw units, with clamp() floors
+   so rows stay readable on a phone.
    Palette follows the site dim2 values: bg #04060f, text #bfccd6, cyan #5cb8d9.
    No text-shadow anywhere on this page. */
 
@@ -8,135 +13,28 @@
 
 .psp-stage { padding: 8px 0 40px; }
 
-/* --- PSP body --- */
-.psp {
+/* --- photo frame --- */
+.psp-photo-wrap {
   position: relative;
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr) 128px;
-  gap: 10px;
-  background: #101216;
-  border: 1px solid #2b313c;
-  border-radius: 28px;
-  padding: 22px 14px 32px;
+  container-type: inline-size;
   max-width: 980px;
   margin: 0 auto;
+  line-height: 0;
 }
-.psp-left, .psp-right {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 34px;
-}
-.psp-mid { min-width: 0; }
-
-/* --- D-pad --- */
-.psp-dpad {
-  display: grid;
-  grid-template-columns: repeat(3, 34px);
-  grid-template-rows: repeat(3, 34px);
-}
-.psp-dbtn {
-  background: #1c212b;
-  border: 1px solid #333b48;
-  color: #bfccd6;
-  font-size: 13px;
-  line-height: 1;
-  padding: 0;
-  cursor: pointer;
-}
-.psp-dbtn:hover { background: #2a3140; }
-.psp-dbtn:active { background: #5cb8d9; color: #06121c; }
-.psp-up { grid-area: 1 / 2; }
-.psp-left { grid-area: 2 / 1; }
-.psp-dmid { grid-area: 2 / 2; background: #1c212b; }
-.psp-right { grid-area: 2 / 3; }
-.psp-down { grid-area: 3 / 2; }
-
-/* --- analog nub --- */
-.psp-nub {
-  width: 52px;
-  height: 52px;
-  margin-top: 26px;
-  border-radius: 50%;
-  background: #1c212b;
-  border: 1px solid #333b48;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.psp-nub span {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #262c38;
-  border: 1px solid #3a4150;
-}
-
-/* --- action buttons (diamond) --- */
-.psp-actions {
-  display: grid;
-  grid-template-columns: repeat(3, 36px);
-  grid-template-rows: repeat(3, 36px);
-}
-.psp-abtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #1c212b;
-  border: 1px solid #333b48;
-  color: #bfccd6;
-  font-size: 15px;
-  line-height: 1;
-}
-button.psp-abtn { padding: 0; cursor: pointer; }
-button.psp-abtn:hover { background: #2a3140; }
-button.psp-abtn:active { background: #5cb8d9; color: #06121c; }
-.psp-tri { grid-area: 1 / 2; }
-.psp-sq { grid-area: 2 / 1; }
-.psp-cir { grid-area: 2 / 3; }
-.psp-x { grid-area: 3 / 2; }
-
-/* --- START / SELECT --- */
-.psp-sys { display: flex; gap: 8px; margin-top: 22px; }
-.psp-sys button {
-  background: #1c212b;
-  border: 1px solid #333b48;
-  color: #bfccd6;
-  font-size: 10px;
-  letter-spacing: .12em;
-  padding: 5px 9px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.psp-sys button:hover { background: #2a3140; }
-.psp-sys button:active { background: #5cb8d9; color: #06121c; }
-
-/* --- speaker grilles --- */
-.psp-speaker {
+.psp-photo { display: block; width: 100%; height: auto; }
+.psp-photo-screen-wrap {
   position: absolute;
-  bottom: 10px;
-  width: 56px;
-  height: 14px;
-  background: radial-gradient(circle, #3a4150 1.2px, transparent 1.4px);
-  background-size: 7px 7px;
-}
-.psp-spk-l { left: 18px; }
-.psp-spk-r { right: 18px; }
-
-/* --- screen --- */
-.psp-screen-wrap {
-  position: relative;
-  border: 2px solid #05080d;
-  border-radius: 6px;
+  left: 20.87%;
+  top: 8.12%;
+  width: 57.53%;
+  height: 79.87%;
   overflow: hidden;
-  background: #0a141f;
+  line-height: 1.25;
 }
-.psp-screen {
-  height: clamp(320px, 52vw, 540px);
+.psp-photo-screen {
+  height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   background: #0a141f;
   outline-offset: -2px;
@@ -148,84 +46,138 @@ button.psp-abtn:active { background: #5cb8d9; color: #06121c; }
   pointer-events: none;
   background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .03) 0 1px, transparent 1px 3px);
 }
+
+/* --- screen: channel guide --- */
 .psp-screen-head {
   position: sticky;
   top: 0;
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  gap: 1.6cqw;
   background: #0d1a29;
-  color: #5cb8d9;
-  font-size: 12px;
-  letter-spacing: .14em;
-  padding: 10px 14px;
+  padding: clamp(6px, 1.6cqw, 12px) clamp(8px, 2.2cqw, 14px);
   border-bottom: 1px solid rgba(92, 184, 217, .25);
 }
-.psp-brand {
-  text-align: center;
-  color: #8fa8b8;
+.ch-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: clamp(14px, 3.4cqw, 28px);
+  line-height: 1.1;
+  color: #bfccd6;
+}
+.ch-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+.ch-tonight {
+  background: #5cb8d9;
+  color: #06121c;
+  font-size: clamp(8px, 1.6cqw, 12px);
   font-weight: 700;
-  letter-spacing: .35em;
-  font-size: 15px;
-  padding-top: 10px;
+  letter-spacing: .12em;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.ch-counts {
+  color: #5cb8d9;
+  font-size: clamp(8px, 1.7cqw, 13px);
+  letter-spacing: .1em;
+}
+.psp-ticker {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: #c0392b;
+  color: #fff;
+  font-size: clamp(8px, 1.8cqw, 14px);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-align: center;
+  padding: clamp(5px, 1.2cqw, 10px) clamp(6px, 1.8cqw, 12px);
 }
 
-/* --- guide list --- */
+/* --- guide list: channel rows --- */
 .guide-list { list-style: none; margin: 0; padding: 0 0 8px; }
 .guide-group h2 {
-  font-size: 13px;
+  font-size: clamp(9px, 2cqw, 15px);
   letter-spacing: .14em;
   text-transform: uppercase;
   color: #5cb8d9;
-  padding: 12px 14px 6px;
+  padding: clamp(6px, 1.8cqw, 12px) clamp(8px, 2.2cqw, 14px) clamp(3px, .8cqw, 6px);
   margin: 0;
 }
 .g-row {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 9px 14px;
+  align-items: center;
+  gap: clamp(5px, 1.6cqw, 12px);
+  padding: clamp(5px, 1.4cqw, 11px) clamp(8px, 2.2cqw, 14px);
   color: #bfccd6;
   text-decoration: none;
   border-top: 1px solid rgba(92, 184, 217, .14);
 }
 .g-row:hover, .g-row.sel { background: #5cb8d9; color: #06121c; }
 .g-row:focus-visible { outline: 2px solid #5cb8d9; outline-offset: -2px; }
-.g-num { color: #5cb8d9; font-weight: 700; min-width: 2ch; }
-.g-meta { min-width: 44px; font-size: 12px; letter-spacing: .08em; color: #8fa8b8; }
-.g-title { flex: 1; }
-.g-go { color: #5cb8d9; }
-.g-row.sel .g-num, .g-row:hover .g-num,
-.g-row.sel .g-go, .g-row:hover .g-go { color: #06121c; }
-.g-row.sel .g-meta, .g-row:hover .g-meta { color: #0a2a3a; }
+.g-ch { color: #5cb8d9; font-weight: 700; font-size: clamp(9px, 2.1cqw, 16px); letter-spacing: .05em; min-width: 5ch; }
+.g-meta { min-width: 44px; font-size: clamp(9px, 1.9cqw, 14px); font-weight: 600; letter-spacing: .08em; color: #8fa8b8; }
+.g-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.g-title { font-size: clamp(11px, 2.4cqw, 20px); font-weight: 700; line-height: 1.25; }
+.g-topic { font-size: clamp(9px, 1.9cqw, 14px); color: #8fa8b8; }
+.g-now {
+  background: #c0392b;
+  color: #fff;
+  font-size: clamp(8px, 1.5cqw, 11px);
+  font-weight: 700;
+  letter-spacing: .1em;
+  padding: 3px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.g-row.sel .g-ch, .g-row:hover .g-ch { color: #06121c; }
+.g-row.sel .g-meta, .g-row:hover .g-meta,
+.g-row.sel .g-topic, .g-row:hover .g-topic { color: #0a2a3a; }
 
 .psp-hint { text-align: center; color: #8fa8b8; font-size: 14px; margin-top: 14px; }
 
-/* --- small screens --- */
-@media (max-width: 640px) {
-  .psp {
-    grid-template-columns: 64px minmax(0, 1fr) 64px;
-    gap: 6px;
-    padding: 14px 8px 26px;
-    border-radius: 20px;
-  }
-  .psp-left, .psp-right { padding-top: 22px; }
-  .psp-dpad {
-    grid-template-columns: repeat(3, 22px);
-    grid-template-rows: repeat(3, 22px);
-  }
-  .psp-dbtn { font-size: 10px; }
-  .psp-nub { width: 34px; height: 34px; margin-top: 18px; }
-  .psp-nub span { width: 20px; height: 20px; }
-  .psp-actions {
-    grid-template-columns: repeat(3, 24px);
-    grid-template-rows: repeat(3, 24px);
-  }
-  .psp-abtn { width: 24px; height: 24px; font-size: 11px; }
-  .psp-sys { flex-direction: column; gap: 6px; margin-top: 14px; }
-  .psp-screen { height: 340px; }
-  .g-row { padding: 8px 10px; gap: 7px; }
-  .g-meta { min-width: 36px; font-size: 11px; }
-  .psp-speaker { display: none; }
+/* --- small frames: slim the rows so the miniature stays readable --- */
+@container (max-width: 520px) {
+  .g-topic, .g-now, .ch-counts { display: none; }
+  .g-meta { min-width: 34px; }
 }
+
+/* --- PSP button hotspots: invisible real buttons over the photo's controls.
+   Positions measured from psp-frame.png (1200x493) with visual grounding,
+   as % of .psp-photo-wrap. Generous touch targets, centred on each button. */
+.psp-btn {
+  position: absolute;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  line-height: normal;
+}
+.psp-btn:hover { background: rgba(92, 184, 217, .18); }
+.psp-btn:active { background: rgba(92, 184, 217, .35); }
+.psp-btn:focus-visible {
+  outline: 3px solid #5cb8d9;
+  outline-offset: 1px;
+  background: rgba(92, 184, 217, .25);
+}
+.psp-btn.psp-pill { border-radius: 999px; }
+#psp-up { left: 8.1%; top: 27.6%; width: 5.4%; height: 12%; }
+#psp-left { left: 3.7%; top: 38.2%; width: 5.4%; height: 12%; }
+#psp-right { left: 12.5%; top: 38.4%; width: 5.4%; height: 12%; }
+#psp-down { left: 8.1%; top: 49.0%; width: 5.4%; height: 12%; }
+#psp-triangle { left: 86.4%; top: 24.4%; width: 5.4%; height: 12%; }
+#psp-square { left: 80.6%; top: 39.1%; width: 5.4%; height: 12%; }
+#psp-circle { left: 92.3%; top: 38.8%; width: 5.4%; height: 12%; }
+#psp-x { left: 86.4%; top: 53.5%; width: 5.4%; height: 12%; }
+#psp-select { left: 68.1%; top: 92%; width: 6%; height: 8%; }
+#psp-start { left: 74.7%; top: 92%; width: 6%; height: 8%; }
+.psp-btn-hint { margin-top: 6px; }
