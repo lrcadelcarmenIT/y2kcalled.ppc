@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="enhance.css?v=noglow">
 <style>
 /* Time machine warp intro: full-screen overlay, transform/opacity only.
-   Smooth edition: slower 3.0s warp (each year readable), easeInOut motion,
+   Smooth edition: slower 4.5s warp (about 250ms per year, each year readable), easeInOut motion,
    the real exhibit name under each passing year, timeline bar gliding
    continuously from elapsed time, and a 1.2s poster hold. No subtle
    textures — every change must read at a glance on a phone. */
@@ -42,13 +42,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-center{position:relative;text-align:center;padding:0 20px;perspective:800px;}
 .tm-year-ghost{position:absolute;left:0;right:0;top:0;font-size:clamp(120px,36vw,320px);line-height:1;font-weight:800;letter-spacing:.02em;color:#5cb8d9;opacity:0;pointer-events:none;will-change:transform,opacity;}
 .tm-year-ghost.era-2020s{color:#d94fd9;}
-.tm-year-ghost.tm-ghost-go{animation:tm-ghost .32s ease-out forwards;}
+.tm-year-ghost.tm-ghost-go{animation:tm-ghost .4s ease-out forwards;}
 @keyframes tm-ghost{0%{opacity:.38;transform:translateZ(-60px) scale(.98);}100%{opacity:0;transform:translateZ(260px) scale(1.22);}}
 .tm-year{font-size:clamp(120px,36vw,320px);line-height:1;font-weight:800;letter-spacing:.02em;color:#5cb8d9;transition:opacity .3s ease;will-change:transform,opacity;}
 .tm-year.era-2000s{color:#5cb8d9;text-shadow:0 0 24px rgba(92,184,217,.9),0 0 70px rgba(92,184,217,.45);}
 .tm-year.era-2020s{color:#d94fd9;text-shadow:0 0 24px rgba(217,79,217,.9),0 0 70px rgba(139,63,217,.5);}
 .tm-year.tm-year-out{opacity:0;}
-.tm-name{font-size:clamp(13px,3.2vw,20px);letter-spacing:.18em;text-transform:uppercase;color:#bfccd6;margin-top:12px;transition:opacity .3s ease;}
+.tm-name{font-size:clamp(16px,4.4vw,26px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#bfccd6;margin-top:12px;transition:opacity .3s ease;}
 .tm-name.tm-name-out{opacity:0;}
 .tm-title{opacity:0;transform:scale(.94);}
 .tm-title.tm-title-in{animation:tm-land .7s cubic-bezier(.18,1.5,.35,1) forwards;}
@@ -72,6 +72,11 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    (~5.6%) while the years flew past, only catching up to 100% once the
    changes stopped at the title hold. Instant width sets cannot lag. */
 .tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
+/* 2020s smartphone moved into the hero (under the title): room below it so
+   it does not touch the pictures. The lobby-menu phone-wrap now holds only
+   the wing cards, so it is a single column at every width. */
+.intro-grid[data-pane="2020s"] .intro-copy .smartphone{margin:28px auto;}
+.phone-wrap{grid-template-columns:minmax(0,1fr);}
 </style>
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
@@ -161,7 +166,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     2025:'The Halalan Shake-up',
     2026:'The Wait for GTA 6'
   };
-  var YEAR_MS=3000, SETTLE_MS=1200, FADE_MS=500;
+  var YEAR_MS=4500, SETTLE_MS=1200, FADE_MS=500;
   var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0, lastFrameTs=0, revealed=false, photoActive=0, burstDone=false;
   var angle=0, angleP=0, failed={};
   function removeNode(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }
@@ -245,7 +250,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
         showPhoto(YEARS[idx]);
       }
       var age=now-lastChangeTs;
-      var z=-520+700*easeInOutSine(Math.min(1, age/240));
+      var z=-520+700*easeInOutSine(Math.min(1, age/300));
       yearEl.style.transform='translateZ('+z.toFixed(0)+'px)';
       angle+=(30+300*e)*dt/1000;
       angleP-=(20+210*e)*dt/1000;
@@ -342,9 +347,30 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       <div class="intro-copy">
         <p class="eyebrow">A PHILIPPINE POP CULTURE MUSEUM · 2020–2026</p>
         <h1>SCROLLS, STREAMS &amp;<br><em>SIDE HUSTLES.</em></h1>
-        <p class="lead">Six exhibits, nine games, one present. Pick a wing on the phone and step into now.</p>
         <div class="hero-ticket"><span>ADMIT ONE</span><strong>03 WINGS · 6 EXHIBITS · 9 GAMES</strong><span>PH · 2020–2026</span></div>
-        <div class="hero-actions"><a class="museum-primary" href="walk.html?year=2020">Enter the museum <span aria-hidden="true">→</span></a><a class="museum-secondary" href="exhibits-future.html">Explore the future <span aria-hidden="true">↗</span></a></div>
+        <div class="smartphone" aria-label="A modern smartphone">
+          <div class="sp-notch" aria-hidden="true"></div>
+          <div class="sp-screen" id="phone-screen" tabindex="0" role="menu" aria-label="Museum home screen. Tap an app to open it, swipe for the second page.">
+            <div class="sp-status"><span id="sp-clock">--:--</span><span class="sp-sig" aria-hidden="true">📶 🔋</span></div>
+            <div class="sp-pages" id="sp-pages">
+              <div class="sp-page" role="group" aria-label="Home screen page 1">
+                <button type="button" class="sp-app" data-go="exhibits20.html"><span class="sp-icon">🏛️</span><span class="sp-name">Exhibit Halls</span></button>
+                <button type="button" class="sp-app" data-go="play20.html"><span class="sp-icon">🎮</span><span class="sp-name">Arcade</span></button>
+                <button type="button" class="sp-app" data-go="guestbook.html"><span class="sp-icon">📖</span><span class="sp-name">Guestbook</span></button>
+                <button type="button" class="sp-app" data-go="play20.html#quiz"><span class="sp-icon">🪪</span><span class="sp-name">Quiz</span></button>
+              </div>
+              <div class="sp-page" role="group" aria-label="Home screen page 2">
+                <button type="button" class="sp-app" data-go="play20.html#playground"><span class="sp-icon">📸</span><span class="sp-name">Photo booth</span></button>
+                <button type="button" class="sp-app" data-go="exhibits20.html#archive"><span class="sp-icon">🗂️</span><span class="sp-name">Archive</span></button>
+                <button type="button" class="sp-app" data-go="exhibits20.html#route"><span class="sp-icon">🧭</span><span class="sp-name">Guided route</span></button>
+                <button type="button" class="sp-app" data-go="play20.html#arcade"><span class="sp-icon">🕹️</span><span class="sp-name">Bonus games</span></button>
+              </div>
+            </div>
+            <div class="sp-dots" id="sp-dots" role="group" aria-label="Phone pages"></div>
+            <div class="sp-hint">tap an app · swipe for more</div>
+          </div>
+          <div class="sp-homebar" aria-hidden="true"></div>
+        </div>
       </div>
       <div class="cover-art" aria-label="Period images from the museum">
         <figure class="cover-photo main-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Smartphone.jpg?width=720" alt="A modern smartphone held in a hand" width="720" height="515"><figcaption>01 / THE POCKET STUDIO <span>2024</span></figcaption></figure>
@@ -401,29 +427,6 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       </div>
     </div>
     <div class="phone-wrap decade-pane" data-pane="2020s" hidden>
-      <div class="smartphone" aria-label="A modern smartphone">
-        <div class="sp-notch" aria-hidden="true"></div>
-        <div class="sp-screen" id="phone-screen" tabindex="0" role="menu" aria-label="Museum home screen. Tap an app to open it, swipe for the second page.">
-          <div class="sp-status"><span id="sp-clock">--:--</span><span class="sp-sig" aria-hidden="true">📶 🔋</span></div>
-          <div class="sp-pages" id="sp-pages">
-            <div class="sp-page" role="group" aria-label="Home screen page 1">
-              <button type="button" class="sp-app" data-go="exhibits20.html"><span class="sp-icon">🏛️</span><span class="sp-name">Exhibit Halls</span></button>
-              <button type="button" class="sp-app" data-go="play20.html"><span class="sp-icon">🎮</span><span class="sp-name">Arcade</span></button>
-              <button type="button" class="sp-app" data-go="guestbook.html"><span class="sp-icon">📖</span><span class="sp-name">Guestbook</span></button>
-              <button type="button" class="sp-app" data-go="play20.html#quiz"><span class="sp-icon">🪪</span><span class="sp-name">Quiz</span></button>
-            </div>
-            <div class="sp-page" role="group" aria-label="Home screen page 2">
-              <button type="button" class="sp-app" data-go="play20.html#playground"><span class="sp-icon">📸</span><span class="sp-name">Photo booth</span></button>
-              <button type="button" class="sp-app" data-go="exhibits20.html#archive"><span class="sp-icon">🗂️</span><span class="sp-name">Archive</span></button>
-              <button type="button" class="sp-app" data-go="exhibits20.html#route"><span class="sp-icon">🧭</span><span class="sp-name">Guided route</span></button>
-              <button type="button" class="sp-app" data-go="play20.html#arcade"><span class="sp-icon">🕹️</span><span class="sp-name">Bonus games</span></button>
-            </div>
-          </div>
-          <div class="sp-dots" id="sp-dots" role="group" aria-label="Phone pages"></div>
-          <div class="sp-hint">tap an app · swipe for more</div>
-        </div>
-        <div class="sp-homebar" aria-hidden="true"></div>
-      </div>
       <div class="wing-cards">
         <a class="wing-card" href="exhibits20.html">
           <span class="wnum">WING 01</span>
