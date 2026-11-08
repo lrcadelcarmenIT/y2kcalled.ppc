@@ -49,7 +49,6 @@
   <button type="button" class="nav-toggle" aria-controls="site-menu" aria-expanded="false">Menu</button>
   <nav id="site-menu" aria-label="Main navigation">
     <a href="index.html" id="nav-home">Lobby</a>
-    <a href="guide.html" id="nav-guide">Guide</a>
     <a href="exhibits20.html" id="nav-archive" aria-current="page">Exhibit Halls</a>
     <a href="exhibits-future.html" id="nav-future">Future</a>
     <a href="play20.html" id="nav-play">Arcade</a>
@@ -79,7 +78,7 @@
 <button type="button" id="lang-toggle" hidden>TAGLISH</button>
 <div class="celebrate" id="celebrate" hidden><div class="celebrate-card"><button type="button" id="celebrate-close">Close</button></div></div>
 <script src="wing2020s.js?v=opt1"></script>
-<script src="museum.js?v=guide1"></script>
+<script src="museum.js?v=noshadow"></script>
 <script>
 (function(){
 const list=document.getElementById('ex-list');
@@ -102,7 +101,6 @@ ids.forEach(id=>{
   card.innerHTML=html;
   list.appendChild(card);
 });
-if(location.hash){var _t=document.querySelector(location.hash);if(_t)_t.scrollIntoView();}
 list.addEventListener('click',function(e){
   const btn=e.target.closest('.ex-play');
   if(!btn)return;
