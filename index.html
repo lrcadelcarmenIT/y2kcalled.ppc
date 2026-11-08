@@ -18,8 +18,101 @@
 <link rel="stylesheet" href="museum.css?v=noshadow">
 <link rel="stylesheet" href="layout.css?v=noglow">
 <link rel="stylesheet" href="enhance.css?v=noglow">
+<style>
+/* Time machine warp intro: full-screen overlay, transform/opacity only. */
+.tm-intro{position:fixed;inset:0;z-index:9999;background:#04060f;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;transition:opacity .5s ease;}
+.tm-intro.tm-intro-leaving{opacity:0;}
+.tm-intro-lock{overflow:hidden;}
+.tm-warp{position:absolute;left:50%;top:50%;width:160vmax;height:160vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(92,184,217,0) 0deg 5deg,rgba(92,184,217,.14) 5deg 6deg,rgba(92,184,217,0) 6deg 11deg);-webkit-mask-image:radial-gradient(circle,transparent 16%,#000 55%);mask-image:radial-gradient(circle,transparent 16%,#000 55%);animation:tm-spin 9s linear infinite;opacity:.35;pointer-events:none;}
+@keyframes tm-spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+.tm-center{position:relative;text-align:center;padding:0 20px;}
+.tm-year{font-size:clamp(72px,24vw,190px);line-height:1;font-weight:800;letter-spacing:.02em;color:#5cb8d9;transition:opacity .3s ease;will-change:transform,opacity;}
+.tm-year.tm-year-out{opacity:0;}
+.tm-title{opacity:0;transform:scale(.94);transition:opacity .45s ease,transform .45s ease;}
+.tm-title.tm-title-in{opacity:1;transform:scale(1);}
+.tm-title h2{font-size:clamp(30px,7.2vw,64px);line-height:1.05;letter-spacing:.04em;color:#bfccd6;margin:0 0 10px;}
+.tm-kicker{font-size:clamp(11px,2.4vw,15px);letter-spacing:.28em;color:#5cb8d9;margin:0 0 12px;}
+.tm-tag{font-size:clamp(13px,2.8vw,18px);color:#bfccd6;margin:0;}
+.tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
+@media (prefers-reduced-motion: reduce){.tm-warp{animation:none;}}
+</style>
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
+<div class="tm-intro" id="tm-intro" aria-hidden="true">
+  <div class="tm-warp" id="tm-warp" aria-hidden="true"></div>
+  <div class="tm-center">
+    <div class="tm-year" id="tm-year">2000</div>
+    <div class="tm-title" id="tm-title">
+      <p class="tm-kicker">2000–2026</p>
+      <h2>THE 2000s CALLED</h2>
+      <p class="tm-tag">A Philippine pop culture virtual museum.</p>
+    </div>
+  </div>
+  <p class="tm-skip">TAP ANYWHERE TO SKIP</p>
+</div>
+<noscript><style>.tm-intro{display:none!important;}</style></noscript>
+<script>
+(function(){
+  var overlay=document.getElementById('tm-intro');
+  if(!overlay)return;
+  var yearEl=document.getElementById('tm-year');
+  var titleEl=document.getElementById('tm-title');
+  var warpEl=document.getElementById('tm-warp');
+  var YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
+  var YEAR_MS=2000, SETTLE_MS=500, FADE_MS=500;
+  var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0;
+  function removeNode(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+  function finish(fast){
+    if(done)return; done=true;
+    if(rafId) cancelAnimationFrame(rafId);
+    document.documentElement.classList.remove('tm-intro-lock');
+    document.body.classList.remove('tm-intro-lock');
+    overlay.removeEventListener('click', onSkip);
+    window.removeEventListener('keydown', onSkip, true);
+    if(fast){ removeNode(); return; }
+    overlay.classList.add('tm-intro-leaving');
+    setTimeout(removeNode, FADE_MS+60);
+  }
+  function onSkip(){ finish(true); }
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    removeNode(); return;
+  }
+  document.documentElement.classList.add('tm-intro-lock');
+  document.body.classList.add('tm-intro-lock');
+  overlay.addEventListener('click', onSkip);
+  window.addEventListener('keydown', onSkip, true);
+  function easeInOutQuad(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
+  function frame(now){
+    if(done)return;
+    if(!startTs) startTs=now;
+    var t=now-startTs;
+    if(t<YEAR_MS){
+      var p=t/YEAR_MS, e=easeInOutQuad(p);
+      var idx=Math.min(YEARS.length-1, Math.floor(e*YEARS.length));
+      if(idx!==lastIdx){
+        lastIdx=idx; lastChangeTs=now;
+        yearEl.textContent=YEARS[idx];
+      }
+      var age=now-lastChangeTs;
+      var s=1.16-0.16*Math.min(1, age/160);
+      yearEl.style.transform='scale('+s.toFixed(3)+')';
+      warpEl.style.opacity=(0.3+0.65*e).toFixed(2);
+      rafId=requestAnimationFrame(frame);
+    } else if(t<YEAR_MS+SETTLE_MS){
+      yearEl.classList.add('tm-year-out');
+      titleEl.classList.add('tm-title-in');
+      warpEl.style.opacity='0.25';
+      rafId=requestAnimationFrame(frame);
+    } else if(t<YEAR_MS+SETTLE_MS+FADE_MS){
+      overlay.classList.add('tm-intro-leaving');
+      rafId=requestAnimationFrame(frame);
+    } else {
+      finish(false);
+    }
+  }
+  rafId=requestAnimationFrame(frame);
+})();
+</script>
 
 <div class="grain" aria-hidden="true"></div>
 <canvas id="confetti-canvas" aria-hidden="true"></canvas>
