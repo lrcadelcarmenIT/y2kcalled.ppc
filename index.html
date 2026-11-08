@@ -60,7 +60,14 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-timeline-now{font-size:24px;font-weight:800;letter-spacing:.04em;color:#5cb8d9;}
 .tm-timeline-now.era-2020s{color:#d94fd9;}
 .tm-timeline-track{height:12px;border-radius:6px;background:rgba(191,204,214,.22);overflow:hidden;}
-.tm-timeline-fill{height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#5cb8d9,#8b3fd9,#d94fd9);transition:width .12s linear;will-change:width;}
+.tm-timeline-fill{height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,#5cb8d9,#8b3fd9,#d94fd9);}
+/* No width transition on the fill, on purpose. The fill is set by JS on every
+   year change and must paint at exactly that width on the next frame. A
+   transition retargets on every change, and when the compositor produces
+   frames sparsely (headless/screenshot sessions) the retargeted transition
+   never visibly progresses, so the bar sat pinned near its first value
+   (~5.6%) while the years flew past, only catching up to 100% once the
+   changes stopped at the title hold. Instant width sets cannot lag. */
 .tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
 </style>
 </head>
@@ -217,6 +224,10 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       warpP.style.opacity=(0.15+0.45*e).toFixed(2);
       rafId=requestAnimationFrame(frame);
     } else if(t<YEAR_MS+SETTLE_MS){
+      /* Pin the timeline at full for the poster hold, even if the final warp
+         frame was dropped: the bar must read 100% at the title hold. */
+      tlFill.style.width='100%';
+      tlNow.textContent='2026';
       yearEl.classList.add('tm-year-out');
       ghostEl.classList.remove('tm-ghost-go');
       titleEl.classList.add('tm-title-in');
