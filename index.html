@@ -19,27 +19,34 @@
 <link rel="stylesheet" href="layout.css?v=noglow">
 <link rel="stylesheet" href="enhance.css?v=noglow">
 <style>
-/* Time machine warp intro: full-screen overlay, transform/opacity only. */
+/* Time machine warp intro: full-screen overlay, transform/opacity only.
+   Neon edition: perspective year zoom, real exhibit photos behind the
+   numbers, cyan + purple warp rays that speed up as the years fly. */
 .tm-intro{position:fixed;inset:0;z-index:9999;background:#04060f;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;transition:opacity .5s ease;}
 .tm-intro.tm-intro-leaving{opacity:0;}
 .tm-intro-lock{overflow:hidden;}
-.tm-warp{position:absolute;left:50%;top:50%;width:160vmax;height:160vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(92,184,217,0) 0deg 5deg,rgba(92,184,217,.14) 5deg 6deg,rgba(92,184,217,0) 6deg 11deg);-webkit-mask-image:radial-gradient(circle,transparent 16%,#000 55%);mask-image:radial-gradient(circle,transparent 16%,#000 55%);animation:tm-spin 9s linear infinite;opacity:.35;pointer-events:none;}
-@keyframes tm-spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
-.tm-center{position:relative;text-align:center;padding:0 20px;}
+.tm-warp{position:absolute;left:50%;top:50%;width:160vmax;height:160vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(92,184,217,0) 0deg 5deg,rgba(92,184,217,.16) 5deg 6deg,rgba(92,184,217,0) 6deg 11deg);-webkit-mask-image:radial-gradient(circle,transparent 14%,#000 55%);mask-image:radial-gradient(circle,transparent 14%,#000 55%);opacity:.35;pointer-events:none;will-change:transform,opacity;}
+.tm-warp-purple{width:150vmax;height:150vmax;background:repeating-conic-gradient(from 0deg,rgba(139,63,217,0) 0deg 3deg,rgba(139,63,217,.16) 3deg 3.6deg,rgba(139,63,217,0) 3.6deg 7deg);-webkit-mask-image:radial-gradient(circle,transparent 20%,#000 60%);mask-image:radial-gradient(circle,transparent 20%,#000 60%);opacity:.18;}
+.tm-photo{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;pointer-events:none;will-change:opacity,background-image;}
+.tm-dim{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(4,6,15,.5) 0%,rgba(4,6,15,.72) 55%,rgba(4,6,15,.88) 100%);pointer-events:none;}
+.tm-center{position:relative;text-align:center;padding:0 20px;perspective:800px;}
 .tm-year{font-size:clamp(72px,24vw,190px);line-height:1;font-weight:800;letter-spacing:.02em;color:#5cb8d9;transition:opacity .3s ease;will-change:transform,opacity;}
 .tm-year.tm-year-out{opacity:0;}
-.tm-title{opacity:0;transform:scale(.94);transition:opacity .45s ease,transform .45s ease;}
-.tm-title.tm-title-in{opacity:1;transform:scale(1);}
-.tm-title h2{font-size:clamp(30px,7.2vw,64px);line-height:1.05;letter-spacing:.04em;color:#bfccd6;margin:0 0 10px;}
+.tm-title{opacity:0;transform:scale(.94);}
+.tm-title.tm-title-in{animation:tm-land .55s cubic-bezier(.18,1.5,.35,1) forwards;}
+@keyframes tm-land{0%{opacity:0;transform:scale(.82);}55%{opacity:1;transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
+.tm-title h2{font-size:clamp(38px,9vw,84px);line-height:1.05;letter-spacing:.04em;color:#bfccd6;margin:0 0 10px;text-shadow:0 0 16px rgba(92,184,217,.85),0 0 44px rgba(92,184,217,.5),0 0 90px rgba(92,184,217,.28);}
 .tm-kicker{font-size:clamp(11px,2.4vw,15px);letter-spacing:.28em;color:#5cb8d9;margin:0 0 12px;}
 .tm-tag{font-size:clamp(13px,2.8vw,18px);color:#bfccd6;margin:0;}
 .tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
-@media (prefers-reduced-motion: reduce){.tm-warp{animation:none;}}
 </style>
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 <div class="tm-intro" id="tm-intro" aria-hidden="true">
+  <div class="tm-photo" id="tm-photo" aria-hidden="true"></div>
+  <div class="tm-dim" aria-hidden="true"></div>
   <div class="tm-warp" id="tm-warp" aria-hidden="true"></div>
+  <div class="tm-warp tm-warp-purple" id="tm-warp-purple" aria-hidden="true"></div>
   <div class="tm-center">
     <div class="tm-year" id="tm-year">2000</div>
     <div class="tm-title" id="tm-title">
@@ -58,9 +65,33 @@
   var yearEl=document.getElementById('tm-year');
   var titleEl=document.getElementById('tm-title');
   var warpEl=document.getElementById('tm-warp');
+  var warpP=document.getElementById('tm-warp-purple');
+  var photoEl=document.getElementById('tm-photo');
   var YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
+  /* Real exhibit photos, from MEDIA00 (museum.js) and MEDIA20 (wing2020s.js). */
+  var PHOTOS={
+    2000:'https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20IMac(de).jpg?width=600',
+    2001:'phones-2005.jpg',
+    2002:'https://commons.wikimedia.org/wiki/Special:FilePath/Nokia%203310%20blue.jpg?width=480',
+    2003:'https://commons.wikimedia.org/wiki/Special:FilePath/1990s%20Television%20Set.jpg?width=480',
+    2004:'https://commons.wikimedia.org/wiki/Special:FilePath/Nokia%207650%2001.jpg?width=480',
+    2005:'https://commons.wikimedia.org/wiki/Special:FilePath/Sari-Sari%20Store%20Cavite.jpg?width=600',
+    2006:'internet-cafe-2010.jpg',
+    2007:'https://commons.wikimedia.org/wiki/Special:FilePath/Student%20with%20computer.JPG?width=600',
+    2008:'https://commons.wikimedia.org/wiki/Special:FilePath/Manny%20Pacman%20Pacquiao%201.jpg?width=480',
+    2009:'https://commons.wikimedia.org/wiki/Special:FilePath/Campus%20Party%20Brasil,%2011%20a%2017%20de%20fevereiro%20de%202008%20em%20S.P.%20-%20panoramio.jpg?width=600',
+    2010:'https://commons.wikimedia.org/wiki/Special:FilePath/Apple-iPhone-002.jpg?width=480',
+    2020:'https://commons.wikimedia.org/wiki/Special:FilePath/TikTok%20app.jpg?width=600',
+    2021:'https://commons.wikimedia.org/wiki/Special:FilePath/Hidilyn%20Diaz%202015.jpg?width=600',
+    2022:'https://commons.wikimedia.org/wiki/Special:FilePath/Eraserheads-Credit-WEU-Event-Management-Service-HERO@2000x1270.jpg?width=600',
+    2023:'https://commons.wikimedia.org/wiki/Special:FilePath/ChatGPT-Logo.svg?width=480',
+    2024:'https://commons.wikimedia.org/wiki/Special:FilePath/BINI-from-binified-concert-2025-0D1A5041.jpg?width=600',
+    2025:'halalan2025.jpg',
+    2026:'gta6.jpg'
+  };
   var YEAR_MS=2000, SETTLE_MS=500, FADE_MS=500;
-  var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0;
+  var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0, lastFrameTs=0;
+  var angle=0, angleP=0, photoOp=0, failed={};
   function removeNode(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }
   function finish(fast){
     if(done)return; done=true;
@@ -77,14 +108,27 @@
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     removeNode(); return;
   }
+  Object.keys(PHOTOS).forEach(function(y){
+    var im=new Image();
+    im.onerror=function(){ failed[PHOTOS[y]]=true; };
+    im.src=PHOTOS[y];
+  });
   document.documentElement.classList.add('tm-intro-lock');
   document.body.classList.add('tm-intro-lock');
   overlay.addEventListener('click', onSkip);
   window.addEventListener('keydown', onSkip, true);
   function easeInOutQuad(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
+  function easeOutCubic(p){ return 1-Math.pow(1-p,3); }
+  function showPhoto(year){
+    var src=PHOTOS[year];
+    if(!src || failed[src]){ photoEl.style.opacity='0'; return; }
+    photoEl.style.backgroundImage='url("'+src+'")';
+    photoOp=0.55;
+  }
   function frame(now){
     if(done)return;
     if(!startTs) startTs=now;
+    var dt=lastFrameTs? now-lastFrameTs : 16; lastFrameTs=now;
     var t=now-startTs;
     if(t<YEAR_MS){
       var p=t/YEAR_MS, e=easeInOutQuad(p);
@@ -92,16 +136,27 @@
       if(idx!==lastIdx){
         lastIdx=idx; lastChangeTs=now;
         yearEl.textContent=YEARS[idx];
+        showPhoto(YEARS[idx]);
       }
       var age=now-lastChangeTs;
-      var s=1.16-0.16*Math.min(1, age/160);
-      yearEl.style.transform='scale('+s.toFixed(3)+')';
+      var z=-520+700*easeOutCubic(Math.min(1, age/120));
+      yearEl.style.transform='translateZ('+z.toFixed(0)+'px)';
+      angle+=(30+300*e)*dt/1000;
+      angleP-=(20+210*e)*dt/1000;
+      var sc=1+0.15*e;
+      warpEl.style.transform='translate(-50%,-50%) rotate('+angle.toFixed(1)+'deg) scale('+sc.toFixed(3)+')';
+      warpP.style.transform='translate(-50%,-50%) rotate('+angleP.toFixed(1)+'deg) scale('+sc.toFixed(3)+')';
       warpEl.style.opacity=(0.3+0.65*e).toFixed(2);
+      warpP.style.opacity=(0.15+0.45*e).toFixed(2);
+      photoOp+=(1-photoOp)*0.22;
+      photoEl.style.opacity=photoOp.toFixed(2);
       rafId=requestAnimationFrame(frame);
     } else if(t<YEAR_MS+SETTLE_MS){
       yearEl.classList.add('tm-year-out');
       titleEl.classList.add('tm-title-in');
       warpEl.style.opacity='0.25';
+      warpP.style.opacity='0.15';
+      photoEl.style.opacity='0.3';
       rafId=requestAnimationFrame(frame);
     } else if(t<YEAR_MS+SETTLE_MS+FADE_MS){
       overlay.classList.add('tm-intro-leaving');
