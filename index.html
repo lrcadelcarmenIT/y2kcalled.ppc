@@ -191,8 +191,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    CODE FIRST — and so does every other way out while locked: Decline, tap
    elsewhere, any other key. There is no auto-unlock and no auto-answer:
    the phone waits locked until Y2K is typed, so the code is a hard gate
-   and the intro cannot open without it. Once it is ringing, Decline, tap
-   elsewhere and any other key skip to the Lobby again.
+   and the intro cannot open without it. Once it is ringing, ONLY Answer
+   moves forward: Decline hangs up instead — the tune stops, the code
+   slots clear and the phone goes back to LOCKED, so the visitor must
+   enter Y2K again to re-ring and then answer. A tap elsewhere or any
+   other key while ringing is ignored (a small shake, nothing more): the
+   phone keeps ringing. Answering the call is the only way into the warp
+   or the Lobby — nothing opens or warps before the call is answered.
    The warp itself is unchanged and at normal speed: 4.5s warp, 1.2s poster
    hold, 0.5s fade. */
 /* The call layer is a flex column (phone + CLEAR CODE + big buttons +
@@ -582,33 +587,39 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   }
   /* Hard gate: while the phone is still locked, a tap elsewhere (or any
      other key, which funnels here) is a REFUSAL, not a skip — the shake
-     and ENTER CODE FIRST. Only the code Y2K opens the intro. Once the
-     code has unlocked the phone and it is ringing, a tap elsewhere skips
-     to the Lobby as before. The Answer tap itself must never eat the
+     and ENTER CODE FIRST. Only the code Y2K opens the intro. While the
+     phone is RINGING, a tap elsewhere is IGNORED — a small shake, nothing
+     more: the phone keeps ringing, and nothing opens or warps. Answering
+     the call is the only way in. The Answer tap itself must never eat the
      warp: while the call is still connecting, and for the first 250ms of
      the warp while the phone lifts away, a tap anywhere is ignored — a
      second tap right after Answer (Safari tap-through, double-tap)
      lands in that window and is swallowed instead of skipping. The skip
-     only opens once the warp is actually playing. */
+     only opens once the warp is actually playing, which can only happen
+     after the call was answered. */
   function onSkip(){
     if(done) return;
     if(!unlocked){ denyAnswer(); return; }
-    if(!ringing && !answered){ return; }
-    if(answered && (!warping || Date.now()-warpStartedAt<250)){ return; }
+    if(!answered){
+      if(ringing){ denyRing(); }
+      return;
+    }
+    if(!warping || Date.now()-warpStartedAt<250){ return; }
     finish(true);
   }
   function onKey(e){
     var t=e.target;
     /* Enter/Space on the call controls belong to those controls (Answer
-       picks up, Decline skips once ringing, a keypad key types its
+       picks up, Decline hangs up once ringing, a keypad key types its
        letter) — the window handler must not also act on the key. */
     if(t && t.closest && t.closest('#tm-call-phone,#tm-answer,#tm-decline,#tm-callkey-answer,#tm-callkey-decline,#tm-call-pad .tm-pad-key,#tm-code-clear') && (e.key==='Enter'||e.key===' ')){ return; }
     /* Code entry on a physical keyboard: Y, 2 or K fills the next slot
        directly, any other keypad digit works the keypad the same way a
        tap does (classic multi-tap), Backspace/Delete clears the code.
        Only while the phone is locked; every other key is refused while
-       locked (onSkip shakes and says ENTER CODE FIRST) and skips to the
-       Lobby once unlocked — except Enter, which answers once ringing. */
+       locked (onSkip shakes and says ENTER CODE FIRST) and ignored while
+       ringing (the phone keeps ringing) — except Enter, which answers
+       once ringing. */
     if(!answered && !done && !unlocked){
       var k=e.key;
       if(k==='Backspace'||k==='Delete'){ clearCode(); restoreStatus(); return; }
@@ -624,7 +635,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     }
     /* Once unlocked and ringing, Enter on the body answers the call
        instead of skipping — the desktop keyboard way to pick up. Every
-       other key still skips, as before. */
+       other key is ignored while ringing (onSkip shakes and stays
+       ringing); keys only skip once the warp is actually playing, which
+       can only happen after the call was answered. */
     if(unlocked && !answered && !done && e.key==='Enter'){ answerCall(e); return; }
     onSkip();
   }
@@ -660,11 +673,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   window.addEventListener('keydown', onKey, true);
   /* Answer picks up the call: the phone stops ringing, the screen shows a
      connected state with a call timer starting, and after ~1s the warp
-     pops. Decline skips the whole intro once it is ringing. Tapping the
-     phone itself answers; tapping anywhere else on the overlay skips once
-     unlocked. While the code is locked, every Answer path refuses (shake
-     + ENTER CODE FIRST) — there is no force path and no auto-answer that
-     bypasses the lock. */
+     pops. Decline hangs up once it is ringing (back to LOCKED, tune off,
+     code cleared); after the call is answered, Decline is the deliberate
+     skip out of the connected beat. Tapping the phone itself answers;
+     tapping anywhere else on the overlay is ignored while locked or
+     ringing, and only skips once the warp is playing. While the code is
+     locked, every Answer path refuses (shake + ENTER CODE FIRST) — there
+     is no force path and no auto-answer that bypasses the lock. */
   function answerCall(e){
     if(e) e.stopPropagation();
     if(answered || done) return;
@@ -704,13 +719,42 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     startTs=0; lastFrameTs=0;
     rafId=requestAnimationFrame(frame);
   }
-  /* Hard gate: while the phone is still locked there is no call to
-     decline — Decline refuses with the shake and ENTER CODE FIRST,
-     exactly like Answer. Once it is ringing, Decline skips to the Lobby. */
+  /* Hard gate, part two — answering is the only way in. While the phone
+     is ringing (or in the short UNLOCKED beat before the ring starts),
+     Decline HANGS UP instead of opening the Lobby: the tune stops, the
+     code slots clear and the phone goes back to LOCKED, so the visitor
+     must enter Y2K again to re-ring and then answer. There is no path
+     from Decline into the Lobby or the warp. While locked there is no
+     call to decline, so Decline refuses with the shake and ENTER CODE
+     FIRST, exactly like Answer. Once the call is answered, Decline is a
+     deliberate skip out of the connected beat — the caller already
+     answered, so that path stays. */
   function declineCall(e){
     if(e) e.stopPropagation();
+    if(done) return;
+    if(answered){ finish(true); return; }
     if(!unlocked){ denyAnswer(); return; }
-    finish(true);
+    hangUp();
+  }
+  /* Hang up and lock the phone again: stop the tune, cancel any pending
+     ring, clear the code, and put the lock screen back up. No auto
+     re-ring — the phone waits locked until Y2K is typed again. */
+  function hangUp(){
+    if(unlockTimer){ clearTimeout(unlockTimer); unlockTimer=0; }
+    if(commitTimer){ clearTimeout(commitTimer); commitTimer=0; }
+    stopTune();
+    unlocked=false; ringing=false;
+    codeSlots=['','','']; codeIdx=0; pendingKey=null; pendingChar=''; pendingPos=-1;
+    renderCode();
+    overlay.classList.remove('tm-calling');
+    overlay.classList.add('tm-locked');
+    callPhone.classList.remove('tm-ringing');
+    callEl.classList.remove('tm-ringing');
+    if(lockScreen) lockScreen.hidden=false;
+    if(ringScreen) ringScreen.hidden=true;
+    if(codeBlock) codeBlock.style.display='';
+    if(callStatusText) callStatusText.textContent='LOCKED';
+    if(skipHint) skipHint.textContent='ENTER CODE TO UNLOCK';
   }
   if(callPhone){
     callPhone.addEventListener('click', answerCall);
@@ -735,8 +779,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
      code reads Y2K; the
      Answer paths stay locked until then. There are no escape hatches
      while locked — Decline, tap elsewhere and any other key are all
-     refused until the code is typed. Once it rings, the usual exits
-     work again. */
+     refused until the code is typed. Once it rings, only Answer moves
+     forward: Decline hangs up back to LOCKED, and taps and other keys
+     are ignored while the phone keeps ringing. */
   var KEYMAP={'1':'.,?1','2':'ABC2','3':'DEF3','4':'GHI4','5':'JKL5','6':'MNO6','7':'PQRS7','8':'TUV8','9':'WXYZ9','0':'0','*':'*+','#':'#'};
   function renderCode(){
     for(var i=0;i<3;i++){
@@ -793,8 +838,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   /* The code unlocked the phone — NOW it rings: the screen flips to the
      incoming call, the shake and the ring waves start, and the tune starts
      playing (the code entry was a real user gesture, so the browser allows
-     it). It rings until the visitor answers or declines — nothing answers
-     it for them. */
+     it). It rings until the visitor answers — a decline hangs up and locks
+     it again — and nothing else opens the intro: no tap, no key, no
+     Decline gets past the ring without answering. */
   function startRinging(){
     if(ringing || answered || done) return;
     ringing=true;
@@ -806,7 +852,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     if(ringScreen) ringScreen.hidden=false;
     if(codeBlock) codeBlock.style.display='none';
     if(callStatusText) callStatusText.textContent='INCOMING CALL';
-    if(skipHint) skipHint.textContent='TAP ANYWHERE TO SKIP';
+    if(skipHint) skipHint.textContent='ANSWER TO ENTER';
     tryTune();
   }
   function wrongCode(){
@@ -830,6 +876,18 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       callPhone.classList.remove('tm-code-deny');
       restoreStatus();
     }, 1200);
+  }
+  /* While the phone is ringing, a tap elsewhere or any other key is a
+     small shake only — no message, no skip. The status stays INCOMING
+     CALL: the phone is unlocked and ringing, so ENTER CODE FIRST would
+     be the wrong message here. (denyTimer is shared with denyAnswer;
+     locked and ringing are mutually exclusive, so they never race.) */
+  function denyRing(){
+    callPhone.classList.remove('tm-code-deny');
+    void callPhone.offsetWidth;
+    callPhone.classList.add('tm-code-deny');
+    if(denyTimer) clearTimeout(denyTimer);
+    denyTimer=setTimeout(function(){ callPhone.classList.remove('tm-code-deny'); }, 500);
   }
   function clearCode(){
     if(answered||unlocked||done) return;
@@ -1003,8 +1061,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     }
   }
   /* The phone sits locked until the code is typed — no auto-unlock, no
-     auto-answer. It rings until the visitor answers or declines. The
-     frame loop only begins after the ~1s connected beat. */
+     auto-answer. It rings until the visitor answers (a decline hangs up
+     and locks it again). The frame loop only begins after the ~1s
+     connected beat. */
 })();
 </script>
 
