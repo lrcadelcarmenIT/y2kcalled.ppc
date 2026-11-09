@@ -88,6 +88,12 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 @keyframes tm-year-beat{0%{opacity:.55;}100%{opacity:1;}}
 .tm-name{font-size:clamp(16px,4.4vw,26px);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#bfccd6;margin-top:12px;transition:opacity .3s ease;height:2.6em;line-height:1.3;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .tm-name.tm-name-out{opacity:0;}
+/* At the poster hold the year, the name and the ghost must be gone AT
+   ONCE. The name used to fade over .3s, so "THE WAIT FOR GTA 6" was
+   still faintly visible overlapping the landing title. Visibility hidden
+   plus no transition kills the fade outright — the text stays in the
+   DOM, just instantly invisible. */
+.tm-name.tm-name-gone,.tm-year.tm-year-gone,.tm-year-ghost.tm-ghost-gone{opacity:0!important;visibility:hidden;transition:none;}
 .tm-title{opacity:0;transform:scale(.94);}
 .tm-title.tm-title-in{animation:tm-land .7s cubic-bezier(.18,1.5,.35,1) forwards;}
 @keyframes tm-land{0%{opacity:0;transform:scale(.82);}55%{opacity:1;transform:scale(1.06);}100%{opacity:1;transform:scale(1);}}
@@ -110,23 +116,25 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    (~5.6%) while the years flew past, only catching up to 100% once the
    changes stopped at the title hold. Instant width sets cannot lag. */
 .tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
-/* Incoming call opening: a coded Nokia 3210 rings — no photo. The phone is
-   drawn in CSS/HTML in the Lobby Nokia's style, but realistic: true-to-life
-   proportions, the 3210's shape, a proper keypad with real-looking keys, a
-   believable LCD screen, and shading/depth (sheen, inset highlights, hard
-   and soft shadows) so it reads as a real handset. The classic Nokia tune
-   (assets/audio/nokia-tune.mp3, the Arcade soundboard file) plays with the
-   ringing; browsers block audio before a gesture, so the first attempt is
-   made on load and retried on the first pointerdown. The call is locked
-   behind a passcode: the screen says Y2K is calling, and the visitor types
+/* Incoming call opening: a coded Nokia 3210 sits LOCKED on load — no photo,
+   no shake, no ringing, no tune yet. The phone is drawn in CSS/HTML in the
+   Lobby Nokia's style, but realistic: true-to-life proportions, the 3210's
+   shape, a proper keypad with real-looking keys, a believable LCD screen,
+   and shading/depth (sheen, inset highlights, hard and soft shadows) so it
+   reads as a real handset. The lock screen shows a drawn padlock, LOCKED,
+   ENTER CODE TO UNLOCK, three code slots and HINT: Y2K. The visitor types
    Y2K on the keypad (classic multi-tap: 9 three times for Y, 2 four times
    for 2, 5 twice for K; a physical keyboard types Y, 2, K straight in).
-   The right code unlocks the phone (UNLOCKED, ring stops), then CONNECTED
-   for ~1s and the warp pops. Answer while locked shakes the phone and
-   says ENTER CODE FIRST. Decline, tap elsewhere, any other key, or ~10s
-   of ringing (auto-answer) skip the code entirely. The warp itself is
-   unchanged and at normal speed: 4.5s warp, 1.2s poster hold, 0.5s fade.
-   Total ~7.8s after the code is typed. */
+   ONLY the right code starts the ringing: UNLOCKED, then the screen flips
+   to INCOMING CALL / Y2K / is calling..., the phone shakes, the ring waves
+   pulse, and the classic Nokia tune (assets/audio/nokia-tune.mp3, the
+   Arcade soundboard file) starts playing — the code entry was a real user
+   gesture, so the browser allows it. Answer then shows CONNECTED for ~1s
+   and the warp pops. Answer while locked shakes the phone and says ENTER
+   CODE FIRST. Decline, tap elsewhere, any other key, or ~10s with no code
+   (auto-unlock, then auto-answer shortly after) skip the code entirely.
+   The warp itself is unchanged and at normal speed: 4.5s warp, 1.2s poster
+   hold, 0.5s fade. */
 .tm-call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:5;pointer-events:none;transition:opacity .4s cubic-bezier(.22,.61,.36,1),transform .4s cubic-bezier(.22,.61,.36,1);animation:tm-call-in .5s cubic-bezier(.22,.61,.36,1) backwards;}
 /* The phone glides in on load instead of popping into place. `backwards`
    fill only: once the entrance ends, the element returns to its normal
@@ -134,13 +142,20 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 @keyframes tm-call-in{from{opacity:0;transform:translateY(14px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 .tm-call.tm-call-off{opacity:0;transform:translateY(-28px) scale(1.1);pointer-events:none;}
 .tm-call-glow{position:absolute;left:50%;top:46%;width:72vmin;height:72vmin;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(92,184,217,.22) 0%,rgba(92,184,217,0) 65%);pointer-events:none;}
-.tm-call-pulse{position:absolute;left:50%;top:44%;width:min(340px,86vw);height:min(340px,86vw);transform:translate(-50%,-50%);border:2px solid rgba(92,184,217,.5);border-radius:50%;animation:tm-ring-pulse 1.6s ease-out infinite;pointer-events:none;}
+.tm-call-pulse{position:absolute;left:50%;top:44%;width:min(340px,86vw);height:min(340px,86vw);transform:translate(-50%,-50%);border:3px solid rgba(92,184,217,.65);border-radius:50%;opacity:0;pointer-events:none;}
+/* The ring waves only run while the phone is actually ringing — on load
+   the phone is locked and still, so the pulse sits invisible. A second,
+   delayed ring makes the waves read stronger. */
+.tm-call.tm-ringing .tm-call-pulse{opacity:1;animation:tm-ring-pulse 1.6s ease-out infinite;}
+.tm-call.tm-ringing .tm-call-pulse-2{animation-delay:.8s;}
 @keyframes tm-ring-pulse{0%{opacity:.7;transform:translate(-50%,-50%) scale(.55);}100%{opacity:0;transform:translate(-50%,-50%) scale(1.15);}}
 /* The 3210: tall candybar, slightly tapered, curved top and bottom. Same
    materials as the Lobby Nokia (light gradient body, dark border, hard
    offset shadow) plus a top sheen, inset highlights and a soft drop shadow
    for depth. It shakes in short bursts with a pause, like a real ring. */
-.tm-call-phone{position:relative;width:min(280px,72vw);background:linear-gradient(160deg,#f4f6fa 0,#c9d2e0 55%,#9aa7bd 100%);border:3px solid #0e1a2e;border-radius:40px 40px 30px 30px/54px 54px 30px 30px;padding:14px 16px 18px;box-shadow:7px 7px 0 #0e1a2e,0 24px 50px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.75),inset 0 -8px 14px rgba(14,26,46,.28);pointer-events:auto;cursor:pointer;animation:tm-ring-shake 1.1s ease-in-out infinite;}
+.tm-call-phone{position:relative;width:min(280px,72vw);background:linear-gradient(160deg,#f4f6fa 0,#c9d2e0 55%,#9aa7bd 100%);border:3px solid #0e1a2e;border-radius:40px 40px 30px 30px/54px 54px 30px 30px;padding:14px 16px 18px;box-shadow:7px 7px 0 #0e1a2e,0 24px 50px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.75),inset 0 -8px 14px rgba(14,26,46,.28);pointer-events:auto;cursor:pointer;}
+/* The shake lives on .tm-ringing only: a locked phone sits still. */
+.tm-call-phone.tm-ringing{animation:tm-ring-shake 1.1s ease-in-out infinite;}
 .tm-call-phone::before{content:"";position:absolute;inset:3px;border-radius:36px 36px 26px 26px/48px 48px 26px 26px;background:linear-gradient(105deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 42%);pointer-events:none;}
 @keyframes tm-ring-shake{0%,55%,100%{transform:rotate(0deg) translateX(0);}8%{transform:rotate(1.2deg) translateX(2px);}16%{transform:rotate(-1.2deg) translateX(-2px);}24%{transform:rotate(.9deg) translateX(1px);}32%{transform:rotate(-.9deg) translateX(-1px);}40%{transform:rotate(.4deg);}48%{transform:rotate(0deg) translateX(0);}}
 /* Once picked up, the phone stops shaking, the bell goes quiet, and the
@@ -156,10 +171,24 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-call-screen{position:relative;background:linear-gradient(180deg,#c2d68a 0,#b5cc7a 45%,#a8bf6c 100%);border:3px solid #0e1a2e;border-radius:8px;min-height:172px;padding:10px 12px;display:flex;flex-direction:column;font-family:'Space Mono',monospace;color:#1e2b12;box-shadow:inset 0 2px 8px rgba(0,0,0,.35),inset 0 -1px 0 rgba(255,255,255,.35);}
 .tm-call-screen::after{content:"";position:absolute;inset:0;border-radius:5px;background:repeating-linear-gradient(180deg,rgba(30,43,18,.05) 0 1px,transparent 1px 3px);pointer-events:none;}
 .tm-call-status{display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;letter-spacing:.08em;border-bottom:2px solid #1e2b12;padding-bottom:6px;margin-bottom:8px;}
-.tm-call-bell{animation:tm-bell-pulse 1.1s ease-in-out infinite;}
+/* The music note marks the tune playing: hidden while locked, pulsing
+   while the phone rings. */
+.tm-call-bell{opacity:0;}
+.tm-call.tm-ringing .tm-call-bell{opacity:1;animation:tm-bell-pulse 1.1s ease-in-out infinite;}
 @keyframes tm-bell-pulse{0%,55%,100%{opacity:1;}25%{opacity:.25;}45%{opacity:1;}}
 .tm-call-caller{font-size:clamp(16px,5vw,21px);font-weight:700;letter-spacing:.01em;line-height:1.15;white-space:nowrap;}
 .tm-call-sub{font-size:.72rem;opacity:.75;margin-top:4px;}
+/* The lock screen: a drawn padlock (CSS only, no image) with a slow
+   pulse, LOCKED big and centred. The ring screen is the same LCD flipped
+   to the caller once the code unlocks it; the caller reads bigger there. */
+.tm-lock-screen,.tm-ring-screen{text-align:center;}
+.tm-lock{margin:2px auto 6px;width:34px;animation:tm-lock-pulse 1.6s ease-in-out infinite;}
+@keyframes tm-lock-pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.07);opacity:.85;}}
+.tm-lock-bow{display:block;width:22px;height:15px;border:3px solid #1e2b12;border-bottom:none;border-radius:12px 12px 0 0;margin:0 auto -3px;}
+.tm-lock-body{display:block;width:34px;height:26px;background:#1e2b12;border-radius:5px;position:relative;}
+.tm-lock-body::before{content:"";position:absolute;left:50%;top:12px;width:5px;height:9px;margin-left:-2.5px;background:#b5cc7a;border-radius:2px;}
+.tm-lock-body::after{content:"";position:absolute;left:50%;top:5px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#b5cc7a;}
+.tm-caller-big{font-size:clamp(24px,7vw,32px);letter-spacing:.02em;}
 .tm-call-softkeys{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;}
 .tm-call-softkeys .tm-sk-answer{color:#1d7a35;}
 .tm-call-softkeys .tm-sk-decline{color:#a11d1d;}
@@ -169,8 +198,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-code{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;}
 .tm-code-label{font-size:.62rem;font-weight:700;letter-spacing:.14em;}
 .tm-code-slots{display:flex;gap:6px;}
-.tm-code-slot{width:30px;height:34px;display:flex;align-items:center;justify-content:center;border:2px solid #1e2b12;border-radius:4px;font-size:1rem;font-weight:700;background:rgba(30,43,18,.08);}
-.tm-code-slot.tm-code-active{background:#1e2b12;color:#b5cc7a;animation:tm-code-blink .5s steps(2,start) infinite;}
+.tm-code-slot{width:36px;height:42px;display:flex;align-items:center;justify-content:center;border:2px solid #1e2b12;border-radius:4px;font-size:1.2rem;font-weight:700;background:rgba(30,43,18,.08);}
+.tm-code-slot.tm-code-active{background:#1e2b12;color:#b5cc7a;box-shadow:0 0 12px rgba(181,204,122,.9);animation:tm-code-blink .5s steps(2,start) infinite;}
 @keyframes tm-code-blink{50%{opacity:.55;}}
 .tm-code-slot.tm-code-filled{background:rgba(30,43,18,.14);}
 .tm-code-hint{display:flex;justify-content:space-between;font-size:.6rem;letter-spacing:.06em;opacity:.75;margin-top:6px;}
@@ -178,11 +207,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    and it only replaces the ring shake while it runs. */
 .tm-call-phone.tm-code-deny{animation:tm-deny-shake .45s ease-in-out;}
 @keyframes tm-deny-shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-7px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(3px);}}
-/* Unlocked: the ring stops (shake off, bell quiet, pulse faded) while the
-   UNLOCKED beat shows, before the CONNECTED screen takes over. */
-.tm-call-phone.tm-unlocked{animation:none;}
-.tm-call-phone.tm-unlocked .tm-call-bell{animation:none;opacity:0;}
-.tm-call.tm-unlocked .tm-call-pulse{animation:none;opacity:0;}
+/* The UNLOCKED beat is just the status text for ~0.6s; the ring starts
+   after it, so there is no unlocked-state styling to undo. */
 /* Clear code: a small text button under the phone, for starting the code
    over without waiting for a wrong-code reset. */
 .tm-code-clear{pointer-events:auto;background:none;border:none;font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.22em;color:#8fa8b8;text-decoration:underline;cursor:pointer;padding:2px 8px;}
@@ -199,6 +225,11 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-pad-key{border:2px solid #0e1a2e;border-radius:8px;background:linear-gradient(180deg,#fbfcfe 0,#c9d1de 100%);box-shadow:0 2px 0 #0e1a2e,inset 0 1px 0 rgba(255,255,255,.85);min-height:38px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Space Mono',monospace;color:#1e2b12;line-height:1.05;padding:0;cursor:pointer;}
 .tm-pad-key b{font-size:15px;}
 .tm-pad-key span{font-size:.55rem;letter-spacing:.12em;opacity:.65;}
+/* Press feedback: every key visibly depresses on tap, so the multi-tap
+   code entry feels like a real keypad. Transform-only. */
+.tm-pad-key:active,.tm-key:active{transform:translateY(2px) scale(.96);}
+.tm-pad-key:active{box-shadow:0 0 0 #0e1a2e,inset 0 1px 0 rgba(255,255,255,.85);}
+.tm-call-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #0e1a2e;}
 .tm-call-speaker{position:relative;width:64px;height:8px;background:#0e1a2e;border-radius:4px;margin:14px auto 0;opacity:.5;}
 /* The two big buttons under the phone: the unmistakable way to answer or
    decline, big enough for a thumb. */
@@ -221,8 +252,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   .tm-pad-key{min-height:28px;}
   .tm-key{min-height:36px;}
   .tm-call-btn{min-height:44px;padding:12px 20px;}
+  .tm-lock-bow{width:17px;height:11px;}
+  .tm-lock-body{width:26px;height:20px;}
+  .tm-code-slot{width:30px;height:34px;font-size:1rem;}
 }
-/* While the call rings, the warp stage stays hidden behind the phone. */
+/* While the phone is locked or ringing, the warp stage stays hidden
+   behind the phone. */
+.tm-intro.tm-locked .tm-center,.tm-intro.tm-locked .tm-timeline,.tm-intro.tm-locked .tm-warp,.tm-intro.tm-locked .tm-warp-purple,.tm-intro.tm-locked .tm-photo,
 .tm-intro.tm-calling .tm-center,.tm-intro.tm-calling .tm-timeline,.tm-intro.tm-calling .tm-warp,.tm-intro.tm-calling .tm-warp-purple,.tm-intro.tm-calling .tm-photo{opacity:0!important;}
 @media (prefers-reduced-motion:reduce){.tm-call,.tm-call-phone,.tm-call-bell,.tm-call-pulse,.tm-photo{animation:none!important;}}
 /* 2020s smartphone moved into the hero (under the title): room below it so
@@ -233,27 +269,37 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 </style>
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
-<div class="tm-intro tm-calling" id="tm-intro" aria-hidden="true">
+<div class="tm-intro tm-locked" id="tm-intro" aria-hidden="true">
   <audio id="tm-tune" src="assets/audio/nokia-tune.mp3?v=realclips2" preload="auto"></audio>
   <div class="tm-call" id="tm-call" aria-hidden="true">
     <div class="tm-call-glow" aria-hidden="true"></div>
     <div class="tm-call-pulse" aria-hidden="true"></div>
-    <div class="tm-call-phone" id="tm-call-phone" role="button" tabindex="0" aria-label="Nokia 3210, incoming call from Y2K. Enter the code Y2K on the keypad, then answer.">
+    <div class="tm-call-pulse tm-call-pulse-2" aria-hidden="true"></div>
+    <div class="tm-call-phone" id="tm-call-phone" role="button" tabindex="0" aria-label="Nokia 3210, locked. Enter the code Y2K on the keypad to unlock it, then answer the call from Y2K.">
       <div class="tm-call-earpiece" aria-hidden="true"></div>
       <div class="tm-call-brand">NOKIA</div>
       <div class="tm-call-screen">
-        <div class="tm-call-status"><span id="tm-call-status-text">INCOMING CALL</span><span class="tm-call-bell" aria-hidden="true">♪</span></div>
-        <div class="tm-call-caller">Y2K</div>
-        <div class="tm-call-sub" id="tm-call-sub">is calling...</div>
-        <div class="tm-code" id="tm-code">
-          <span class="tm-code-label">ENTER CODE</span>
-          <span class="tm-code-slots">
-            <span class="tm-code-slot" id="tm-code-0">_</span>
-            <span class="tm-code-slot" id="tm-code-1">_</span>
-            <span class="tm-code-slot" id="tm-code-2">_</span>
-          </span>
+        <div class="tm-call-status"><span id="tm-call-status-text">LOCKED</span><span class="tm-call-bell" id="tm-call-bell" aria-hidden="true">♪</span></div>
+        <div class="tm-lock-screen" id="tm-lock-screen">
+          <div class="tm-lock" aria-hidden="true"><span class="tm-lock-bow"></span><span class="tm-lock-body"></span></div>
+          <div class="tm-call-caller tm-caller-big">LOCKED</div>
+          <div class="tm-call-sub">ENTER CODE TO UNLOCK</div>
         </div>
-        <div class="tm-code-hint"><span>HINT: Y2K</span><span>Mobile · 2000–2026</span></div>
+        <div class="tm-ring-screen" id="tm-ring-screen" hidden>
+          <div class="tm-call-caller tm-caller-big">Y2K</div>
+          <div class="tm-call-sub" id="tm-call-sub">is calling...</div>
+        </div>
+        <div id="tm-code-block">
+          <div class="tm-code" id="tm-code">
+            <span class="tm-code-label">ENTER CODE</span>
+            <span class="tm-code-slots">
+              <span class="tm-code-slot" id="tm-code-0">_</span>
+              <span class="tm-code-slot" id="tm-code-1">_</span>
+              <span class="tm-code-slot" id="tm-code-2">_</span>
+            </span>
+          </div>
+          <div class="tm-code-hint"><span>HINT: Y2K</span><span>Mobile · 2000–2026</span></div>
+        </div>
         <div class="tm-call-softkeys"><span class="tm-sk-answer" id="tm-call-sk-answer">Answer</span><span class="tm-sk-decline" id="tm-call-sk-decline">Decline</span></div>
       </div>
       <div class="tm-call-keys">
@@ -306,7 +352,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     <div class="tm-timeline-row"><span>2000</span><span class="tm-timeline-now era-2000s" id="tm-timeline-now">2000</span><span>2026</span></div>
     <div class="tm-timeline-track"><div class="tm-timeline-fill" id="tm-timeline-fill"></div></div>
   </div>
-  <p class="tm-skip" id="tm-skip">ENTER CODE TO PICK UP · TAP ELSEWHERE TO SKIP</p>
+  <p class="tm-skip" id="tm-skip">ENTER CODE TO UNLOCK · TAP ELSEWHERE TO SKIP</p>
 </div>
 <noscript><style>.tm-intro{display:none!important;}</style></noscript>
 <script>
@@ -338,6 +384,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   var skAnswer=document.getElementById('tm-call-sk-answer');
   var skDecline=document.getElementById('tm-call-sk-decline');
   var codeSlotEls=[document.getElementById('tm-code-0'),document.getElementById('tm-code-1'),document.getElementById('tm-code-2')];
+  var lockScreen=document.getElementById('tm-lock-screen');
+  var ringScreen=document.getElementById('tm-ring-screen');
+  var codeBlock=document.getElementById('tm-code-block');
   var codeClearBtn=document.getElementById('tm-code-clear');
   var padKeys=Array.prototype.slice.call(document.querySelectorAll('#tm-call-pad .tm-pad-key'));
   var YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
@@ -388,10 +437,10 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     2025:'The Halalan Shake-up',
     2026:'The Wait for GTA 6'
   };
-  var YEAR_MS=4500, SETTLE_MS=1200, FADE_MS=500, AUTO_MS=10000, CONNECT_MS=1000;
+  var YEAR_MS=4500, SETTLE_MS=1200, FADE_MS=500, AUTO_MS=10000, CONNECT_MS=1000, RING_MS=5000;
   var CODE='Y2K', COMMIT_MS=900, UNLOCK_MS=600;
   var done=false, rafId=0, startTs=0, lastIdx=-1, lastChangeTs=0, lastFrameTs=0, revealed=false, photoActive=0, burstDone=false, answered=false, callHidden=false, tuneFailed=false, autoTimer=0, connectTimer=0, callTimer=0, callSecs=0;
-  var unlocked=false, codeSlots=['','',''], codeIdx=0, pendingKey=null, pendingChar='', pendingPos=-1, commitTimer=0, unlockTimer=0, wrongTimer=0, denyTimer=0;
+  var unlocked=false, ringing=false, ringTimer=0, codeSlots=['','',''], codeIdx=0, pendingKey=null, pendingChar='', pendingPos=-1, commitTimer=0, unlockTimer=0, wrongTimer=0, denyTimer=0;
   var angle=0, angleP=0, failed={};
   function removeNode(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); stopTune(); }
   /* Stop the tune outright — pause AND reset to the start — whenever the
@@ -421,9 +470,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     if(unlockTimer){ clearTimeout(unlockTimer); unlockTimer=0; }
     if(wrongTimer){ clearTimeout(wrongTimer); wrongTimer=0; }
     if(denyTimer){ clearTimeout(denyTimer); denyTimer=0; }
+    if(ringTimer){ clearTimeout(ringTimer); ringTimer=0; }
     stopTune();
     overlay.removeEventListener('click', onSkip);
-    overlay.removeEventListener('pointerdown', tryTune);
     window.removeEventListener('keydown', onKey, true);
     if(fast){
       document.documentElement.classList.remove('tm-intro-lock','tm-reveal');
@@ -440,8 +489,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
        picks up, Decline skips) — any other key skips the intro. */
     if(t && t.closest && t.closest('#tm-call-phone,#tm-answer,#tm-decline,#tm-callkey-answer,#tm-callkey-decline') && (e.key==='Enter'||e.key===' ')){ return; }
     /* Code entry on a physical keyboard: Y, 2 or K fills the next slot
-       directly, Backspace/Delete clears the code. Only while the call is
-       ringing and locked; every other key still skips to the Lobby. */
+       directly, Backspace/Delete clears the code. Only while the phone
+       is locked; every other key still skips to the Lobby. */
     if(!answered && !done && !unlocked){
       var k=e.key;
       if(k==='Backspace'||k==='Delete'){ clearCode(); restoreStatus(); return; }
@@ -453,7 +502,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     onSkip();
   }
   function restoreStatus(){
-    if(callStatusText && !answered && !unlocked && !done) callStatusText.textContent='INCOMING CALL';
+    if(!callStatusText || answered || done) return;
+    callStatusText.textContent=ringing?'INCOMING CALL':'LOCKED';
   }
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     removeNode(); return;
@@ -464,11 +514,12 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     im.src=PHOTOS[y];
   });
   /* The Nokia tune (assets/audio/nokia-tune.mp3, the Arcade soundboard file,
-     classic Nokia tune, CC BY-SA 3.0). It plays with the ringing phone.
-     Browsers block audio before a user gesture, so the attempt on load
-     usually fails silently; the first pointerdown retries it as a real
-     gesture. If the file fails to load, the intro still works with visual
-     ringing only. */
+     classic Nokia tune, CC BY-SA 3.0). It plays ONLY once the phone starts
+     ringing — never on load, never while locked. The code entry was a real
+     user gesture, so the browser allows playback from startRinging; the
+     auto-unlock path tries too and fails silently if the browser still
+     blocks it. If the file fails to load, the intro still works with
+     visual ringing only. */
   function tryTune(){
     if(!tune || tuneFailed) return;
     try{
@@ -476,24 +527,27 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       if(p && p.catch) p.catch(function(){});
     }catch(err){}
   }
-  if(tune){ tune.addEventListener('error', function(){ tuneFailed=true; }); tryTune(); }
+  if(tune){ tune.addEventListener('error', function(){ tuneFailed=true; }); }
   document.documentElement.classList.add('tm-intro-lock');
   document.body.classList.add('tm-intro-lock');
   overlay.addEventListener('click', onSkip);
-  overlay.addEventListener('pointerdown', tryTune);
   window.addEventListener('keydown', onKey, true);
   /* Answer picks up the call: the phone stops ringing, the screen shows a
      connected state with a call timer starting, and after ~1s the warp
      pops. Decline skips the whole intro. Tapping the phone itself answers;
      tapping anywhere else on the overlay skips. While the code is locked,
-     every Answer path refuses (shake + ENTER CODE FIRST) — only the
-     unlock flow and the auto-answer pass force=true and bypass the lock. */
+     every Answer path refuses (shake + ENTER CODE FIRST) — only the ring
+     auto-answer passes force=true and bypasses the lock. */
   function answerCall(e, force){
     if(e) e.stopPropagation();
     if(answered || done) return;
     if(!force && !unlocked){ denyAnswer(); return; }
     answered=true;
     if(autoTimer){ clearTimeout(autoTimer); autoTimer=0; }
+    if(unlockTimer){ clearTimeout(unlockTimer); unlockTimer=0; }
+    if(ringTimer){ clearTimeout(ringTimer); ringTimer=0; }
+    callPhone.classList.remove('tm-ringing');
+    callEl.classList.remove('tm-ringing');
     tryTune();
     callPhone.classList.add('tm-connected');
     callEl.classList.add('tm-connected');
@@ -537,9 +591,9 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
      9=WXYZ9), so Y is 9 three times, 2 is 2 four times, K is 5 twice. A
      ~900ms pause or a different key commits the letter showing in the
      active slot. A physical keyboard types Y, 2, K straight into the
-     slots. The Answer paths stay locked until the code reads Y2K; the
-     escape hatches (Decline, tap elsewhere, any other key, auto-answer)
-     never ask for the code. */
+     slots. The phone only starts ringing once the code reads Y2K; the
+     Answer paths stay locked until then. The escape hatches (Decline, tap
+     elsewhere, any other key, auto-unlock) never ask for the code. */
   var KEYMAP={'1':'.,?1','2':'ABC2','3':'DEF3','4':'GHI4','5':'JKL5','6':'MNO6','7':'PQRS7','8':'TUV8','9':'WXYZ9','0':'0','*':'*+','#':'#'};
   function renderCode(){
     for(var i=0;i<3;i++){
@@ -591,9 +645,37 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     unlocked=true;
     if(commitTimer){ clearTimeout(commitTimer); commitTimer=0; }
     if(callStatusText) callStatusText.textContent='UNLOCKED';
-    callPhone.classList.add('tm-unlocked');
-    callEl.classList.add('tm-unlocked');
-    unlockTimer=setTimeout(function(){ answerCall(null, true); }, UNLOCK_MS);
+    unlockTimer=setTimeout(startRinging, UNLOCK_MS);
+  }
+  /* The code unlocked the phone — NOW it rings: the screen flips to the
+     incoming call, the shake and the ring waves start, and the tune starts
+     playing (the code entry was a real user gesture, so the browser allows
+     it). If nobody picks up within RING_MS the phone answers itself. */
+  function startRinging(){
+    if(ringing || answered || done) return;
+    ringing=true;
+    overlay.classList.remove('tm-locked');
+    overlay.classList.add('tm-calling');
+    callPhone.classList.add('tm-ringing');
+    callEl.classList.add('tm-ringing');
+    if(lockScreen) lockScreen.hidden=true;
+    if(ringScreen) ringScreen.hidden=false;
+    if(codeBlock) codeBlock.style.display='none';
+    if(callStatusText) callStatusText.textContent='INCOMING CALL';
+    if(skipHint) skipHint.textContent='TAP ANYWHERE TO SKIP';
+    tryTune();
+    ringTimer=setTimeout(function(){ if(!answered && !done) answerCall(null, true); }, RING_MS);
+  }
+  /* If nobody enters the code for ~10s, the phone unlocks itself and
+     starts ringing on its own, then answers itself shortly after — the
+     intro still plays by itself, and the code can never trap a visitor
+     out of the site. */
+  function autoUnlock(){
+    if(unlocked || answered || done) return;
+    clearCode();
+    unlocked=true;
+    if(callStatusText) callStatusText.textContent='UNLOCKED';
+    unlockTimer=setTimeout(startRinging, UNLOCK_MS);
   }
   function wrongCode(){
     if(callStatusText) callStatusText.textContent='WRONG CODE';
@@ -636,12 +718,10 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     clearCode();
     restoreStatus();
   });
-  /* If nobody picks up, the phone answers itself after ~10s of ringing and
-     the warp plays — the call never rings forever. The auto-answer bypasses
-     the passcode, so the code can never trap a visitor out of the site.
-     The tune keeps playing through the auto-answer exactly as it does on
-     a manual answer. */
-  autoTimer=setTimeout(function(){ if(!answered && !done) answerCall(null, true); }, AUTO_MS);
+  /* If nobody enters the code, the phone unlocks itself after ~10s and
+     starts ringing on its own — the intro never sits locked forever, and
+     the code can never trap a visitor out of the site. */
+  autoTimer=setTimeout(autoUnlock, AUTO_MS);
   function easeInOutQuad(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
   function easeInOutSine(p){ return (1-Math.cos(Math.PI*p))/2; }
   /* The pop: ease-out-back overshoots past 1 (peak ~1.09 at p~0.7) and
@@ -716,7 +796,11 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
         }
         yearEl.textContent=YEARS[idx];
         nameEl.textContent=NAMES[YEARS[idx]];
+        yearEl.classList.remove('tm-year-out');
+        yearEl.classList.remove('tm-year-gone');
         nameEl.classList.remove('tm-name-out');
+        nameEl.classList.remove('tm-name-gone');
+        ghostEl.classList.remove('tm-ghost-gone');
         /* The beat: retrigger the opacity flash on the year so every change
            lands with a visible pulse. Same remove/reflow/add pattern as
            the ghost, so it restarts on every year. */
@@ -754,9 +838,16 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
          frame was dropped: the bar must read 100% at the title hold. */
       tlFill.style.width='100%';
       tlNow.textContent='2026';
+      /* The year, the name and the ghost go INSTANTLY here — opacity 0
+         AND visibility hidden, no fade. The name used to fade over .3s,
+         so "THE WAIT FOR GTA 6" was still faintly visible overlapping
+         the landing title. */
       yearEl.classList.add('tm-year-out');
+      yearEl.classList.add('tm-year-gone');
       nameEl.classList.add('tm-name-out');
+      nameEl.classList.add('tm-name-gone');
       ghostEl.classList.remove('tm-ghost-go');
+      ghostEl.classList.add('tm-ghost-gone');
       titleEl.classList.add('tm-title-in');
       if(!burstDone){
         burstDone=true;
@@ -777,7 +868,8 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       finish(false);
     }
   }
-  /* The call rings until the user acts or the auto-answer fires (~10s).
+  /* The phone sits locked until the code is typed or the ~10s auto-unlock
+     fires; it rings until the user answers or the ring auto-answer fires.
      The frame loop only begins after the ~1s connected beat. */
 })();
 </script>
