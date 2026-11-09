@@ -32,12 +32,18 @@
    bar gliding to 100%, then the title holds and the Lobby fades in.
    Normal speed throughout: 4.5s warp, 1.2s poster hold, 0.5s fade.
    No subtle textures — every change must read at a glance on a phone. */
-/* The overlay is the whole viewport on every platform: svh/dvh so it
-   does not jump when Safari/Chrome show or hide their URL bar (vh is
-   the fallback for older browsers), overscroll-behavior so Android
-   Chrome cannot pull-to-refresh it, and no selection or callout on
-   long-press — the intro is a phone, not a page to copy from. */
-.tm-intro{position:fixed;inset:0;height:100vh;height:100svh;height:100dvh;z-index:9999;background:#04060f;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:opacity .5s cubic-bezier(.22,.61,.36,1),transform .5s cubic-bezier(.22,.61,.36,1);will-change:transform,opacity;}
+/* The overlay is the whole VISIBLE viewport on every platform: svh is
+   the bars-visible height (the small viewport, with Safari/Chrome's URL
+   bar and toolbar shown), and vh is the fallback for older browsers.
+   dvh is DELIBERATELY not used: on iOS Safari dvh tracks the dynamic
+   viewport, which is taller than the bars-visible height, so a dvh
+   overlay overflows while the bars are shown — the phone column centres
+   in the too-tall box and clips top and bottom (NOKIA cut, Answer /
+   Decline cut, caption off-screen). svh sizes the overlay to what the
+   visitor actually sees. Overscroll-behavior stops Android Chrome
+   pull-to-refresh; no selection or callout on long-press — the intro is
+   a phone, not a page to copy from. */
+.tm-intro{position:fixed;inset:0;height:100vh;height:100svh;z-index:9999;background:#04060f;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:opacity .5s cubic-bezier(.22,.61,.36,1),transform .5s cubic-bezier(.22,.61,.36,1);will-change:transform,opacity;}
 /* Predictable sizing inside the overlay: padding and borders count inside
    the widths below, so the coded phone can never overflow a narrow phone. */
 .tm-intro *{box-sizing:border-box;}
@@ -204,11 +210,11 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    caption) that must fit the viewport at EVERY height from ~500px up.
    The overlay never scrolls, so the column cannot overflow: every fixed
    height inside it is therefore capped by viewport height as well as px
-   (clamp with a vh middle), shrinking proportionally below ~880px instead
+   (clamp with a svh middle), shrinking proportionally below ~880px instead
    of clipping. The caption rides inside the column as its last flex
    child, so it can never land on top of CLEAR CODE the way the old
    viewport-pinned caption did. */
-.tm-call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,1.8vh,16px);z-index:5;pointer-events:none;transition:opacity .4s cubic-bezier(.22,.61,.36,1),transform .4s cubic-bezier(.22,.61,.36,1);animation:tm-call-in .5s cubic-bezier(.22,.61,.36,1) backwards;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+.tm-call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,1.8svh,16px);z-index:5;pointer-events:none;transition:opacity .4s cubic-bezier(.22,.61,.36,1),transform .4s cubic-bezier(.22,.61,.36,1);animation:tm-call-in .5s cubic-bezier(.22,.61,.36,1) backwards;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 /* The phone glides in on load instead of popping into place. `backwards`
    fill only: once the entrance ends, the element returns to its normal
    styles, so the lift-away transition (tm-call-off) still works. */
@@ -226,7 +232,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    materials as the Lobby Nokia (light gradient body, dark border, hard
    offset shadow) plus a top sheen, inset highlights and a soft drop shadow
    for depth. It shakes in short bursts with a pause, like a real ring. */
-.tm-call-phone{position:relative;width:min(280px,72vw);background:linear-gradient(160deg,#f4f6fa 0,#c9d2e0 55%,#9aa7bd 100%);border:3px solid #0e1a2e;border-radius:40px 40px 30px 30px/54px 54px 30px 30px;padding:clamp(7px,1.6vh,14px) clamp(10px,2vw,16px) clamp(8px,2vh,18px);box-shadow:7px 7px 0 #0e1a2e,0 24px 50px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.75),inset 0 -8px 14px rgba(14,26,46,.28);pointer-events:auto;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+.tm-call-phone{position:relative;width:min(280px,72vw);background:linear-gradient(160deg,#f4f6fa 0,#c9d2e0 55%,#9aa7bd 100%);border:3px solid #0e1a2e;border-radius:40px 40px 30px 30px/54px 54px 30px 30px;padding:clamp(7px,1.6svh,14px) clamp(10px,2vw,16px) clamp(8px,2svh,18px);box-shadow:7px 7px 0 #0e1a2e,0 24px 50px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.75),inset 0 -8px 14px rgba(14,26,46,.28);pointer-events:auto;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 /* The shake lives on .tm-ringing only: a locked phone sits still. */
 .tm-call-phone.tm-ringing{animation:tm-ring-shake 1.1s ease-in-out infinite;}
 .tm-call-phone::before{content:"";position:absolute;inset:3px;border-radius:36px 36px 26px 26px/48px 48px 26px 26px;background:linear-gradient(105deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 42%);pointer-events:none;}
@@ -236,14 +242,14 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-call-phone.tm-connected{animation:none;}
 .tm-call-phone.tm-connected .tm-call-bell{animation:none;opacity:0;}
 .tm-call.tm-connected .tm-call-pulse{animation:none;opacity:0;}
-.tm-call-earpiece{position:relative;width:52px;height:7px;background:#0e1a2e;border-radius:4px;margin:clamp(0px,.3vh,2px) auto clamp(5px,1.1vh,10px);opacity:.55;}
-.tm-call-brand{position:relative;text-align:center;color:#2c4a6e;font-family:'Archivo Black',Impact,sans-serif;letter-spacing:.35em;font-size:.85rem;margin-bottom:clamp(4px,1.1vh,10px);}
+.tm-call-earpiece{position:relative;width:52px;height:7px;background:#0e1a2e;border-radius:4px;margin:clamp(0px,.3svh,2px) auto clamp(5px,1.1svh,10px);opacity:.55;}
+.tm-call-brand{position:relative;text-align:center;color:#2c4a6e;font-family:'Archivo Black',Impact,sans-serif;letter-spacing:.35em;font-size:.85rem;margin-bottom:clamp(4px,1.1svh,10px);}
 /* The LCD: recessed green glass, lighter at the top, faint pixel rows. The
    caller is the biggest thing on it; the softkey hints at the bottom mirror
    the real Answer/Decline buttons below the phone. */
-.tm-call-screen{position:relative;background:linear-gradient(180deg,#c2d68a 0,#b5cc7a 45%,#a8bf6c 100%);border:3px solid #0e1a2e;border-radius:8px;min-height:clamp(110px,19.5vh,172px);padding:clamp(6px,1.1vh,10px) clamp(8px,1.6vw,12px);display:flex;flex-direction:column;font-family:'Space Mono',monospace;color:#1e2b12;box-shadow:inset 0 2px 8px rgba(0,0,0,.35),inset 0 -1px 0 rgba(255,255,255,.35);}
+.tm-call-screen{position:relative;background:linear-gradient(180deg,#c2d68a 0,#b5cc7a 45%,#a8bf6c 100%);border:3px solid #0e1a2e;border-radius:8px;min-height:clamp(110px,19.5svh,172px);padding:clamp(6px,1.1svh,10px) clamp(8px,1.6vw,12px);display:flex;flex-direction:column;font-family:'Space Mono',monospace;color:#1e2b12;box-shadow:inset 0 2px 8px rgba(0,0,0,.35),inset 0 -1px 0 rgba(255,255,255,.35);}
 .tm-call-screen::after{content:"";position:absolute;inset:0;border-radius:5px;background:repeating-linear-gradient(180deg,rgba(30,43,18,.05) 0 1px,transparent 1px 3px);pointer-events:none;}
-.tm-call-status{display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;letter-spacing:.08em;border-bottom:2px solid #1e2b12;padding-bottom:clamp(3px,.7vh,6px);margin-bottom:clamp(4px,.9vh,8px);}
+.tm-call-status{display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;letter-spacing:.08em;border-bottom:2px solid #1e2b12;padding-bottom:clamp(3px,.7svh,6px);margin-bottom:clamp(4px,.9svh,8px);}
 /* The music note marks the tune playing: hidden while locked, pulsing
    while the phone rings. */
 .tm-call-bell{opacity:0;}
@@ -255,27 +261,27 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    pulse, LOCKED big and centred. The ring screen is the same LCD flipped
    to the caller once the code unlocks it; the caller reads bigger there. */
 .tm-lock-screen,.tm-ring-screen{text-align:center;}
-.tm-lock{margin:clamp(0px,.3vh,2px) auto clamp(3px,.7vh,6px);width:clamp(24px,3.9vh,34px);animation:tm-lock-pulse 1.6s ease-in-out infinite;}
+.tm-lock{margin:clamp(0px,.3svh,2px) auto clamp(3px,.7svh,6px);width:clamp(24px,3.9svh,34px);animation:tm-lock-pulse 1.6s ease-in-out infinite;}
 @keyframes tm-lock-pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.07);opacity:.85;}}
-.tm-lock-bow{display:block;width:clamp(14px,2.5vh,22px);height:clamp(10px,1.7vh,15px);border:3px solid #1e2b12;border-bottom:none;border-radius:12px 12px 0 0;margin:0 auto -3px;}
-.tm-lock-body{display:block;width:clamp(24px,3.9vh,34px);height:clamp(18px,3vh,26px);background:#1e2b12;border-radius:5px;position:relative;}
+.tm-lock-bow{display:block;width:clamp(14px,2.5svh,22px);height:clamp(10px,1.7svh,15px);border:3px solid #1e2b12;border-bottom:none;border-radius:12px 12px 0 0;margin:0 auto -3px;}
+.tm-lock-body{display:block;width:clamp(24px,3.9svh,34px);height:clamp(18px,3svh,26px);background:#1e2b12;border-radius:5px;position:relative;}
 .tm-lock-body::before{content:"";position:absolute;left:50%;top:58%;width:5px;height:34%;margin-left:-2.5px;background:#b5cc7a;border-radius:2px;}
 .tm-lock-body::after{content:"";position:absolute;left:50%;top:20%;width:7px;height:28%;margin-left:-3.5px;border-radius:50%;background:#b5cc7a;}
-.tm-caller-big{font-size:clamp(20px,min(7vw,3.6vh),32px);letter-spacing:.02em;}
-.tm-call-softkeys{margin-top:auto;padding-top:clamp(4px,.9vh,8px);display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;}
+.tm-caller-big{font-size:clamp(20px,min(7vw,3.6svh),32px);letter-spacing:.02em;}
+.tm-call-softkeys{margin-top:auto;padding-top:clamp(4px,.9svh,8px);display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;}
 .tm-call-softkeys .tm-sk-answer{color:#1d7a35;}
 .tm-call-softkeys .tm-sk-decline{color:#a11d1d;}
 /* The passcode: three slots on the LCD. The active slot (the letter
    currently cycling under multi-tap) is inverted and blinks, so the
    visitor sees W, X, Y change as they tap 9. Filled slots are solid. */
-.tm-code{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:clamp(4px,1.1vh,10px);}
+.tm-code{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:clamp(4px,1.1svh,10px);}
 .tm-code-label{font-size:.62rem;font-weight:700;letter-spacing:.14em;}
 .tm-code-slots{display:flex;gap:6px;}
-.tm-code-slot{width:clamp(28px,4.1vh,36px);height:clamp(30px,4.8vh,42px);display:flex;align-items:center;justify-content:center;border:2px solid #1e2b12;border-radius:4px;font-size:clamp(1rem,2.4vh,1.2rem);font-weight:700;background:rgba(30,43,18,.08);}
+.tm-code-slot{width:clamp(28px,4.1svh,36px);height:clamp(28px,4.8svh,42px);display:flex;align-items:center;justify-content:center;border:2px solid #1e2b12;border-radius:4px;font-size:clamp(1rem,2.4svh,1.2rem);font-weight:700;background:rgba(30,43,18,.08);}
 .tm-code-slot.tm-code-active{background:#1e2b12;color:#b5cc7a;box-shadow:0 0 12px rgba(181,204,122,.9);}.tm-code-slot.tm-code-active{animation:tm-code-blink .5s steps(2,start) infinite;}
 @keyframes tm-code-blink{50%{opacity:.55;}}
 .tm-code-slot.tm-code-filled{background:rgba(30,43,18,.14);}
-.tm-code-hint{display:flex;justify-content:space-between;font-size:.6rem;letter-spacing:.06em;opacity:.75;margin-top:clamp(3px,.7vh,6px);}
+.tm-code-hint{display:flex;justify-content:space-between;font-size:.6rem;letter-spacing:.06em;opacity:.75;margin-top:clamp(3px,.7svh,6px);}
 /* Wrong code / locked answer: a short horizontal shake. Transform-only,
    and it only replaces the ring shake while it runs. */
 .tm-call-phone.tm-code-deny{animation:tm-deny-shake .45s ease-in-out;}
@@ -287,15 +293,15 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 .tm-code-clear{pointer-events:auto;background:none;border:none;font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.22em;color:#8fa8b8;text-decoration:underline;cursor:pointer;padding:2px 8px;}
 /* Call keys: green call, wide Navi-key, red end. Call and end are real
    buttons; the Navi-key is a plain span (tapping the phone itself answers). */
-.tm-call-keys{position:relative;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:clamp(4px,.9vh,8px);margin-top:clamp(6px,1.4vh,12px);}
-.tm-key{border:2px solid #0e1a2e;border-radius:10px;background:linear-gradient(180deg,#f7f9fc 0,#c3ccd9 100%);box-shadow:0 2px 0 #0e1a2e,inset 0 1px 0 rgba(255,255,255,.8);font-family:'Space Mono',monospace;color:#1e2b12;cursor:pointer;padding:0;min-height:clamp(32px,4.6vh,44px);line-height:1.2;}
+.tm-call-keys{position:relative;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:clamp(4px,.9svh,8px);margin-top:clamp(6px,1.4svh,12px);}
+.tm-key{border:2px solid #0e1a2e;border-radius:10px;background:linear-gradient(180deg,#f7f9fc 0,#c3ccd9 100%);box-shadow:0 2px 0 #0e1a2e,inset 0 1px 0 rgba(255,255,255,.8);font-family:'Space Mono',monospace;color:#1e2b12;cursor:pointer;padding:0;min-height:clamp(28px,4.6svh,44px);line-height:1.2;}
 .tm-key-call{background:linear-gradient(180deg,#37c463 0,#1d8a3e 100%);color:#fff;font-size:20px;}
 .tm-key-end{background:linear-gradient(180deg,#e8605f 0,#b3271e 100%);color:#fff;font-size:18px;}
 .tm-key-navi{font-size:.72rem;font-weight:700;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 /* The keypad: domed keys with a number and its letters, shaded like real
    rubber keys — light on top, darker at the bottom, hard edge underneath. */
-.tm-call-pad{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(4px,.8vh,7px);margin-top:clamp(5px,1.1vh,10px);touch-action:manipulation;}
-.tm-pad-key{border:2px solid #0e1a2e;border-radius:8px;background:linear-gradient(180deg,#fbfcfe 0,#c9d1de 100%);box-shadow:0 2px 0 #0e1a2e,inset 0 1px 0 rgba(255,255,255,.85);min-height:clamp(26px,4.6vh,44px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Space Mono',monospace;color:#1e2b12;line-height:1.05;padding:0;cursor:pointer;}
+.tm-call-pad{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(4px,.8svh,7px);margin-top:clamp(5px,1.1svh,10px);touch-action:manipulation;}
+.tm-pad-key{border:2px solid #0e1a2e;border-radius:8px;background:linear-gradient(180deg,#fbfcfe 0,#c9d1de 100%);box-shadow:0 2px 0 #0e1a2e,inset 0 1px 0 rgba(255,255,255,.85);min-height:clamp(24px,4.6svh,44px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Space Mono',monospace;color:#1e2b12;line-height:1.05;padding:0;cursor:pointer;}
 .tm-pad-key b{font-size:15px;}
 .tm-pad-key span{font-size:.55rem;letter-spacing:.12em;opacity:.65;}
 /* Press feedback: every key visibly depresses on tap, so the multi-tap
@@ -309,11 +315,11 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    are click, never a touch-only event, so the same tap works everywhere. */
 .tm-pad-key:hover,.tm-key:hover,.tm-call-btn:hover{filter:brightness(1.08);}
 .tm-pad-key:focus-visible,.tm-key:focus-visible,.tm-call-btn:focus-visible,.tm-code-clear:focus-visible{outline:3px solid #5cb8d9;outline-offset:2px;}
-.tm-call-speaker{position:relative;width:64px;height:8px;background:#0e1a2e;border-radius:4px;margin:clamp(6px,1.6vh,14px) auto 0;opacity:.5;}
+.tm-call-speaker{position:relative;width:64px;height:8px;background:#0e1a2e;border-radius:4px;margin:clamp(6px,1.6svh,14px) auto 0;opacity:.5;}
 /* The two big buttons under the phone: the unmistakable way to answer or
    decline, big enough for a thumb. */
-.tm-call-actions{position:relative;display:flex;gap:clamp(8px,1.4vh,12px);pointer-events:auto;z-index:6;touch-action:manipulation;}
-.tm-call-btn{border:3px solid #0e1a2e;border-radius:999px;padding:clamp(9px,1.6vh,14px) clamp(16px,3vw,24px);min-height:clamp(38px,5.5vh,48px);font-size:15px;font-weight:800;letter-spacing:.06em;line-height:1.2;cursor:pointer;box-shadow:0 3px 0 #0e1a2e;font-family:inherit;}
+.tm-call-actions{position:relative;display:flex;gap:clamp(8px,1.4svh,12px);pointer-events:auto;z-index:6;touch-action:manipulation;}
+.tm-call-btn{border:3px solid #0e1a2e;border-radius:999px;padding:clamp(9px,1.6svh,14px) clamp(16px,3vw,24px);min-height:clamp(34px,5.5svh,48px);font-size:15px;font-weight:800;letter-spacing:.06em;line-height:1.2;cursor:pointer;box-shadow:0 3px 0 #0e1a2e;font-family:inherit;}
 .tm-call-answer{background:linear-gradient(180deg,#37c463,#1d8a3e);color:#fff;}
 .tm-call-decline{background:linear-gradient(180deg,#e8605f,#b3271e);color:#fff;}
 /* Shorter screens (a short laptop window, a small tablet): the keypad
@@ -322,13 +328,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 @media (max-height:700px){
   .tm-pad-key b{font-size:14px;}
   .tm-pad-key span{font-size:.5rem;}
-  .tm-caller-big{font-size:clamp(18px,3.2vh,26px);}
-  .tm-code-slot{height:clamp(28px,4.4vh,36px);}
-  .tm-call-softkeys{padding-top:clamp(3px,.7vh,6px);}
-  .tm-call{gap:clamp(6px,1.6vh,14px);}
+  .tm-caller-big{font-size:clamp(18px,3.2svh,26px);}
+  .tm-code-slot{height:clamp(28px,4.4svh,36px);}
+  .tm-call-softkeys{padding-top:clamp(3px,.7svh,6px);}
+  .tm-call{gap:clamp(6px,1.6svh,14px);}
 }
 /* The tightest screens (a short laptop window, a phone in landscape):
-   squeeze the last few pixels so the column still fits. The vh clamps
+   squeeze the last few pixels so the column still fits. The svh clamps
    above do most of the scaling; this block covers the floors they hit. */
 @media (max-height:560px){
   /* The column bottoms out at ~495px of fixed floors (screen content,
