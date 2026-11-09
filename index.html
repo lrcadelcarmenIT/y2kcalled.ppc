@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="enhance.css?v=noglow">
 <style>
 /* Time machine warp intro: full-screen overlay, transform/opacity only.
-   Nokia boot-up first (~1.5s): a CSS-drawn 3310 powers on (NOKIA +
+   Nokia boot-up first (~1.5s): a real 3310 photograph powers on (NOKIA +
    "Connecting People"), then the warp. Smooth edition: slower 4.5s warp
    (about 250ms per year, each year readable), easeInOut motion,
    the real exhibit name under each passing year, timeline bar gliding
@@ -74,24 +74,21 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    (~5.6%) while the years flew past, only catching up to 100% once the
    changes stopped at the title hold. Instant width sets cannot lag. */
 .tm-skip{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:12px;letter-spacing:.18em;color:#8fa8b8;margin:0;}
-/* Nokia boot-up: a CSS-drawn 3310 powers on for ~1.5s before the warp.
-   Same look as the Lobby Nokia (light body, dark border, LCD green screen).
-   Text/CSS only, no images. The screen starts dark, lights up with the
-   NOKIA logo and "Connecting People", then the phone scales and fades
-   away into the warp. */
+/* Nokia boot-up: a REAL 3310 photograph powers on for ~1.5s before the warp.
+   File:Nokia 3310.jpg (J-P Kärnä, 7 Feb 2003, CC BY-SA 3.0) — a real
+   photograph, front view, screen visible. The power-on reads as a dim-to-lit
+   brightness transition on the photo itself; the NOKIA logo and "Connecting
+   People" caption fade in underneath as it lights up. No drawn phone, no
+   fake screen on top of the photo. */
 .tm-boot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity .4s ease,transform .4s ease;z-index:5;}
 .tm-boot.tm-boot-off{opacity:0;transform:scale(1.18);}
-.tm-boot-phone{width:min(300px,74vw);background:linear-gradient(160deg,#f2f5fa 0,#c6d0df 60%,#9fabc2 100%);border:3px solid #0e1a2e;border-radius:34px;padding:18px 16px 22px;box-shadow:7px 7px 0 #0e1a2e;}
-.tm-boot-brand{text-align:center;color:#2c4a6e;font-family:'Archivo Black',Impact,sans-serif;letter-spacing:.35em;font-size:.85rem;margin-bottom:12px;}
-.tm-boot-screen{background:#20261a;border:3px solid #0e1a2e;border-radius:8px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-family:'Space Mono',monospace;transition:background .5s ease;}
-.tm-boot-screen.tm-on{background:#b5cc7a;}
-.tm-boot-logo{font-size:28px;font-weight:700;letter-spacing:.3em;color:#1e2b12;opacity:0;transition:opacity .4s ease;}
-.tm-boot-tag{font-size:12px;letter-spacing:.12em;color:#1e2b12;opacity:0;transition:opacity .4s ease .15s;}
-.tm-boot-screen.tm-on .tm-boot-logo,.tm-boot-screen.tm-on .tm-boot-tag{opacity:1;}
-.tm-boot-keys{display:flex;justify-content:center;gap:8px;margin-top:14px;}
-.tm-boot-keys span{width:34px;height:12px;border-radius:6px;background:#0e1a2e;opacity:.55;}
-.tm-boot-speaker{display:flex;justify-content:center;gap:4px;margin-top:12px;}
-.tm-boot-speaker span{width:5px;height:5px;border-radius:50%;background:#0e1a2e;opacity:.5;}
+.tm-boot-photo{margin:0;width:min(280px,68vw);text-align:center;}
+.tm-boot-photo img{display:block;width:100%;height:auto;max-height:62vh;object-fit:contain;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.55);filter:brightness(.12);transition:filter .5s ease;}
+.tm-boot-photo.tm-on img{filter:brightness(1);}
+.tm-boot-caption{margin-top:14px;display:flex;flex-direction:column;gap:6px;}
+.tm-boot-logo{font-size:28px;font-weight:700;letter-spacing:.3em;color:#bfccd6;opacity:0;transition:opacity .4s ease;}
+.tm-boot-tag{font-size:12px;letter-spacing:.12em;color:#8fa8b8;opacity:0;transition:opacity .4s ease .15s;}
+.tm-boot-photo.tm-on .tm-boot-logo,.tm-boot-photo.tm-on .tm-boot-tag{opacity:1;}
 /* While booting, the warp stage stays hidden behind the phone. */
 .tm-intro.tm-booting .tm-center,.tm-intro.tm-booting .tm-timeline,.tm-intro.tm-booting .tm-warp,.tm-intro.tm-booting .tm-warp-purple,.tm-intro.tm-booting .tm-photo{opacity:0!important;}
 /* 2020s smartphone moved into the hero (under the title): room below it so
@@ -104,15 +101,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 <div class="tm-intro tm-booting" id="tm-intro" aria-hidden="true">
   <div class="tm-boot" id="tm-boot" aria-hidden="true">
-    <div class="tm-boot-phone">
-      <div class="tm-boot-brand">NOKIA</div>
-      <div class="tm-boot-screen" id="tm-boot-screen">
-        <div class="tm-boot-logo">NOKIA</div>
-        <div class="tm-boot-tag">Connecting People</div>
-      </div>
-      <div class="tm-boot-keys" aria-hidden="true"><span></span><span></span><span></span></div>
-      <div class="tm-boot-speaker" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-    </div>
+    <figure class="tm-boot-photo" id="tm-boot-photo">
+      <img id="tm-boot-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Nokia_3310.jpg?width=480" alt="A real Nokia 3310 phone, photographed in 2003" width="454" height="990">
+      <figcaption class="tm-boot-caption">
+        <span class="tm-boot-logo">NOKIA</span>
+        <span class="tm-boot-tag">Connecting People</span>
+      </figcaption>
+    </figure>
   </div>
   <div class="tm-photo" id="tm-photo" aria-hidden="true"></div>
   <div class="tm-photo" id="tm-photo-b" aria-hidden="true"></div>
@@ -155,11 +150,16 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   var tlFill=document.getElementById('tm-timeline-fill');
   var tlNow=document.getElementById('tm-timeline-now');
   var bootEl=document.getElementById('tm-boot');
-  var bootScreen=document.getElementById('tm-boot-screen');
+  var bootPhoto=document.getElementById('tm-boot-photo');
   var YEARS=[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2020,2021,2022,2023,2024,2025,2026];
-  /* Real exhibit photos, from MEDIA00 (museum.js) and MEDIA20 (wing2020s.js). */
+  /* Real exhibit photos, from MEDIA00 (museum.js) and MEDIA20 (wing2020s.js).
+     Exception: 2000 uses a documentary Y2K photo instead of the exhibit's
+     iMac product shot, which read like an AI render — the Nantes sign
+     photographed on 3 January 2000, showing January 1900 instead of 2000
+     (File:Bug de l'an 2000.jpg, CC BY-SA 3.0). Only this intro entry changes;
+     the exhibit data is untouched. */
   var PHOTOS={
-    2000:'https://commons.wikimedia.org/wiki/Special:FilePath/Apple%20IMac(de).jpg?width=600',
+    2000:'https://commons.wikimedia.org/wiki/Special:FilePath/Bug%20de%20l%27an%202000.jpg?width=600',
     2001:'phones-2005.jpg',
     2002:'https://commons.wikimedia.org/wiki/Special:FilePath/Nokia%203310%20blue.jpg?width=480',
     2003:'https://commons.wikimedia.org/wiki/Special:FilePath/1990s%20Television%20Set.jpg?width=480',
@@ -234,6 +234,10 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     im.onerror=function(){ failed[PHOTOS[y]]=true; };
     im.src=PHOTOS[y];
   });
+  /* Boot photo: if the real 3310 photo fails to load, hide the broken image
+     and let the NOKIA + Connecting People caption carry the boot-up. */
+  var bootImg=document.getElementById('tm-boot-img');
+  if(bootImg){ bootImg.onerror=function(){ bootImg.style.display='none'; }; }
   document.documentElement.classList.add('tm-intro-lock');
   document.body.classList.add('tm-intro-lock');
   overlay.addEventListener('click', onSkip);
@@ -257,10 +261,11 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     var dt=lastFrameTs? now-lastFrameTs : 16; lastFrameTs=now;
     var t=now-startTs;
     if(t<BOOT_MS){
-      /* Boot phase: the Nokia powers on. The screen lights up ~350ms in,
-         the phone scales and fades away in the last 400ms. The warp has
-         not started yet: no year, no photo, no timeline movement. */
-      if(t>=BOOT_ON_MS && !bootOn){ bootOn=true; bootScreen.classList.add('tm-on'); }
+      /* Boot phase: the real 3310 photo powers on. It lights up ~350ms in
+         (dim-to-lit brightness transition), the phone scales and fades away
+         in the last 400ms. The warp has not started yet: no year, no photo,
+         no timeline movement. */
+      if(t>=BOOT_ON_MS && !bootOn){ bootOn=true; bootPhoto.classList.add('tm-on'); }
       if(t>=BOOT_MS-400 && !bootGone){ bootGone=true; bootEl.classList.add('tm-boot-off'); }
       rafId=requestAnimationFrame(frame);
       return;
@@ -279,8 +284,24 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       var idx=Math.min(YEARS.length-1, Math.floor(e*YEARS.length));
       if(idx!==lastIdx){
         var prev=lastIdx>=0?YEARS[lastIdx]:null;
-        lastIdx=idx; lastChangeTs=now;
-        if(prev!==null){
+        lastIdx=idx;
+        if(prev===null){
+          /* First year: seed it as if it were already mid-flight, like every
+             other year is when it is seen. There is no previous year in the
+             list, so the ghost is an echo of 2000 itself (no new label, no
+             invented exhibit), and the zoom starts at the mid-zoom phase
+             (age 150ms of the 300ms sweep, translateZ about -170px) instead
+             of from far/small. Without this, the 2000 frame is the outlier:
+             no ghost behind it and seen at the smallest scale, and because
+             the year+name block is bottom-anchored, that scale difference
+             reads as the year sitting in a different position. */
+          lastChangeTs=now-150;
+          ghostEl.textContent='2000';
+          ghostEl.classList.remove('tm-ghost-go');
+          void ghostEl.offsetWidth;
+          ghostEl.classList.add('tm-ghost-go');
+        } else {
+          lastChangeTs=now;
           ghostEl.textContent=prev;
           ghostEl.classList.remove('tm-ghost-go');
           void ghostEl.offsetWidth;
