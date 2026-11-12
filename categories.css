@@ -1,0 +1,17 @@
+/* Category labels + By year / By category toggle (peer-review fix).
+   Exhibit pages use a dark background (body.future), so toggle and
+   section text use light colours; the pill sits on the white cards. */
+
+/* Category pill on each exhibit card */
+.ex-cat{display:inline-block;background:#0e1a2e;color:#f4c65b;font-size:.85rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin:0 0 8px}
+
+/* By year / By category toggle, above the card list */
+.view-toggle{max-width:760px;margin:0 auto;padding:0 16px 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.view-toggle-label{font-weight:700;font-size:.9rem;color:#9fb3c8}
+.view-toggle-btn{background:transparent;border:2px solid #5b6b82;border-radius:999px;padding:7px 14px;font-weight:700;font-size:.9rem;cursor:pointer;color:#dcecfb;font-family:inherit}
+.view-toggle-btn.on{background:#f4c65b;border-color:#f4c65b;color:#141c2e}
+
+/* Category sections in the regrouped view */
+.cat-group{display:flex;flex-direction:column;gap:28px}
+.cat-title{margin:8px 0 0;font-size:1.3rem;color:#f4c65b}
+.cat-arc{margin:0 0 4px;color:#c8d6e2;line-height:1.6;font-size:.95rem}

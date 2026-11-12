@@ -38,6 +38,7 @@
 </style>
 <link rel="stylesheet" href="layout.css?v=noglow">
 <link rel="stylesheet" href="enhance.css?v=noglow">
+<link rel="stylesheet" href="categories.css">
 </head>
 <body class="future"><div class="site-dust" id="site-dust" aria-hidden="true"></div>
 
@@ -67,6 +68,11 @@
   <div class="hall-intro-footer"><span>SOURCED STORIES · PLAYABLE MEMORIES</span><a href="walk.html?year=2000">Take the time machine →</a></div>
 </section>
 <nav class="hall-switcher" aria-label="Exhibit halls"><a href="exhibits.html" aria-current="page">2000s</a><a href="exhibits20.html">2020s</a><a href="exhibits-future.html">Future</a></nav>
+<div class="view-toggle" role="group" aria-label="Arrange exhibits">
+  <span class="view-toggle-label">View:</span>
+  <button type="button" class="view-toggle-btn on" data-view="year" aria-pressed="true">By year</button>
+  <button type="button" class="view-toggle-btn" data-view="category" aria-pressed="false">By category</button>
+</div>
 <div class="ex-list" id="ex-list"></div>
 </main>
 <footer class="foot"><div class="foot-grid"><div>
@@ -81,13 +87,22 @@
 (function(){
 const list=document.getElementById('ex-list');
 const EX=window.EXHIBITS00||{}, MED=window.MEDIA00||{};
+/* Category map (shared across both exhibit halls) + arcs for this decade's cards. */
+window.EXHIBIT_CATEGORIES={y2k:'Technology',sms:'Technology',ofw:'Everyday Life',meteor:'Media & Entertainment',cameraphone:'Technology',load:'Everyday Life',cafe:'Everyday Life',friendster:'Media & Entertainment',boxing:'Sports & National Pride',socialgames:'Media & Entertainment',smartphone:'Technology',tiktok:'Media & Entertainment',hidilyn:'Sports & National Pride',eraserheads:'Media & Entertainment',ai:'Technology',bini:'Media & Entertainment',halalan:'Everyday Life',gta6:'Media & Entertainment'};
+window.CATEGORY_ARCS={
+ 'Technology':'From a two-digit date bug in 2000 to a pocket computer with an app store in 2010, the machines in Filipino pockets kept getting smarter.',
+ 'Media & Entertainment':'From waiting for a dubbed drama at TV time in 2003 to a farm game that spread through friend lists in 2009, Filipino screens kept finding new ways to gather people.',
+ 'Sports & National Pride':'In 2008, Malaybalay set up a free public screening at Freedom Park for a Pacquiao fight. Watching together was part of the event.',
+ 'Everyday Life':'From texting on prepaid load in 2001 to renting computer time at an internet café in 2006, staying in touch always had a price, and Filipinos kept finding ways to pay it.'
+};
 const ids=Object.keys(EX).sort((a,b)=>parseInt(EX[a].year)-parseInt(EX[b].year));
 ids.forEach(id=>{
   const d=EX[id], m=MED[id];
+  const cat=window.EXHIBIT_CATEGORIES[id]||'Everyday Life';
   const card=document.createElement('article');
   card.className='ex-card';card.id='exhibit-'+id;
   let html='<header class="ex-heading"><span class="ex-stamp" data-stamp="'+id+'">'+(hasStamp(id)?'🎫':'')+'</span>';
-  html+='<p class="ex-year">'+d.year+'</p><h2>'+d.title+'</h2></header>';
+  html+='<p class="ex-year">'+d.year+'</p><span class="ex-cat" data-cat="'+cat+'">'+cat+'</span><h2>'+d.title+'</h2></header>';
   if(m&&m.src)html+='<img class="ex-photo" src="'+m.src+'" alt="'+(m.alt||d.title)+'" loading="lazy" decoding="async" width="900" height="600">';
   html+='<div class="ex-body">';
   html+='<p class="ex-text">'+d.body+'</p>';
@@ -115,6 +130,56 @@ list.addEventListener('click',function(e){
     box.innerHTML='<p>Game failed to start.</p>';
     box.hidden=false;
   }
+});
+})();
+</script>
+<script>
+/* By year / By category toggle: regroups the already-rendered cards, never re-creates them. */
+(function(){
+const list=document.getElementById('ex-list');
+const btns=document.querySelectorAll('.view-toggle-btn');
+if(!list||!btns.length)return;
+const original=Array.prototype.slice.call(list.querySelectorAll('.ex-card'));
+const ORDER=['Technology','Media & Entertainment','Sports & National Pride','Everyday Life'];
+function clearGroups(){
+  list.querySelectorAll('.cat-group').forEach(function(s){
+    Array.prototype.slice.call(s.querySelectorAll('.ex-card')).forEach(function(c){list.appendChild(c);});
+    s.remove();
+  });
+}
+function setPressed(view){
+  btns.forEach(function(b){
+    const on=b.dataset.view===view;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-pressed',String(on));
+  });
+}
+function showYear(){
+  clearGroups();
+  original.forEach(function(c){list.appendChild(c);});
+  setPressed('year');
+}
+function showCategory(){
+  clearGroups();
+  ORDER.forEach(function(name){
+    const cards=original.filter(function(c){
+      const pill=c.querySelector('.ex-cat');
+      return pill&&pill.dataset.cat===name;
+    });
+    if(!cards.length)return;
+    const sec=document.createElement('section');
+    sec.className='cat-group';
+    sec.setAttribute('aria-label',name);
+    sec.innerHTML='<h2 class="cat-title">'+name+'</h2><p class="cat-arc">'+(window.CATEGORY_ARCS[name]||'')+'</p>';
+    cards.forEach(function(c){sec.appendChild(c);});
+    list.appendChild(sec);
+  });
+  setPressed('category');
+}
+btns.forEach(function(b){
+  b.addEventListener('click',function(){
+    if(b.dataset.view==='category')showCategory();else showYear();
+  });
 });
 })();
 </script>

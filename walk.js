@@ -28,10 +28,10 @@ const HALL00=['y2k','sms','ofw','meteor','cameraphone','load','cafe','friendster
 const HALL20=['tiktok','hidilyn','eraserheads','ai','bini','halalan','gta6'];
 const HALLFUTURE=Object.keys(FUTURE);
 const COMPARE=[
- {t:'Friendster \u2194 TikTok',a:'friendster',b:'tiktok',n:'From top 8 to For You Page.'},
- {t:'Cameraphone \u2194 Vlog',a:'cameraphone',b:'vlog',n:'From pixels to personalities.'},
- {t:'Smartphone \u2194 AI',a:'smartphone',b:'ai',n:'From apps to assistants.'},
- {t:'Boxing \u2194 Gold',a:'boxing',b:'hidilyn',n:'From the ring to the podium.'}
+ {t:'Friendster \u2194 TikTok',a:'friendster',b:'tiktok',n:'From top 8 to For You Page.',e:'Friendster made you find a computer and a connection to keep a profile; TikTok turned that profile into a For You Page that lives in your pocket, and made the Philippines one of its biggest markets.'},
+ {t:'Social Games \u2194 GTA 6',a:'socialgames',b:'gta6',n:'From farm invites to Vice City.',e:'FarmVille turned your friend list into a farm in 2009, spreading through invites and notifications; thirteen years after GTA V, the whole country is counting down to GTA 6 on November 19, 2026.'},
+ {t:'Smartphone \u2194 AI',a:'smartphone',b:'ai',n:'From apps to assistants.',e:'By 2010 the phone had become a pocket computer with an app store and mobile internet; by 2023 ChatGPT was in Filipino classrooms, offices, and group chats, writing essays and emails.'},
+ {t:'Boxing \u2194 Gold',a:'boxing',b:'hidilyn',n:'From the ring to the podium.',e:'In 2008 Malaybalay set up a free public screening at Freedom Park so people could watch a Pacquiao fight together, and in 2021 the whole country stopped to watch Hidilyn Diaz lift 127kg for the Philippines\u2019 first Olympic gold after 97 years \u2014 the ring giving way to the podium as the stage of that pride.'}
 ];
 const TITLES={hall00:'2000s Hall',gallery:'Then vs Now Gallery',hall20:'2020s Hall',hallFuture:'Future'};
 const EXIDX={hall00:0,hall20:0,gallery:0,hallFuture:0};
@@ -124,6 +124,11 @@ function renderExhibit(){
  }
  document.getElementById('ex-year').textContent=yearText;
  document.getElementById('ex-topic').textContent=titleText;
+ const expl=document.getElementById('ex-explainer');
+ if(isCmp){
+  const c=COMPARE[parseInt(key.replace('cmp',''),10)];
+  expl.textContent=c.e||'';expl.hidden=!c.e;
+ }else{expl.textContent='';expl.hidden=true;}
  const imageCredit=document.getElementById('ex-image-credit');
  imageCredit.hidden=!FUTURE[key];
  imageCredit.textContent=FUTURE[key]?'AI-generated concept illustration':'';
@@ -165,7 +170,7 @@ function openPlaque(){
   +'<p class="walk-kick">THEN \u2194 NOW</p><h3>'+c.t+'</h3>'
   +'<div class="walk-cmp"><div><p class="walk-kick">2000s</p><p><b>'+a.d.title+'</b> ('+a.d.year+')</p><p>'+a.d.body.split('.')[0]+'.</p></div>'
   +'<div><p class="walk-kick">2020s</p><p><b>'+b.d.title+'</b> ('+b.d.year+')</p><p>'+b.d.body.split('.')[0]+'.</p></div></div>'
-  +'<p class="walk-tn"><b>The bridge:</b> '+c.n+'</p>';
+  +'<p class="walk-tn"><b>The bridge:</b> '+c.n+'</p><p class="walk-explainer"><b>Why they belong together:</b> '+c.e+'</p>';
  }else{
   const r=exData(key),d=r.d;
   mbox.innerHTML='<button class="walk-x" aria-label="Close">\u00d7</button>'
@@ -184,7 +189,7 @@ function buildChrome(){
  +'<div class="tour-toolbar"><button class="tour-title" id="tour-title" aria-label="Open time machine"></button>'
  +'<button class="tour-tmbtn" id="tour-tm" aria-label="Open time machine">\u{1f570}\ufe0f</button></div>'
  +'<div class="ex-view"><button class="ex-frame" id="ex-frame" aria-label="Read the plaque"></button><div class="ex-reflect" id="ex-reflect" aria-hidden="true"></div>'
- +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p><p class="ex-image-credit" id="ex-image-credit" hidden></p></div></div>'
+ +'<div class="ex-caption"><p class="ex-year" id="ex-year"></p><p class="ex-topic" id="ex-topic"></p><p class="ex-explainer" id="ex-explainer" style="color:#cfd8e3;font-size:.95rem;line-height:1.55;max-width:560px;margin:0 auto" hidden></p><p class="ex-image-credit" id="ex-image-credit" hidden></p></div></div>'
  +'<div class="tour-navigation">'
  +'<button class="tour-edge" id="tour-prev" aria-label="Previous exhibit">\u2039</button>'
  +'<p class="ex-count" id="ex-count"></p>'

@@ -159,7 +159,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    (~5.6%) while the years flew past, only catching up to 100% once the
    changes stopped at the title hold. Instant width sets cannot lag. */
 /* The caption rides INSIDE the call column as its last flex child, so it
-   moves with the phone and can never land on CLEAR CODE or the big
+   moves with the phone and can never land on DELETE or the big
    buttons. The warp-phase hint is a separate element, pinned to the
    viewport bottom only while the warp is actually playing (it appears
    once the tap-through guard has passed), when the call layer is gone
@@ -206,13 +206,13 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
    or the Lobby — nothing opens or warps before the call is answered.
    The warp itself is unchanged and at normal speed: 4.5s warp, 1.2s poster
    hold, 0.5s fade. */
-/* The call layer is a flex column (phone + CLEAR CODE + big buttons +
+/* The call layer is a flex column (phone + DELETE + big buttons +
    caption) that must fit the viewport at EVERY height from ~500px up.
    The overlay never scrolls, so the column cannot overflow: every fixed
    height inside it is therefore capped by viewport height as well as px
    (clamp with a svh middle), shrinking proportionally below ~880px instead
    of clipping. The caption rides inside the column as its last flex
-   child, so it can never land on top of CLEAR CODE the way the old
+   child, so it can never land on top of DELETE the way the old
    viewport-pinned caption did. */
 .tm-call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,1.8svh,16px);z-index:5;pointer-events:none;transition:opacity .4s cubic-bezier(.22,.61,.36,1),transform .4s cubic-bezier(.22,.61,.36,1);animation:tm-call-in .5s cubic-bezier(.22,.61,.36,1) backwards;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
 /* The phone glides in on load instead of popping into place. `backwards`
@@ -432,7 +432,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
       </div>
       <div class="tm-call-speaker" aria-hidden="true"></div>
     </div>
-    <button type="button" class="tm-code-clear" id="tm-code-clear">CLEAR CODE</button>
+    <button type="button" class="tm-code-clear" id="tm-code-clear">DELETE</button>
     <div class="tm-call-actions">
       <button type="button" class="tm-call-btn tm-call-answer" id="tm-answer">✓ Answer</button>
       <button type="button" class="tm-call-btn tm-call-decline" id="tm-decline">✕ Decline</button>
@@ -573,6 +573,12 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   }
   function finish(fast){
     if(done)return; done=true;
+    /* The visitor actually entered: the call was answered and the intro
+       ran to its end (or was skipped out of the warp/connected beat), so
+       remember it for this tab session. finish() is only reachable after
+       answering — Decline/hang-up never gets here — so the flag can never
+       be set by a decline or a wrong code. */
+    if(answered) markEntered();
     if(rafId) cancelAnimationFrame(rafId);
     if(connectTimer){ clearTimeout(connectTimer); connectTimer=0; }
     if(callTimer){ clearInterval(callTimer); callTimer=0; }
@@ -621,14 +627,14 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     if(t && t.closest && t.closest('#tm-call-phone,#tm-answer,#tm-decline,#tm-callkey-answer,#tm-callkey-decline,#tm-call-pad .tm-pad-key,#tm-code-clear') && (e.key==='Enter'||e.key===' ')){ return; }
     /* Code entry on a physical keyboard: Y, 2 or K fills the next slot
        directly, any other keypad digit works the keypad the same way a
-       tap does (classic multi-tap), Backspace/Delete clears the code.
-       Only while the phone is locked; every other key is refused while
-       locked (onSkip shakes and says ENTER CODE FIRST) and ignored while
-       ringing (the phone keeps ringing) — except Enter, which answers
-       once ringing. */
+       tap does (classic multi-tap), Backspace/Delete deletes only the
+       last character entered. Only while the phone is locked; every
+       other key is refused while locked (onSkip shakes and says ENTER
+       CODE FIRST) and ignored while ringing (the phone keeps ringing)
+       — except Enter, which answers once ringing. */
     if(!answered && !done && !unlocked){
       var k=e.key;
-      if(k==='Backspace'||k==='Delete'){ clearCode(); restoreStatus(); return; }
+      if(k==='Backspace'||k==='Delete'){ deleteLastChar(); restoreStatus(); return; }
       if(k && k.length===1){
         var up=k.toUpperCase();
         if(up==='Y'||up==='2'||up==='K'){ typeCodeChar(up); return; }
@@ -654,6 +660,21 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     removeNode(); return;
   }
+  /* Skip-on-return: a visitor who already entered once comes straight
+     back to the Lobby — the locked phone only plays the first time in
+     the tab session, so clicking Lobby does not make them re-type Y2K.
+     The flag is set only in finish(), which is reachable solely after
+     the call was answered, so a decline/hang-up or a wrong code never
+     sets it. Storage access is guarded: in a browser where it throws
+     (private mode, storage disabled) the intro just plays as usual. */
+  var ENTERED_KEY='tm-intro-entered';
+  function hasEntered(){
+    try{ return !!(window.sessionStorage && window.sessionStorage.getItem(ENTERED_KEY)==='1'); }catch(err){ return false; }
+  }
+  function markEntered(){
+    try{ if(window.sessionStorage) window.sessionStorage.setItem(ENTERED_KEY,'1'); }catch(err){}
+  }
+  if(hasEntered()){ removeNode(); return; }
   Object.keys(PHOTOS).forEach(function(y){
     var im=new Image();
     im.onerror=function(){ failed[PHOTOS[y]]=true; };
@@ -901,6 +922,18 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
     codeSlots=['','','']; codeIdx=0; pendingKey=null; pendingChar=''; pendingPos=-1;
     renderCode();
   }
+  /* Delete ONE character: the most recent one. If a multi-tap letter is
+     still cycling in the active slot (typed but not yet committed after
+     the ~900ms pause), that pending letter goes and the committed slots
+     stay. Otherwise the last committed slot is emptied. A wrong code
+     still clears everything — wrongCode keeps clearCode above. */
+  function deleteLastChar(){
+    if(answered||unlocked||done) return;
+    if(commitTimer){ clearTimeout(commitTimer); commitTimer=0; }
+    if(pendingChar){ pendingKey=null; pendingChar=''; pendingPos=-1; }
+    else if(codeIdx>0){ codeIdx--; codeSlots[codeIdx]=''; }
+    renderCode();
+  }
   padKeys.forEach(function(btn){
     btn.addEventListener('click', function(e){
       /* Stop the tap here: without this it bubbles to the phone (which
@@ -911,7 +944,7 @@ html.tm-reveal main,html.tm-reveal .mast,html.tm-reveal .foot,html.tm-reveal .ma
   });
   if(codeClearBtn) codeClearBtn.addEventListener('click', function(e){
     e.stopPropagation();
-    clearCode();
+    deleteLastChar();
     restoreStatus();
   });
   /* If nobody enters the code, the phone simply waits locked — there is
